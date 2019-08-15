@@ -7,22 +7,26 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="author" content="Cornelius Aschermann">
 <meta name="keywords" content="">
-<meta name="description" content="Redqueen   Authors: Cornelius Aschermann, Sergej Schumilo, Tim Blazytko, Robert Gawlik, Thorsten Holz
-Very fast binary-only fuzzer. It can automatically overcome checksums and magic bytes without falling back to complex and fragile program analysis techniques such as symbolic execution. It works by observing the arguments to function calls and compare instructions. Then the traced values are used to provide inputs specific mutations. More details can be found in the paper.">
+<meta name="description" content="View On Github
+Redqueen   Authors: Cornelius Aschermann, Sergej Schumilo, Tim Blazytko, Robert Gawlik, Thorsten Holz
+Redqueen is a fast general purpose fuzzer for x86 binary applications. It can automatically overcome checksums and magic bytes without falling back to complex and fragile program analysis techniques, such as symbolic execution. It works by observing the arguments to function calls and compare instructions via virtual machine introspection. Observed values are used to provide inputs specific mutations.">
 
 
-<meta property="og:description" content="Redqueen   Authors: Cornelius Aschermann, Sergej Schumilo, Tim Blazytko, Robert Gawlik, Thorsten Holz
-Very fast binary-only fuzzer. It can automatically overcome checksums and magic bytes without falling back to complex and fragile program analysis techniques such as symbolic execution. It works by observing the arguments to function calls and compare instructions. Then the traced values are used to provide inputs specific mutations. More details can be found in the paper.">
+<meta property="og:description" content="View On Github
+Redqueen   Authors: Cornelius Aschermann, Sergej Schumilo, Tim Blazytko, Robert Gawlik, Thorsten Holz
+Redqueen is a fast general purpose fuzzer for x86 binary applications. It can automatically overcome checksums and magic bytes without falling back to complex and fragile program analysis techniques, such as symbolic execution. It works by observing the arguments to function calls and compare instructions via virtual machine introspection. Observed values are used to provide inputs specific mutations.">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Redqueen">
 <meta name="twitter:title" content="Redqueen">
 <meta property="og:url" content="https://hexgolems.com/2018/12/redqueen/">
 <meta property="twitter:url" content="https://hexgolems.com/2018/12/redqueen/">
 <meta property="og:site_name" content="Hexgolems">
-<meta property="og:description" content="Redqueen   Authors: Cornelius Aschermann, Sergej Schumilo, Tim Blazytko, Robert Gawlik, Thorsten Holz
-Very fast binary-only fuzzer. It can automatically overcome checksums and magic bytes without falling back to complex and fragile program analysis techniques such as symbolic execution. It works by observing the arguments to function calls and compare instructions. Then the traced values are used to provide inputs specific mutations. More details can be found in the paper.">
-<meta name="twitter:description" content="Redqueen   Authors: Cornelius Aschermann, Sergej Schumilo, Tim Blazytko, Robert Gawlik, Thorsten Holz
-Very fast binary-only fuzzer. It can automatically overcome checksums and magic bytes without falling back to complex and fragile program analysis techniques such as symbolic execution. It works by observing the arguments to function calls and compare instructions. Then the traced values are used to provide inputs specific mutations. More details can be found in the paper.">
+<meta property="og:description" content="View On Github
+Redqueen   Authors: Cornelius Aschermann, Sergej Schumilo, Tim Blazytko, Robert Gawlik, Thorsten Holz
+Redqueen is a fast general purpose fuzzer for x86 binary applications. It can automatically overcome checksums and magic bytes without falling back to complex and fragile program analysis techniques, such as symbolic execution. It works by observing the arguments to function calls and compare instructions via virtual machine introspection. Observed values are used to provide inputs specific mutations.">
+<meta name="twitter:description" content="View On Github
+Redqueen   Authors: Cornelius Aschermann, Sergej Schumilo, Tim Blazytko, Robert Gawlik, Thorsten Holz
+Redqueen is a fast general purpose fuzzer for x86 binary applications. It can automatically overcome checksums and magic bytes without falling back to complex and fragile program analysis techniques, such as symbolic execution. It works by observing the arguments to function calls and compare instructions via virtual machine introspection. Observed values are used to provide inputs specific mutations.">
 <meta property="og:locale" content="en">
 
   
@@ -39,7 +43,13 @@ Very fast binary-only fuzzer. It can automatically overcome checksums and magic 
     
       <meta property="article:tag" content="paper">
     
+      <meta property="article:tag" content="github">
+    
       <meta property="article:tag" content="talk">
+    
+      <meta property="article:tag" content="python">
+    
+      <meta property="article:tag" content="C">
     
   
 
@@ -56,18 +66,19 @@ Very fast binary-only fuzzer. It can automatically overcome checksums and magic 
 
 
 
-  <meta property="og:image" content="https://hexgolems.com/imgs/redqueen_img.png">
-  <meta property="twitter:image" content="https://hexgolems.com/imgs/redqueen_img.png">
-
-
-  <meta property="og:image" content="https://hexgolems.com/imgs/redqueen_img.png">
-  <meta property="twitter:image" content="https://hexgolems.com/imgs/redqueen_img.png">
-
-
-
 
   <meta property="og:image" content="https://hexgolems.com/imgs/avatar.png">
   <meta property="twitter:image" content="https://hexgolems.com/imgs/avatar.png">
+
+
+
+  <meta property="og:image" content="https://hexgolems.com/imgs/redqueen_img.png">
+  <meta property="twitter:image" content="https://hexgolems.com/imgs/redqueen_img.png">
+
+
+  <meta property="og:image" content="https://hexgolems.com/imgs/redqueen_img.png">
+  <meta property="twitter:image" content="https://hexgolems.com/imgs/redqueen_img.png">
+
 
 
     <title>Redqueen</title>
@@ -104,14 +115,12 @@ Very fast binary-only fuzzer. It can automatically overcome checksums and magic 
   </div>
   
     
-      <a class="header-right-picture "
+      <a class="header-right-icon "
          href="https://hexgolems.com/#about">
     
     
+      <i class="fa fa-2x fa-user"></i>
     
-      
-        <img class="header-picture" src="https://hexgolems.com/imgs/avatar.png" alt="" />
-      
     
     </a>
   
@@ -235,6 +244,8 @@ Very fast binary-only fuzzer. It can automatically overcome checksums and magic 
             <div class="main-content-wrap">
               
 
+<p align=center><a href="https://github.com/RUB-SysSec/redqueen" class="post-action-btn btn btn--primary" text-align="center"><i class="fa fa-github" aria-hidden="true"></i> View On Github</a></p>
+
 <h3 id="redqueen">Redqueen</h3>
 
 <p>
@@ -244,12 +255,12 @@ Very fast binary-only fuzzer. It can automatically overcome checksums and magic 
 <p><strong>Authors:</strong>
 Cornelius Aschermann, <a href="https://t.co/c4LvtKPq2M">Sergej Schumilo</a>, <a href="http://synthesis.to/">Tim Blazytko</a>, <a href="https://www.syssec.ruhr-uni-bochum.de/chair/staff/rgawlik/">Robert Gawlik</a>, <a href="https://www.syssec.ruhr-uni-bochum.de/chair/staff/tho/">Thorsten Holz</a></p>
 
-<p>Very fast binary-only fuzzer. It can automatically overcome checksums and magic bytes without falling back to
-complex and fragile program analysis techniques such as symbolic execution. It works by observing the arguments to
-function calls and compare instructions. Then the traced values are used to provide inputs specific mutations.
+<p>Redqueen is a fast general purpose fuzzer for x86 binary applications. It can automatically overcome checksums and magic bytes without falling back to complex and fragile program analysis techniques, such as symbolic execution. It works by observing the arguments to function calls and compare instructions via virtual machine introspection. Observed values are used to provide inputs specific mutations. More details can be found in the paper. This fuzzer is built upon <a href="https://github.com/RUB-SysSec/kAFL">kAFL</a> and requires support for Intel VT-x as well as Intel Processor Trace.
 More details can be found in the paper.</p>
 
-<p>The paper describing Nautilus was published at NDSS 2019.
+<p><a> <img  src="https://hexgolems.com/imgs/rq_fuzzer.gif"> </a></p>
+
+<p>The paper describing Redqueen was published at NDSS 2019.
 A recording of the presentation and the slides can be found here:</p>
 
 <table>
@@ -312,7 +323,13 @@ A recording of the presentation and the slides can be found here:</p>
 
   <a class="tag tag--primary tag--small" href="https://hexgolems.com/tags/paper/">paper</a>
 
+  <a class="tag tag--primary tag--small" href="https://hexgolems.com/tags/github/">github</a>
+
   <a class="tag tag--primary tag--small" href="https://hexgolems.com/tags/talk/">talk</a>
+
+  <a class="tag tag--primary tag--small" href="https://hexgolems.com/tags/python/">python</a>
+
+  <a class="tag tag--primary tag--small" href="https://hexgolems.com/tags/c/">C</a>
 
                   </div>
                 
@@ -327,16 +344,18 @@ A recording of the presentation and the slides can be found here:</p>
               
                 <a class="post-action-btn btn btn--default tooltip--top" href="https://hexgolems.com/2018/12/nautilus---fuzzing-with-grammars/" data-tooltip="Nautilus - Fuzzing with Grammars">
               
-                  <i class="fa fa-angle-left"></i>
-                  <span class="hide-xs hide-sm text-small icon-ml"></span>
+                  
+                  &lt;
+                  
                 </a>
             </li>
             <li class="post-action">
               
                 <a class="post-action-btn btn btn--default tooltip--top" href="https://hexgolems.com/2017/12/syntia/" data-tooltip="Syntia">
               
-                  <span class="hide-xs hide-sm text-small icon-mr"></span>
-                  <i class="fa fa-angle-right"></i>
+              
+                  &gt;
+                  
                 </a>
             </li>
           
@@ -378,16 +397,18 @@ A recording of the presentation and the slides can be found here:</p>
               
                 <a class="post-action-btn btn btn--default tooltip--top" href="https://hexgolems.com/2018/12/nautilus---fuzzing-with-grammars/" data-tooltip="Nautilus - Fuzzing with Grammars">
               
-                  <i class="fa fa-angle-left"></i>
-                  <span class="hide-xs hide-sm text-small icon-ml"></span>
+                  
+                  &lt;
+                  
                 </a>
             </li>
             <li class="post-action">
               
                 <a class="post-action-btn btn btn--default tooltip--top" href="https://hexgolems.com/2017/12/syntia/" data-tooltip="Syntia">
               
-                  <span class="hide-xs hide-sm text-small icon-mr"></span>
-                  <i class="fa fa-angle-right"></i>
+              
+                  &gt;
+                  
                 </a>
             </li>
           

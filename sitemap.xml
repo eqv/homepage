@@ -3,6 +3,11 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
+    <loc>https://hexgolems.com/2019/11/fast-cov/</loc>
+    <lastmod>2019-11-01T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
     <loc>https://hexgolems.com/2019/08/hexslides-death-to-death-by-powerpoint/</loc>
     <lastmod>2019-08-01T00:00:00+00:00</lastmod>
   </url>
@@ -131,6 +136,12 @@
   </url>
   
   <url>
+    <loc>https://hexgolems.com/tags/c/</loc>
+    <lastmod>2019-07-17T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
     <loc>https://hexgolems.com/tags/compiler/</loc>
     <lastmod>2014-07-01T00:00:00+00:00</lastmod>
     <priority>0</priority>
@@ -143,20 +154,20 @@
   </url>
   
   <url>
-    <loc>https://hexgolems.com/tags/gihub/</loc>
-    <lastmod>2019-08-01T00:00:00+00:00</lastmod>
+    <loc>https://hexgolems.com/tags/github/</loc>
+    <lastmod>2019-11-01T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
-    <loc>https://hexgolems.com/tags/github/</loc>
-    <lastmod>2019-02-01T00:00:00+00:00</lastmod>
+    <loc>https://hexgolems.com/tags/go/</loc>
+    <lastmod>2016-01-01T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
     <loc>https://hexgolems.com/</loc>
-    <lastmod>2019-08-01T00:00:00+00:00</lastmod>
+    <lastmod>2019-11-01T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -169,6 +180,12 @@
   <url>
     <loc>https://hexgolems.com/tags/llvm/</loc>
     <lastmod>2014-07-01T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://hexgolems.com/tags/lua/</loc>
+    <lastmod>2014-10-01T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -186,7 +203,13 @@
   
   <url>
     <loc>https://hexgolems.com/post/</loc>
-    <lastmod>2019-08-01T00:00:00+00:00</lastmod>
+    <lastmod>2019-11-01T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://hexgolems.com/tags/python/</loc>
+    <lastmod>2019-11-01T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -198,13 +221,19 @@
   
   <url>
     <loc>https://hexgolems.com/tags/ruby/</loc>
-    <lastmod>2015-04-01T00:00:00+00:00</lastmod>
+    <lastmod>2019-08-01T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
     <loc>https://hexgolems.com/tags/rust/</loc>
     <lastmod>2019-02-01T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://hexgolems.com/tags/smt/</loc>
+    <lastmod>2016-08-01T00:00:00+00:00</lastmod>
     <priority>0</priority>
   </url>
   

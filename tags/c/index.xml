@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>C on Hexgolems</title>
+    <link>https://hexgolems.com/tags/c/</link>
+    <description>Recent content in C on Hexgolems</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Wed, 17 Jul 2019 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="https://hexgolems.com/tags/c/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Antifuzz</title>
+      <link>https://hexgolems.com/2019/07/antifuzz/</link>
+      <pubDate>Wed, 17 Jul 2019 00:00:00 +0000</pubDate>
+      
+      <guid>https://hexgolems.com/2019/07/antifuzz/</guid>
+      <description>Antifuzz   Authors: Emre Güler, Cornelius Aschermann, Ali Abbasi, Thorsten Holz
+In this work, we analysed various state of the art fuzzers and show that common obfuscation techniques do not help against attackers using fuzzer. Then we systematically attack the underlying assumptions of modern fuzzers and show how they can be attacked by relatively simple obfuscations mechanisms.</description>
+    </item>
+    
+    <item>
+      <title>Redqueen</title>
+      <link>https://hexgolems.com/2018/12/redqueen/</link>
+      <pubDate>Mon, 17 Dec 2018 00:00:00 +0000</pubDate>
+      
+      <guid>https://hexgolems.com/2018/12/redqueen/</guid>
+      <description>View On Github
+Redqueen   Authors: Cornelius Aschermann, Sergej Schumilo, Tim Blazytko, Robert Gawlik, Thorsten Holz
+Redqueen is a fast general purpose fuzzer for x86 binary applications. It can automatically overcome checksums and magic bytes without falling back to complex and fragile program analysis techniques, such as symbolic execution. It works by observing the arguments to function calls and compare instructions via virtual machine introspection. Observed values are used to provide inputs specific mutations.</description>
+    </item>
+    
+    <item>
+      <title>kAFL</title>
+      <link>https://hexgolems.com/2017/08/kafl/</link>
+      <pubDate>Thu, 17 Aug 2017 00:00:00 +0000</pubDate>
+      
+      <guid>https://hexgolems.com/2017/08/kafl/</guid>
+      <description>View On Github
+kAFL   Authors: Sergej Schumilo, Cornelius Aschermann, Robert Gawlik, Sebastian Schinzel, Thorsten Holz
+kAFL is a blazing fast x86-64 VM kernel fuzzing framework with performant VM reloads for Linux, MacOS and Windows. It works by running the target operating system inside a hardware accelerated VM, giving it full controll over the environment. This very helpfull to properly recover from crashes. Intels Processor Trace (Intel PT) feature is used to obtain coverage information from the code running inside of the VM.</description>
+    </item>
+    
+    <item>
+      <title>Pint</title>
+      <link>https://hexgolems.com/2014/10/pint/</link>
+      <pubDate>Wed, 01 Oct 2014 00:00:00 +0000</pubDate>
+      
+      <guid>https://hexgolems.com/2014/10/pint/</guid>
+      <description>View On Github
+Pint is a PIN tool that exposes the PIN API to lua scripts. Pint runs on 64 bit Ubuntu and 32 bit Windows XP, it should run on 32 bit Ubuntu and 64 bit XP as well but this is yet untested.
+PIN is a dynamic instrumentation engine developed by Intel. Basically, it is a JIT compiler for binaries. It will disassemble the binary, one basic block at a time, and recompile it with additional instructions inserted at arbitrary positions.</description>
+    </item>
+    
+  </channel>
+</rss>

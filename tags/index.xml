@@ -39,6 +39,15 @@
     </item>
     
     <item>
+      <title>C</title>
+      <link>https://hexgolems.com/tags/c/</link>
+      <pubDate>Wed, 17 Jul 2019 00:00:00 +0000</pubDate>
+      
+      <guid>https://hexgolems.com/tags/c/</guid>
+      <description></description>
+    </item>
+    
+    <item>
       <title>Compiler</title>
       <link>https://hexgolems.com/tags/compiler/</link>
       <pubDate>Tue, 01 Jul 2014 00:00:00 +0000</pubDate>
@@ -57,20 +66,20 @@
     </item>
     
     <item>
-      <title>Gihub</title>
-      <link>https://hexgolems.com/tags/gihub/</link>
-      <pubDate>Thu, 01 Aug 2019 00:00:00 +0000</pubDate>
+      <title>Github</title>
+      <link>https://hexgolems.com/tags/github/</link>
+      <pubDate>Fri, 01 Nov 2019 00:00:00 +0000</pubDate>
       
-      <guid>https://hexgolems.com/tags/gihub/</guid>
+      <guid>https://hexgolems.com/tags/github/</guid>
       <description></description>
     </item>
     
     <item>
-      <title>Github</title>
-      <link>https://hexgolems.com/tags/github/</link>
-      <pubDate>Fri, 01 Feb 2019 00:00:00 +0000</pubDate>
+      <title>Go</title>
+      <link>https://hexgolems.com/tags/go/</link>
+      <pubDate>Fri, 01 Jan 2016 00:00:00 +0000</pubDate>
       
-      <guid>https://hexgolems.com/tags/github/</guid>
+      <guid>https://hexgolems.com/tags/go/</guid>
       <description></description>
     </item>
     
@@ -93,6 +102,15 @@
     </item>
     
     <item>
+      <title>Lua</title>
+      <link>https://hexgolems.com/tags/lua/</link>
+      <pubDate>Wed, 01 Oct 2014 00:00:00 +0000</pubDate>
+      
+      <guid>https://hexgolems.com/tags/lua/</guid>
+      <description></description>
+    </item>
+    
+    <item>
       <title>Paper</title>
       <link>https://hexgolems.com/tags/paper/</link>
       <pubDate>Wed, 17 Jul 2019 00:00:00 +0000</pubDate>
@@ -111,6 +129,15 @@
     </item>
     
     <item>
+      <title>Python</title>
+      <link>https://hexgolems.com/tags/python/</link>
+      <pubDate>Fri, 01 Nov 2019 00:00:00 +0000</pubDate>
+      
+      <guid>https://hexgolems.com/tags/python/</guid>
+      <description></description>
+    </item>
+    
+    <item>
       <title>Reversing</title>
       <link>https://hexgolems.com/tags/reversing/</link>
       <pubDate>Tue, 01 Mar 2016 00:00:00 +0000</pubDate>
@@ -122,7 +149,7 @@
     <item>
       <title>Ruby</title>
       <link>https://hexgolems.com/tags/ruby/</link>
-      <pubDate>Wed, 01 Apr 2015 00:00:00 +0000</pubDate>
+      <pubDate>Thu, 01 Aug 2019 00:00:00 +0000</pubDate>
       
       <guid>https://hexgolems.com/tags/ruby/</guid>
       <description></description>
@@ -134,6 +161,15 @@
       <pubDate>Fri, 01 Feb 2019 00:00:00 +0000</pubDate>
       
       <guid>https://hexgolems.com/tags/rust/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Smt</title>
+      <link>https://hexgolems.com/tags/smt/</link>
+      <pubDate>Mon, 01 Aug 2016 00:00:00 +0000</pubDate>
+      
+      <guid>https://hexgolems.com/tags/smt/</guid>
       <description></description>
     </item>
     

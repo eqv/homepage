@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    
+    <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="author" content="Cornelius Aschermann">
+<meta name="keywords" content="">
+<meta name="description" content="View On Github
+Fast binary coverage using Qemu and a Forkserver You want to inspect the coverage produced by your fuzzer, but kcov/gcov are slow and require special builds of the target? You misplaced the sourcecode and can&rsquo;t even build the target with coverage instrumentation?
+cov.py to the rescue!
+Based on AFL&rsquo;s Qemu mode, cov.py quickly produces edge coverage information on binary targets. It uses the AFL&rsquo;s forkserver to speed up coverage calculation massively and generates precise trace files.">
+
+
+<meta property="og:description" content="View On Github
+Fast binary coverage using Qemu and a Forkserver You want to inspect the coverage produced by your fuzzer, but kcov/gcov are slow and require special builds of the target? You misplaced the sourcecode and can&rsquo;t even build the target with coverage instrumentation?
+cov.py to the rescue!
+Based on AFL&rsquo;s Qemu mode, cov.py quickly produces edge coverage information on binary targets. It uses the AFL&rsquo;s forkserver to speed up coverage calculation massively and generates precise trace files.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Fast Cov">
+<meta name="twitter:title" content="Fast Cov">
+<meta property="og:url" content="https://hexgolems.com/2019/11/fast-cov/">
+<meta property="twitter:url" content="https://hexgolems.com/2019/11/fast-cov/">
+<meta property="og:site_name" content="Hexgolems">
+<meta property="og:description" content="View On Github
+Fast binary coverage using Qemu and a Forkserver You want to inspect the coverage produced by your fuzzer, but kcov/gcov are slow and require special builds of the target? You misplaced the sourcecode and can&rsquo;t even build the target with coverage instrumentation?
+cov.py to the rescue!
+Based on AFL&rsquo;s Qemu mode, cov.py quickly produces edge coverage information on binary targets. It uses the AFL&rsquo;s forkserver to speed up coverage calculation massively and generates precise trace files.">
+<meta name="twitter:description" content="View On Github
+Fast binary coverage using Qemu and a Forkserver You want to inspect the coverage produced by your fuzzer, but kcov/gcov are slow and require special builds of the target? You misplaced the sourcecode and can&rsquo;t even build the target with coverage instrumentation?
+cov.py to the rescue!
+Based on AFL&rsquo;s Qemu mode, cov.py quickly produces edge coverage information on binary targets. It uses the AFL&rsquo;s forkserver to speed up coverage calculation massively and generates precise trace files.">
+<meta property="og:locale" content="en">
+
+  
+    <meta property="article:published_time" content="2019-11-01T00:00:00">
+  
+  
+    <meta property="article:modified_time" content="2019-11-01T00:00:00">
+  
+  
+  
+  
+    
+      <meta property="article:tag" content="python">
+    
+      <meta property="article:tag" content="github">
+    
+  
+
+
+<meta name="twitter:card" content="summary">
+
+  <meta name="twitter:site" content="@is_eqv">
+
+
+  <meta name="twitter:creator" content="@is_eqv">
+
+
+
+
+
+
+
+  <meta property="og:image" content="https://hexgolems.com/imgs/avatar.png">
+  <meta property="twitter:image" content="https://hexgolems.com/imgs/avatar.png">
+
+
+
+  <meta property="og:image" content="https://hexgolems.com/imgs/fast_cov_img.png">
+  <meta property="twitter:image" content="https://hexgolems.com/imgs/fast_cov_img.png">
+
+
+  <meta property="og:image" content="https://hexgolems.com/imgs/fast_cov_img.png">
+  <meta property="twitter:image" content="https://hexgolems.com/imgs/fast_cov_img.png">
+
+
+
+    <title>Fast Cov</title>
+
+    <link rel="icon" href="https://hexgolems.com/favicon.png">
+    
+
+    
+
+    <link rel="canonical" href="https://hexgolems.com/2019/11/fast-cov/">
+
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha256-eZrrJcwDc/3uDhsdt61sL2oOBY362qM3lon1gyExkL0=" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.4/jquery.fancybox.min.css" integrity="sha256-vuXZ9LGmmwtjqFX1F+EKin1ThZMub58gKULUyf0qECk=" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.4/helpers/jquery.fancybox-thumbs.min.css" integrity="sha256-SEa4XYAHihTcEP1f5gARTB2K26Uk8PsndQYHQC1f4jU=" crossorigin="anonymous" />
+    
+    
+    <link rel="stylesheet" href="https://hexgolems.com/css/style-twzjdbqhmnnacqs0pwwdzcdbt8yhv8giawvjqjmyfoqnvazl0dalmnhdkvp7.min.css" />
+    
+    
+
+    
+      
+    
+    
+  </head>
+
+  <body>
+    <div id="blog">
+      <header id="header" data-behavior="5">
+  <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
+  <div class="header-title">
+    <a class="header-title-link" href="https://hexgolems.com/">Hexgolems</a>
+  </div>
+  
+    
+      <a class="header-right-icon "
+         href="https://hexgolems.com/#about">
+    
+    
+      <i class="fa fa-2x fa-user"></i>
+    
+    
+    </a>
+  
+</header>
+
+      <nav id="sidebar" data-behavior="5">
+  <div class="sidebar-container">
+    
+      <div class="sidebar-profile">
+        <a href="https://hexgolems.com/#about">
+          <img class="sidebar-profile-picture" src="https://hexgolems.com/imgs/avatar.png" alt="" />
+        </a>
+        <h4 class="sidebar-profile-name">Cornelius Aschermann</h4>
+        
+          <h5 class="sidebar-profile-bio">Fuzzing, Reverse Engineering, Binary Analysis</h5>
+        
+      </div>
+    
+    <ul class="sidebar-buttons">
+      
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://hexgolems.com/">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-home"></i>
+      
+      <span class="sidebar-button-desc">Home</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://hexgolems.com/#about">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-question"></i>
+      
+      <span class="sidebar-button-desc">About</span>
+    </a>
+  </li>
+
+
+    </ul>
+    <ul class="sidebar-buttons">
+      
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://hexgolems.com/tags/github">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-github"></i>
+      
+      <span class="sidebar-button-desc">GitHub</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://twitter.com/is_eqv" target="_blank" rel="noopener">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-twitter"></i>
+      
+      <span class="sidebar-button-desc">Twitter</span>
+    </a>
+  </li>
+
+
+    </ul>
+    <ul class="sidebar-buttons">
+      
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://hexgolems.com/index.xml">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-rss"></i>
+      
+      <span class="sidebar-button-desc">RSS</span>
+    </a>
+  </li>
+
+
+    </ul>
+  </div>
+</nav>
+
+      
+  <div class="post-header-cover
+              text-center
+              post-header-cover--partial"
+       style="background-image:url('/imgs/fast_cov_img.png')"
+       data-behavior="5">
+    
+  </div>
+
+
+      <div id="main" data-behavior="5"
+        class="hasCover
+               hasCoverMetaOut
+               ">
+        <article class="post" itemscope itemType="http://schema.org/BlogPosting">
+          
+          
+            <div class="post-header main-content-wrap text-center">
+  
+    <h1 class="post-title" itemprop="headline">
+      Fast Cov
+    </h1>
+  
+  
+  <div class="postShorten-meta post-meta">
+    
+      <time itemprop="datePublished" datetime="2019-11-01T00:00:00Z">
+        November, 2019
+
+      </time>
+    
+    
+  </div>
+
+</div>
+          
+          <div class="post-content markdown" itemprop="articleBody">
+            <div class="main-content-wrap">
+              
+
+<p align=center><a href="https://github.com/eqv/aflq_fast_cov" class="btn btn--primary" text-align="center"><i class="fa fa-github" aria-hidden="true"></i> View On Github</a></p>
+
+<h1 id="fast-binary-coverage-using-qemu-and-a-forkserver">Fast binary coverage using Qemu and a Forkserver</h1>
+
+<p>You want to inspect the coverage produced by your fuzzer, but kcov/gcov are slow and require special builds of the
+target? You misplaced the sourcecode and can&rsquo;t even build the target with coverage instrumentation?</p>
+
+<p><strong>cov.py to the rescue!</strong></p>
+
+<p>Based on AFL&rsquo;s Qemu mode, cov.py quickly produces edge coverage information on binary targets. It uses the AFL&rsquo;s
+forkserver to speed up coverage calculation massively and generates precise trace files.</p>
+
+<h1 id="setup">Setup</h1>
+
+<pre><code>git@github.com:eqv/aflq_fast_cov.git
+cd aflq_fast_cov.git
+sh build_qemu.sh
+</code></pre>
+
+<h1 id="usage">Usage</h1>
+
+<pre><code class="language-bash">$ python cov.py -h
+</code></pre>
+
+<pre><code>usage: cov.py [-h] -i input_folder -o output_folder -m wordize [-t [timeout]]
+              ...
+
+Fast Forkserver Base Binary Coverage
+
+positional arguments:
+  ...               Command to run, @@ is replaced by input file
+
+optional arguments:
+  -h, --help        show this help message and exit
+  -i input_folder   Where to look for input files
+  -o output_folder  Where to store the trace files
+  -m wordize        Architecture to use for QEMU
+  -t [timeout]      Timeout in seconds
+
+</code></pre>
+
+<pre><code class="language-bash">$ python cov.py -i workdir/in -o workdir/out -m64 workdir/test
+</code></pre>
+
+<pre><code>Running workdir/test with timeout 1.000000 on 3 inputs
+
+run workdir/in/a
+run workdir/in/c
+run workdir/in/b
+
+</code></pre>
+
+<h1 id="output-format">Output Format</h1>
+
+<p><code>cov.py</code> create one or more <code>input_$(input_basename)_thread_$(threadid).qemu</code> trace files per input file and thread used by the target.</p>
+
+<pre><code>#  input: in/test1 -.        .- Thread: 10702
+#                   v        v
+$ cat out/input_test1_thread_10702.qemu
+</code></pre>
+
+<p>Each <code>.qemu</code> trace file contains all CFG edges <strong>in the order they were encountered</strong> by the given thread.
+The format is <code>src_bb_entry_addr, dst_bb_entry_addr, dst_bb_size</code>. The addresses are in hex, the size in decimal. The
+basic block &ldquo;ffffffffffffffff&rdquo; encodes any basic block outside of the trace region.</p>
+
+<pre><code>$ cat out/input_test1_thread_10702.qemu
+ffffffffffffffff,400550,41 # jump to the basic block at 0x400550 with size 41 from outside of the trace region
+400550,400520,6 # jump to the basic block at 0x400520 with size 41 from the cofi at the end of 0x400550
+400520,400526,10
+400526,4004e0,12
+4004e0,ffffffffffffffff,67 # program exits trace range, (e.g. call a library)
+ffffffffffffffff,400770,49 # library returns to the program
+400770,4004b8,16
+...
+</code></pre>
+
+              
+            </div>
+          </div>
+          <div id="post-footer" class="post-footer main-content-wrap">
+            
+              
+                
+                
+                  <div class="post-footer-tags">
+                    <span class="text-color-light text-small"></span><br/>
+                    
+  <a class="tag tag--primary tag--small" href="https://hexgolems.com/tags/python/">python</a>
+
+  <a class="tag tag--primary tag--small" href="https://hexgolems.com/tags/github/">github</a>
+
+                  </div>
+                
+              
+            
+            <div class="post-actions-wrap">
+  
+      <nav >
+        <ul class="post-actions post-action-nav">
+          
+            <li class="post-action">
+              
+                <a class="post-action-btn btn btn--disabled">
+              
+                  
+                  &lt;
+                  
+                </a>
+            </li>
+            <li class="post-action">
+              
+                <a class="post-action-btn btn btn--default tooltip--top" href="https://hexgolems.com/2019/08/hexslides-death-to-death-by-powerpoint/" data-tooltip="Hexslides: Death to Death by Powerpoint!">
+              
+              
+                  &gt;
+                  
+                </a>
+            </li>
+          
+        </ul>
+      </nav>
+    <ul class="post-actions post-action-share" >
+      
+      
+      <li class="post-action">
+        
+          <a class="post-action-btn btn btn--default" href="#">
+        
+          <i class="fa fa-list"></i>
+        </a>
+      </li>
+    </ul>
+  
+</div>
+
+            
+              
+            
+          </div>
+        </article>
+        <footer id="footer" class="main-content-wrap">
+  <span class="copyrights">
+    &copy; 2019 Cornelius Aschermann. 
+  </span>
+</footer>
+
+      </div>
+      <div id="bottom-bar" class="post-bottom-bar" data-behavior="5">
+        <div class="post-actions-wrap">
+  
+      <nav >
+        <ul class="post-actions post-action-nav">
+          
+            <li class="post-action">
+              
+                <a class="post-action-btn btn btn--disabled">
+              
+                  
+                  &lt;
+                  
+                </a>
+            </li>
+            <li class="post-action">
+              
+                <a class="post-action-btn btn btn--default tooltip--top" href="https://hexgolems.com/2019/08/hexslides-death-to-death-by-powerpoint/" data-tooltip="Hexslides: Death to Death by Powerpoint!">
+              
+              
+                  &gt;
+                  
+                </a>
+            </li>
+          
+        </ul>
+      </nav>
+    <ul class="post-actions post-action-share" >
+      
+      
+      <li class="post-action">
+        
+          <a class="post-action-btn btn btn--default" href="#">
+        
+          <i class="fa fa-list"></i>
+        </a>
+      </li>
+    </ul>
+  
+</div>
+
+      </div>
+      <div id="share-options-bar" class="share-options-bar" data-behavior="5">
+  <i id="btn-close-shareoptions" class="fa fa-close"></i>
+  <ul class="share-options">
+    
+      <li class="share-option">
+        <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fhexgolems.com%2F2019%2F11%2Ffast-cov%2F">
+          <i class="fa fa-facebook-official"></i><span>%!(EXTRA string=Facebook)</span>
+        </a>
+      </li>
+    
+      <li class="share-option">
+        <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=https%3A%2F%2Fhexgolems.com%2F2019%2F11%2Ffast-cov%2F">
+          <i class="fa fa-twitter"></i><span>%!(EXTRA string=Twitter)</span>
+        </a>
+      </li>
+    
+      <li class="share-option">
+        <a class="share-option-btn" target="new" href="https://plus.google.com/share?url=https%3A%2F%2Fhexgolems.com%2F2019%2F11%2Ffast-cov%2F">
+          <i class="fa fa-google-plus"></i><span>%!(EXTRA string=Google&#43;)</span>
+        </a>
+      </li>
+    
+  </ul>
+</div>
+<div id="share-options-mask" class="share-options-mask"></div>
+    </div>
+    
+    <div id="about">
+  <div id="about-card">
+    <div id="about-btn-close">
+      <i class="fa fa-remove"></i>
+    </div>
+    
+      <img id="about-card-picture" src="https://hexgolems.com/imgs/avatar.png" alt="" />
+    
+    <h4 id="about-card-name">Cornelius Aschermann</h4>
+    
+      <div id="about-card-bio">Fuzzing, Reverse Engineering, Binary Analysis</div>
+    
+    
+      <div id="about-card-job">
+        <i class="fa fa-briefcase"></i>
+        <br/>
+        Security Researcher
+      </div>
+    
+    
+      <div id="about-card-location">
+        <i class="fa fa-map-marker"></i>
+        <br/>
+        Germany
+      </div>
+    
+  </div>
+</div>
+
+    
+
+    
+  
+    
+      <div id="cover" style="background-image:url('https://hexgolems.com/imgs/dark_bg.jpg');"></div>
+    
+  
+
+
+    
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.4/jquery.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js" integrity="sha256-/BfiIkHlHoVihZdc6TFuj7MmJ0TWcWsMXkeDFwhi0zw=" crossorigin="anonymous"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.7/js/jquery.fancybox.min.js" integrity="sha256-GEAnjcTqVP+vBp3SSc8bEDQqvWAZMiHyUSIorrWwH50=" crossorigin="anonymous"></script>
+
+
+<script src="https://hexgolems.com/js/script-pcw6v3xilnxydl1vddzazdverrnn9ctynvnxgwho987mfyqkuylcb1nlt.min.js"></script>
+
+
+<script lang="javascript">
+window.onload = updateMinWidth;
+window.onresize = updateMinWidth;
+document.getElementById("sidebar").addEventListener("transitionend", updateMinWidth);
+function updateMinWidth() {
+  var sidebar = document.getElementById("sidebar");
+  var main = document.getElementById("main");
+  main.style.minWidth = "";
+  var w1 = getComputedStyle(main).getPropertyValue("min-width");
+  var w2 = getComputedStyle(sidebar).getPropertyValue("width");
+  var w3 = getComputedStyle(sidebar).getPropertyValue("left");
+  main.style.minWidth = `calc(${w1} - ${w2} - ${w3})`;
+}
+</script>
+
+<script>
+$(document).ready(function() {
+  hljs.configure({ classPrefix: '', useBR: false });
+  $('pre.code-highlight > code, pre > code').each(function(i, block) {
+    if (!$(this).hasClass('codeblock')) {
+      $(this).addClass('codeblock');
+    }
+    hljs.highlightBlock(block);
+  });
+});
+</script>
+
+
+  
+    
+  
+
+
+
+
+    
+  </body>
+</html>
+

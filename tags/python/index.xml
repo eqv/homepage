@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Python on Hexgolems</title>
+    <link>https://hexgolems.com/tags/python/</link>
+    <description>Recent content in Python on Hexgolems</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Fri, 01 Nov 2019 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="https://hexgolems.com/tags/python/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Fast Cov</title>
+      <link>https://hexgolems.com/2019/11/fast-cov/</link>
+      <pubDate>Fri, 01 Nov 2019 00:00:00 +0000</pubDate>
+      
+      <guid>https://hexgolems.com/2019/11/fast-cov/</guid>
+      <description>View On Github
+Fast binary coverage using Qemu and a Forkserver You want to inspect the coverage produced by your fuzzer, but kcov/gcov are slow and require special builds of the target? You misplaced the sourcecode and can&amp;rsquo;t even build the target with coverage instrumentation?
+cov.py to the rescue!
+Based on AFL&amp;rsquo;s Qemu mode, cov.py quickly produces edge coverage information on binary targets. It uses the AFL&amp;rsquo;s forkserver to speed up coverage calculation massively and generates precise trace files.</description>
+    </item>
+    
+    <item>
+      <title>Grimoire</title>
+      <link>https://hexgolems.com/2019/07/grimoire/</link>
+      <pubDate>Wed, 17 Jul 2019 00:00:00 +0000</pubDate>
+      
+      <guid>https://hexgolems.com/2019/07/grimoire/</guid>
+      <description>View On Github
+Grimoire   Authors: Tim Blazytko, Cornelius Aschermann, Ali Abbasi, Sergej Schumilo, Simon Wörner, Thorsten Holz
+Grimoire is a fast binary only fuzzer, that infers structural information during the fuzzing process itself. To produce better test coverage, it it observes how chunks from the learned inputs can be recombined in a weak form of grammar. This process piggybacks on the usual fuzzing process. It only uses the information obtained from a AFL-style feedback bitmap.</description>
+    </item>
+    
+    <item>
+      <title>Redqueen</title>
+      <link>https://hexgolems.com/2018/12/redqueen/</link>
+      <pubDate>Mon, 17 Dec 2018 00:00:00 +0000</pubDate>
+      
+      <guid>https://hexgolems.com/2018/12/redqueen/</guid>
+      <description>View On Github
+Redqueen   Authors: Cornelius Aschermann, Sergej Schumilo, Tim Blazytko, Robert Gawlik, Thorsten Holz
+Redqueen is a fast general purpose fuzzer for x86 binary applications. It can automatically overcome checksums and magic bytes without falling back to complex and fragile program analysis techniques, such as symbolic execution. It works by observing the arguments to function calls and compare instructions via virtual machine introspection. Observed values are used to provide inputs specific mutations.</description>
+    </item>
+    
+    <item>
+      <title>Syntia</title>
+      <link>https://hexgolems.com/2017/12/syntia/</link>
+      <pubDate>Sun, 17 Dec 2017 00:00:00 +0000</pubDate>
+      
+      <guid>https://hexgolems.com/2017/12/syntia/</guid>
+      <description>View On Github
+Syntia   Authors: Tim Blazytko, Moritz Contag, Cornelius Aschermann, Thorsten Holz
+Syntia uses a Monte Carlo Tree Search based approach to program syntheses to learn program semantics from input/output examples. While synthesizing semantics from input/output examples only works for simple targets, it is extremely robust to common obfuscation schemes. As a consequence it is highly useful to deobfuscate the custom instruction sets from common VM based obfuscators such as Themida or VMProtect.</description>
+    </item>
+    
+    <item>
+      <title>kAFL</title>
+      <link>https://hexgolems.com/2017/08/kafl/</link>
+      <pubDate>Thu, 17 Aug 2017 00:00:00 +0000</pubDate>
+      
+      <guid>https://hexgolems.com/2017/08/kafl/</guid>
+      <description>View On Github
+kAFL   Authors: Sergej Schumilo, Cornelius Aschermann, Robert Gawlik, Sebastian Schinzel, Thorsten Holz
+kAFL is a blazing fast x86-64 VM kernel fuzzing framework with performant VM reloads for Linux, MacOS and Windows. It works by running the target operating system inside a hardware accelerated VM, giving it full controll over the environment. This very helpfull to properly recover from crashes. Intels Processor Trace (Intel PT) feature is used to obtain coverage information from the code running inside of the VM.</description>
+    </item>
+    
+    <item>
+      <title>SMT Solver Workshop</title>
+      <link>https://hexgolems.com/2016/08/smt-solver-workshop/</link>
+      <pubDate>Mon, 01 Aug 2016 00:00:00 +0000</pubDate>
+      
+      <guid>https://hexgolems.com/2016/08/smt-solver-workshop/</guid>
+      <description>View On Github
+This is a one day Workshop on using SMT solvers for reverse engineering I gave at the Honeynet Project Annual Workshop in 2016. It contains the full slides, as well as the tasks and solutions. It teaches the basics of how program behavior is encoded in SMT formulas (more precisely, quantifier free theory of bitvectors - no theory of arrays / separation logic content in a one day workshop, sorry) and how one can use these formulas to get answers to questions about low level program behavior.</description>
+    </item>
+    
+  </channel>
+</rss>

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Go on Hexgolems</title>
+    <link>https://hexgolems.com/tags/go/</link>
+    <description>Recent content in Go on Hexgolems</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Fri, 01 Jan 2016 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="https://hexgolems.com/tags/go/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Indika</title>
+      <link>https://hexgolems.com/2016/01/indika/</link>
+      <pubDate>Fri, 01 Jan 2016 00:00:00 +0000</pubDate>
+      
+      <guid>https://hexgolems.com/2016/01/indika/</guid>
+      <description>View On Github
+In reverse engineering, one often tries to identify well known functions in a stripped and statically linked binary. It is often possible to generate fingerprints for functions and match them against a debug build of the same libraries. Current approaches such as FLIRT signatures typically require a debug build with very similar compiler options. Additionally most current approaches require a one to one comparision between all pairs of functions.</description>
+    </item>
+    
+    <item>
+      <title>Azure VM</title>
+      <link>https://hexgolems.com/2012/12/azure-vm/</link>
+      <pubDate>Sat, 01 Dec 2012 00:00:00 +0000</pubDate>
+      
+      <guid>https://hexgolems.com/2012/12/azure-vm/</guid>
+      <description>View On Github
+This is a small custom VM written in golang that was used as a service during the 2012 RWTH-CTF. It features a very RISC architecture (no stack operations, no call instructions..), and a very powerful macro assembler that allows to use high level constructs such as if/then/else or functions. The goal behind this challenge was to reverse engineer the target application given only in bytecode. Due to the very verbose nature of the instruction set, this benefits greatly from some pattern matching to undo the macro assemblers instructions.</description>
+    </item>
+    
+  </channel>
+</rss>

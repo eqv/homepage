@@ -27,7 +27,8 @@ In this work, we analysed various state of the art fuzzers and show that common 
       <pubDate>Wed, 17 Jul 2019 00:00:00 +0000</pubDate>
       
       <guid>https://hexgolems.com/2019/07/grimoire/</guid>
-      <description>Grimoire   Authors: Tim Blazytko, Cornelius Aschermann, Ali Abbasi, Sergej Schumilo, Simon Wörner, Thorsten Holz
+      <description>View On Github
+Grimoire   Authors: Tim Blazytko, Cornelius Aschermann, Ali Abbasi, Sergej Schumilo, Simon Wörner, Thorsten Holz
 Grimoire is a fast binary only fuzzer, that infers structural information during the fuzzing process itself. To produce better test coverage, it it observes how chunks from the learned inputs can be recombined in a weak form of grammar. This process piggybacks on the usual fuzzing process. It only uses the information obtained from a AFL-style feedback bitmap.</description>
     </item>
     
@@ -48,8 +49,9 @@ Nautilus is a feedback fuzzer inspired by AFL. However it allows to specify a gr
       <pubDate>Mon, 17 Dec 2018 00:00:00 +0000</pubDate>
       
       <guid>https://hexgolems.com/2018/12/redqueen/</guid>
-      <description>Redqueen   Authors: Cornelius Aschermann, Sergej Schumilo, Tim Blazytko, Robert Gawlik, Thorsten Holz
-Very fast binary-only fuzzer. It can automatically overcome checksums and magic bytes without falling back to complex and fragile program analysis techniques such as symbolic execution. It works by observing the arguments to function calls and compare instructions. Then the traced values are used to provide inputs specific mutations. More details can be found in the paper.</description>
+      <description>View On Github
+Redqueen   Authors: Cornelius Aschermann, Sergej Schumilo, Tim Blazytko, Robert Gawlik, Thorsten Holz
+Redqueen is a fast general purpose fuzzer for x86 binary applications. It can automatically overcome checksums and magic bytes without falling back to complex and fragile program analysis techniques, such as symbolic execution. It works by observing the arguments to function calls and compare instructions via virtual machine introspection. Observed values are used to provide inputs specific mutations.</description>
     </item>
     
     <item>
