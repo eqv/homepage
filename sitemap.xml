@@ -1,0 +1,235 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+  xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  
+  <url>
+    <loc>https://hexgolems.com/2019/08/hexslides-death-to-death-by-powerpoint/</loc>
+    <lastmod>2019-08-01T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://hexgolems.com/2019/07/antifuzz/</loc>
+    <lastmod>2019-07-17T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://hexgolems.com/2019/07/grimoire/</loc>
+    <lastmod>2019-07-17T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://hexgolems.com/2019/02/gdb_probe.rs/</loc>
+    <lastmod>2019-02-01T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://hexgolems.com/2019/01/hextd/</loc>
+    <lastmod>2019-01-01T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://hexgolems.com/2018/12/nautilus---fuzzing-with-grammars/</loc>
+    <lastmod>2018-12-17T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://hexgolems.com/2018/12/redqueen/</loc>
+    <lastmod>2018-12-17T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://hexgolems.com/2017/12/syntia/</loc>
+    <lastmod>2017-12-17T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://hexgolems.com/2017/08/kafl/</loc>
+    <lastmod>2017-08-17T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://hexgolems.com/2017/05/interval-tree/</loc>
+    <lastmod>2017-05-01T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://hexgolems.com/2017/02/loaded-dice/</loc>
+    <lastmod>2017-02-01T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://hexgolems.com/2016/08/smt-solver-workshop/</loc>
+    <lastmod>2016-08-01T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://hexgolems.com/2016/03/pwgen/</loc>
+    <lastmod>2016-03-01T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://hexgolems.com/2016/03/rdbg/</loc>
+    <lastmod>2016-03-01T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://hexgolems.com/2016/01/indika/</loc>
+    <lastmod>2016-01-01T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://hexgolems.com/2015/04/reverse-game-of-life/</loc>
+    <lastmod>2015-04-01T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://hexgolems.com/2014/10/pint/</loc>
+    <lastmod>2014-10-01T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://hexgolems.com/2014/10/schemdbg/</loc>
+    <lastmod>2014-10-01T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://hexgolems.com/2014/07/brainfuck-jit/</loc>
+    <lastmod>2014-07-01T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://hexgolems.com/2013/08/battlefleet/</loc>
+    <lastmod>2013-08-01T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://hexgolems.com/2012/12/azure-vm/</loc>
+    <lastmod>2012-12-01T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://hexgolems.com/2011/10/codewars/</loc>
+    <lastmod>2011-10-01T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://hexgolems.com/tags/beamer/</loc>
+    <lastmod>2019-08-01T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://hexgolems.com/tags/binary/</loc>
+    <lastmod>2016-03-01T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://hexgolems.com/tags/brainfuck/</loc>
+    <lastmod>2014-07-01T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://hexgolems.com/tags/compiler/</loc>
+    <lastmod>2014-07-01T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://hexgolems.com/tags/fuzzing/</loc>
+    <lastmod>2019-07-17T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://hexgolems.com/tags/gihub/</loc>
+    <lastmod>2019-08-01T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://hexgolems.com/tags/github/</loc>
+    <lastmod>2019-02-01T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://hexgolems.com/</loc>
+    <lastmod>2019-08-01T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://hexgolems.com/tags/inkscape/</loc>
+    <lastmod>2019-08-01T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://hexgolems.com/tags/llvm/</loc>
+    <lastmod>2014-07-01T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://hexgolems.com/tags/paper/</loc>
+    <lastmod>2019-07-17T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://hexgolems.com/tags/password/</loc>
+    <lastmod>2016-03-01T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://hexgolems.com/post/</loc>
+    <lastmod>2019-08-01T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://hexgolems.com/tags/reversing/</loc>
+    <lastmod>2016-03-01T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://hexgolems.com/tags/ruby/</loc>
+    <lastmod>2015-04-01T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://hexgolems.com/tags/rust/</loc>
+    <lastmod>2019-02-01T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://hexgolems.com/tags/svg/</loc>
+    <lastmod>2019-08-01T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://hexgolems.com/tags/</loc>
+    <lastmod>2019-08-01T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://hexgolems.com/tags/talk/</loc>
+    <lastmod>2018-12-17T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://hexgolems.com/tags/web/</loc>
+    <lastmod>2013-08-01T00:00:00+00:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+</urlset>

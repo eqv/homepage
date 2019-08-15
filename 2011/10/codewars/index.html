@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    
+    <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="author" content="Cornelius Aschermann">
+<meta name="keywords" content="">
+<meta name="description" content="View On Github
+A custom CPU, a ring shaped memory and instruction pointer relative addressing. Two programs enter, one program leaves. A deadly low level programming competition to overwrite your opponents memory.
+In contrast to the original Corewars our custom CPU has some modern features, such as registers. We provide a debugger that allows to singlestep and inspect your fighters execution in the core. If you need to test your bot against another bot, there is a profiler that allows you to perform many battles in short amount of time.">
+
+
+<meta property="og:description" content="View On Github
+A custom CPU, a ring shaped memory and instruction pointer relative addressing. Two programs enter, one program leaves. A deadly low level programming competition to overwrite your opponents memory.
+In contrast to the original Corewars our custom CPU has some modern features, such as registers. We provide a debugger that allows to singlestep and inspect your fighters execution in the core. If you need to test your bot against another bot, there is a profiler that allows you to perform many battles in short amount of time.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="CodeWars">
+<meta name="twitter:title" content="CodeWars">
+<meta property="og:url" content="https://hexgolems.com/2011/10/codewars/">
+<meta property="twitter:url" content="https://hexgolems.com/2011/10/codewars/">
+<meta property="og:site_name" content="Hexgolems">
+<meta property="og:description" content="View On Github
+A custom CPU, a ring shaped memory and instruction pointer relative addressing. Two programs enter, one program leaves. A deadly low level programming competition to overwrite your opponents memory.
+In contrast to the original Corewars our custom CPU has some modern features, such as registers. We provide a debugger that allows to singlestep and inspect your fighters execution in the core. If you need to test your bot against another bot, there is a profiler that allows you to perform many battles in short amount of time.">
+<meta name="twitter:description" content="View On Github
+A custom CPU, a ring shaped memory and instruction pointer relative addressing. Two programs enter, one program leaves. A deadly low level programming competition to overwrite your opponents memory.
+In contrast to the original Corewars our custom CPU has some modern features, such as registers. We provide a debugger that allows to singlestep and inspect your fighters execution in the core. If you need to test your bot against another bot, there is a profiler that allows you to perform many battles in short amount of time.">
+<meta property="og:locale" content="en">
+
+  
+    <meta property="article:published_time" content="2011-10-01T00:00:00">
+  
+  
+    <meta property="article:modified_time" content="2011-10-01T00:00:00">
+  
+  
+  
+  
+    
+      <meta property="article:tag" content="binary">
+    
+      <meta property="article:tag" content="reversing">
+    
+      <meta property="article:tag" content="github">
+    
+  
+
+
+<meta name="twitter:card" content="summary">
+
+  <meta name="twitter:site" content="@is_eqv">
+
+
+  <meta name="twitter:creator" content="@is_eqv">
+
+
+
+
+
+
+  <meta property="og:image" content="https://hexgolems.com/imgs/codewar_img.png">
+  <meta property="twitter:image" content="https://hexgolems.com/imgs/codewar_img.png">
+
+
+  <meta property="og:image" content="https://hexgolems.com/imgs/codewar_img.png">
+  <meta property="twitter:image" content="https://hexgolems.com/imgs/codewar_img.png">
+
+
+
+
+  <meta property="og:image" content="https://hexgolems.com/imgs/avatar.png">
+  <meta property="twitter:image" content="https://hexgolems.com/imgs/avatar.png">
+
+
+    <title>CodeWars</title>
+
+    <link rel="icon" href="https://hexgolems.com/favicon.png">
+    
+
+    
+
+    <link rel="canonical" href="https://hexgolems.com/2011/10/codewars/">
+
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha256-eZrrJcwDc/3uDhsdt61sL2oOBY362qM3lon1gyExkL0=" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.4/jquery.fancybox.min.css" integrity="sha256-vuXZ9LGmmwtjqFX1F+EKin1ThZMub58gKULUyf0qECk=" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.4/helpers/jquery.fancybox-thumbs.min.css" integrity="sha256-SEa4XYAHihTcEP1f5gARTB2K26Uk8PsndQYHQC1f4jU=" crossorigin="anonymous" />
+    
+    
+    <link rel="stylesheet" href="https://hexgolems.com/css/style-twzjdbqhmnnacqs0pwwdzcdbt8yhv8giawvjqjmyfoqnvazl0dalmnhdkvp7.min.css" />
+    
+    
+
+    
+      
+    
+    
+  </head>
+
+  <body>
+    <div id="blog">
+      <header id="header" data-behavior="5">
+  <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
+  <div class="header-title">
+    <a class="header-title-link" href="https://hexgolems.com/">Hexgolems</a>
+  </div>
+  
+    
+      <a class="header-right-picture "
+         href="https://hexgolems.com/#about">
+    
+    
+    
+      
+        <img class="header-picture" src="https://hexgolems.com/imgs/avatar.png" alt="" />
+      
+    
+    </a>
+  
+</header>
+
+      <nav id="sidebar" data-behavior="5">
+  <div class="sidebar-container">
+    
+      <div class="sidebar-profile">
+        <a href="https://hexgolems.com/#about">
+          <img class="sidebar-profile-picture" src="https://hexgolems.com/imgs/avatar.png" alt="" />
+        </a>
+        <h4 class="sidebar-profile-name">Cornelius Aschermann</h4>
+        
+          <h5 class="sidebar-profile-bio">Fuzzing, Reverse Engineering, Binary Analysis</h5>
+        
+      </div>
+    
+    <ul class="sidebar-buttons">
+      
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://hexgolems.com/">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-home"></i>
+      
+      <span class="sidebar-button-desc">Home</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://hexgolems.com/#about">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-question"></i>
+      
+      <span class="sidebar-button-desc">About</span>
+    </a>
+  </li>
+
+
+    </ul>
+    <ul class="sidebar-buttons">
+      
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://hexgolems.com/tags/github">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-github"></i>
+      
+      <span class="sidebar-button-desc">GitHub</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://twitter.com/is_eqv" target="_blank" rel="noopener">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-twitter"></i>
+      
+      <span class="sidebar-button-desc">Twitter</span>
+    </a>
+  </li>
+
+
+    </ul>
+    <ul class="sidebar-buttons">
+      
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://hexgolems.com/index.xml">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-rss"></i>
+      
+      <span class="sidebar-button-desc">RSS</span>
+    </a>
+  </li>
+
+
+    </ul>
+  </div>
+</nav>
+
+      
+  <div class="post-header-cover
+              text-center
+              post-header-cover--partial"
+       style="background-image:url('/imgs/codewar_img.png')"
+       data-behavior="5">
+    
+  </div>
+
+
+      <div id="main" data-behavior="5"
+        class="hasCover
+               hasCoverMetaOut
+               ">
+        <article class="post" itemscope itemType="http://schema.org/BlogPosting">
+          
+          
+            <div class="post-header main-content-wrap text-center">
+  
+    <h1 class="post-title" itemprop="headline">
+      CodeWars
+    </h1>
+  
+  
+  <div class="postShorten-meta post-meta">
+    
+      <time itemprop="datePublished" datetime="2011-10-01T00:00:00Z">
+        October, 2011
+
+      </time>
+    
+    
+  </div>
+
+</div>
+          
+          <div class="post-content markdown" itemprop="articleBody">
+            <div class="main-content-wrap">
+              
+
+<p align=center><a href="https://github.com/hexgolems/codewar" class="btn btn--primary" text-align="center"><i class="fa fa-github" aria-hidden="true"></i> View On Github</a></p>
+
+<p>A custom CPU, a ring shaped memory and instruction pointer relative addressing. Two programs enter, one program leaves. A deadly low level programming competition to overwrite your opponents memory.</p>
+
+<p>In contrast to the original <a href="https://de.wikipedia.org/wiki/Core_War">Corewars</a> our custom CPU has some modern features, such as registers. We provide
+a debugger that allows to singlestep and inspect your fighters execution in the core. If you need to test your bot
+against another bot, there is a profiler that allows you to perform many battles in short amount of time. Additionally, the package contains
+an assembler / disassembler and a competition server as well as a web interface that displays the results of all
+battles. Lastly, for all the vim users out there, we included a custom vim color syntax definition.</p>
+
+<h1 id="cpu-documentation">CPU Documentation</h1>
+
+<p>Welcome to a new generation of CPUs!
+We run on 48 bits, using 4 registers, relative addressing, cyclic memory,
+and last but not least a customized instruction set.</p>
+
+<p>The Gentoo handbook told me once:</p>
+
+<ol>
+<li>READ EVERYTHING, don&rsquo;t skip around. don&rsquo;t skim the text, but do read the whole thing once to get an idea whats going on.</li>
+<li>Use your brain! Stop and think about what its saying.</li>
+<li>If you have a problem, try to solve it yourself.</li>
+</ol>
+
+<p>The same goes for you.</p>
+
+<p>The memory, (which will be called: board through this manual) will be
+initialized with 0s. Then the CPU will load the programs, and start them in
+an arbitrary order. The CPU uses cyclic relative addressing. Therefore all addresses are relativ to the Instruction pointer.
+mov *1 *0 will move the cell at IP+0 to the cell at IP+1 (thus effectivly copy the instruction to the next cell).
+Furthermore the memory is cyclic (addresses that are bigger than the biggest valide address are wrapped).
+Assuming a Coresize of 400 cells, trying to read from address 403 will result in reading address 3.
+A program never knows its &ldquo;real&rdquo; address, as the current instruction will always have the address 0.</p>
+
+<p>The general layout of the supported instructions is:
+<code>name_of_instruction destination source</code>
+if you feel like it you can also write:
+<code>name_of_instruction,destination,source;</code>
+or even:
+<code>name_of_instruction,,,,destination,,source;</code>
+Well, you get the idea. I will only use the first version, because it uses
+less characters. Additionally, it is possible to write comments everything
+after a semicolon will be ignored:
+<code>;Hi dear reader, I am a comment</code>
+same goes for //
+<code>//I am a comment, too!</code>
+You can use the special comments:</p>
+
+<p><code>;name: $heregoesthenameofyourbot</code></p>
+
+<p><code>;desc: here goes some description of your bot, to provide your bot with meta information</code></p>
+
+<h1 id="binary-layout">Binary Layout</h1>
+
+<p>Every memory cell (read: &ldquo;every memory word&rdquo;) consists of 3 parts:</p>
+
+<pre><code>[op1] [op2] [cmd]
+  20    20      6  Bits
+</code></pre>
+
+<p>While it is possible to use operands that are not needed by the instruction, it is
+considered bad style and will most probably result in unexpected crashes. Do not use
+additional operands for modifying additional values by means of post decrement/increment,
+because this would result in ugly code.</p>
+
+<h1 id="registers">Registers</h1>
+
+<p>There are four general purpose registers.
+ptr - the pointer register
+acc - the accumulator register
+r1  - nameless register one
+r2  - nameless register two</p>
+
+<h1 id="cpu-flags">CPU flags</h1>
+
+<p>There are three flags that will be set by the CPU:
+* equal - will be set if the result of the last instruction was zero
+* above - will be set if the result of the last instruction was &gt;zero
+* smaller - will be set if the result of the last instruction was &lt; zero</p>
+
+<p>The flag will be set for every instruction where it makes sense ;) For example
+cmp, all arithmetic and logic operations</p>
+
+<h1 id="mov-instructions">Mov instructions</h1>
+
+<ul>
+<li>mov dest src - move stuff from the source to the destination</li>
+<li>mvp val unused - move stuff to the *ptr register</li>
+<li>mva val unused - move stuff to the acc register</li>
+</ul>
+
+<h1 id="logic-operations">Logic operations</h1>
+
+<ul>
+<li>xor dest src - dest xor src, the result will be saved to dest</li>
+<li>and dest src - dest and src, the result will be saved to dest</li>
+<li>or  dest src - dest or src, the result will be saved to dest</li>
+<li>not dest unused - binary not on destination, the result will be saved to dest</li>
+</ul>
+
+<h1 id="arithmetic-operation">Arithmetic operation</h1>
+
+<ul>
+<li>dec dest unused - decrement destination, save the result to dest</li>
+<li>inc dest unused - increment destination, save the result to dest</li>
+<li>neg dest unused - negate destination, save the result to dest</li>
+<li>add dest src - add src to dest, the result will be saved to dest</li>
+<li>sub dest src - sub src from dest, the result will be saved to dest</li>
+<li>mul dest src - multiply dest and src, the result will be saved to dest</li>
+<li>div dest src - divide dest by src, the result will be saved to dest</li>
+<li>mod dest src - the remainder of the division dest/src, the result &hellip;</li>
+<li>ica unused unused - increment acc</li>
+<li>dca unused unused - decrement acc</li>
+<li>ada val unused - same as add acc val</li>
+<li>sba val unused - same as sub acc val</li>
+</ul>
+
+<h1 id="jmp-instructions">Jmp instructions</h1>
+
+<ul>
+<li>jmp dest unused - continue execution at dest</li>
+<li>jie dest unused - jmp if equal</li>
+<li>jia dest unused - jmp if above</li>
+<li>jis dest unused - jmp if smaller</li>
+<li>jne dest unused - jmp if not equal</li>
+<li>jna dest unused - jmp if not above</li>
+<li>jns dest unused - jmp if not smaller</li>
+</ul>
+
+<h1 id="important-and-useful-other-stuff">Important and useful other stuff</h1>
+
+<ul>
+<li>cmp src dest -compare the src and the destination, flags will be set</li>
+<li>splt dest unused - create a new thread at dest</li>
+<li>die unused unused - stop execution of this thread</li>
+</ul>
+
+<h1 id="interrupts">Interrupts</h1>
+
+<p>The CPU has an interrupt vector containing three interrupts. The cpu has a hidden register containing the interrupt flags. If any of this flags is set, the cpu will jump to offset stored in the interrupt vector. If two or more interrupts are set, one instruction is executed in the first interrupt handler, than the next interrupt handler is called (you can use this instruction to disable the interrupt_enable flag). The interrupts are prioritised as following: First call Imem, then cza and finally cza.</p>
+
+<ul>
+<li>sti unused unused - enable interrupts</li>
+<li>cli unused unused - disable interrupts</li>
+<li>rti unused unused - return from interrupt (does not work recursively)</li>
+</ul>
+
+<p>The next instructions are used to set the interrupt vectors.
+If the dest is 0 this interrupt is disabled</p>
+
+<ul>
+<li>clk cycles dest - jumps to dest every #cycles, the #cycles must be &gt;=4</li>
+<li>mem addr dest - jumps dest whenever addr is changed</li>
+<li>cza val dest -  jumps to dest if acc is equal to val</li>
+</ul>
+
+<h1 id="labels">Labels</h1>
+
+<p>You can use labels to increase readability of your code.
+:label - everything after a &ldquo;:&rdquo; will be a label (only [a-z] are allowed for labeling!
+jmp @label - will jump to label
+it is also possible to use @label in other context, just know that @label
+holds the relative addr of :label</p>
+
+<h1 id="constants">Constants</h1>
+
+<p>$constant=42 - defines a constant, with name constant and value 42, you can
+now use it whenever needed (e.g. add ptr, $stepsize+2)</p>
+
+<h1 id="parameters">Parameters</h1>
+
+<p>a parameter looks like: <code>/(*|**)?(number|register)[+\-]?/</code>
+example: <code>mov r1   **3-</code></p>
+
+<p>The binary layout of the parameters:</p>
+
+<pre><code>[type][value_type][value][op]
+    2  1            16    2 Bit
+type: 01=&gt; direct (*ptr)  10=&gt;indirect(**ptr)  11=&gt; immediate (ptr)  00=&gt; invalid
+value_type: 1=&gt;reg / 0=&gt;constant value
+op: 01=&gt;inc  10=&gt;dec  11=&gt;noop  00=&gt; invalid
+</code></pre>
+
+<h1 id="debugging">Debugging</h1>
+
+<p>While writing your code you can use two different tools:</p>
+
+<ul>
+<li><p>Debugger
+First of all, use <code>ruby debugger.rb $yourbot $otherbot</code> to visualise the behaviour of the bots.
+This program is a graphical cpu emulator.
+Commands:</p>
+
+<ul>
+<li>Space     - pauses/restarts emulation</li>
+<li>Arrows / hjkl - move the cursor (the value under the cursor is shown in the lower part of the screen)</li>
+<li>-/+     - increase/decrease the simulation speed</li>
+<li>q       - exit emulation</li>
+<li>n       - abort current simulation and restart</li>
+<li>s       - single step through emulation</li>
+<li>m       - moves the cursor to the next running thread</li>
+<li>t       - cycles which threads registers are displayed in the lower line</li>
+</ul></li>
+
+<li><p>Profiler
+Then evaluate the efficiency of your bot with <code>ruby profiler.rb $yourbot $otherbot</code>.
+This program will perform a huge number of games and tells you about the outcome.</p></li>
+</ul>
+
+<h1 id="deploying">Deploying</h1>
+
+<p>So you have written your Code, what now?</p>
+
+<p>You will have to send the code the the server. To do that you have to use the bot_add script.
+The server will have a scoreboard running on <code>http://server:8080/scores.html</code> you will also find the parameters of the game on top of the scoreboard (e.G. max number of threads per player, coresize etc.)
+<code>ruby bot_add.rb $yourbot $server $username $password</code>
+The server the tests the performance of your bot. The results will be shown on <code>http://$server/scores.html</code>.</p>
+
+<p>For the challenge version you have to use bot_add.rb $yourbot 10.11.200.3 $password.
+The password is obtained by completing either of the two challenge branches. Each challenge branch will give you two passwords.
+either send $pass1$pass2 or $pass2$pass1 as password for your bot.</p>
+
+<h1 id="setup">Setup</h1>
+
+<pre><code>install Ruby (1.8 and 1.9 work) &amp; ruby-dev
+install ruby gems
+install ruby1.9.1-dev (fixes mkmf error)
+install the ncurses, json(only needed for 1.8) and the parallel gem
+(gem install ncurse &amp;&amp; gem install parallel)
+(maybe you have to install the packge ruby1.8-ncurses or something like this)
+=&gt; everything should work now (note, ncurses seems to be buggy - even the samples don't work on some machines -_-)
+</code></pre>
+
+              
+            </div>
+          </div>
+          <div id="post-footer" class="post-footer main-content-wrap">
+            
+              
+                
+                
+                  <div class="post-footer-tags">
+                    <span class="text-color-light text-small"></span><br/>
+                    
+  <a class="tag tag--primary tag--small" href="https://hexgolems.com/tags/binary/">binary</a>
+
+  <a class="tag tag--primary tag--small" href="https://hexgolems.com/tags/reversing/">reversing</a>
+
+  <a class="tag tag--primary tag--small" href="https://hexgolems.com/tags/github/">github</a>
+
+                  </div>
+                
+              
+            
+            <div class="post-actions-wrap">
+  
+      <nav >
+        <ul class="post-actions post-action-nav">
+          
+            <li class="post-action">
+              
+                <a class="post-action-btn btn btn--default tooltip--top" href="https://hexgolems.com/2012/12/azure-vm/" data-tooltip="Azure VM">
+              
+                  <i class="fa fa-angle-left"></i>
+                  <span class="hide-xs hide-sm text-small icon-ml"></span>
+                </a>
+            </li>
+            <li class="post-action">
+              
+                <a class="post-action-btn btn btn--disabled">
+              
+                  <span class="hide-xs hide-sm text-small icon-mr"></span>
+                  <i class="fa fa-angle-right"></i>
+                </a>
+            </li>
+          
+        </ul>
+      </nav>
+    <ul class="post-actions post-action-share" >
+      
+      
+      <li class="post-action">
+        
+          <a class="post-action-btn btn btn--default" href="#">
+        
+          <i class="fa fa-list"></i>
+        </a>
+      </li>
+    </ul>
+  
+</div>
+
+            
+              
+            
+          </div>
+        </article>
+        <footer id="footer" class="main-content-wrap">
+  <span class="copyrights">
+    &copy; 2019 Cornelius Aschermann. 
+  </span>
+</footer>
+
+      </div>
+      <div id="bottom-bar" class="post-bottom-bar" data-behavior="5">
+        <div class="post-actions-wrap">
+  
+      <nav >
+        <ul class="post-actions post-action-nav">
+          
+            <li class="post-action">
+              
+                <a class="post-action-btn btn btn--default tooltip--top" href="https://hexgolems.com/2012/12/azure-vm/" data-tooltip="Azure VM">
+              
+                  <i class="fa fa-angle-left"></i>
+                  <span class="hide-xs hide-sm text-small icon-ml"></span>
+                </a>
+            </li>
+            <li class="post-action">
+              
+                <a class="post-action-btn btn btn--disabled">
+              
+                  <span class="hide-xs hide-sm text-small icon-mr"></span>
+                  <i class="fa fa-angle-right"></i>
+                </a>
+            </li>
+          
+        </ul>
+      </nav>
+    <ul class="post-actions post-action-share" >
+      
+      
+      <li class="post-action">
+        
+          <a class="post-action-btn btn btn--default" href="#">
+        
+          <i class="fa fa-list"></i>
+        </a>
+      </li>
+    </ul>
+  
+</div>
+
+      </div>
+      <div id="share-options-bar" class="share-options-bar" data-behavior="5">
+  <i id="btn-close-shareoptions" class="fa fa-close"></i>
+  <ul class="share-options">
+    
+      <li class="share-option">
+        <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fhexgolems.com%2F2011%2F10%2Fcodewars%2F">
+          <i class="fa fa-facebook-official"></i><span>%!(EXTRA string=Facebook)</span>
+        </a>
+      </li>
+    
+      <li class="share-option">
+        <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=https%3A%2F%2Fhexgolems.com%2F2011%2F10%2Fcodewars%2F">
+          <i class="fa fa-twitter"></i><span>%!(EXTRA string=Twitter)</span>
+        </a>
+      </li>
+    
+      <li class="share-option">
+        <a class="share-option-btn" target="new" href="https://plus.google.com/share?url=https%3A%2F%2Fhexgolems.com%2F2011%2F10%2Fcodewars%2F">
+          <i class="fa fa-google-plus"></i><span>%!(EXTRA string=Google&#43;)</span>
+        </a>
+      </li>
+    
+  </ul>
+</div>
+<div id="share-options-mask" class="share-options-mask"></div>
+    </div>
+    
+    <div id="about">
+  <div id="about-card">
+    <div id="about-btn-close">
+      <i class="fa fa-remove"></i>
+    </div>
+    
+      <img id="about-card-picture" src="https://hexgolems.com/imgs/avatar.png" alt="" />
+    
+    <h4 id="about-card-name">Cornelius Aschermann</h4>
+    
+      <div id="about-card-bio">Fuzzing, Reverse Engineering, Binary Analysis</div>
+    
+    
+      <div id="about-card-job">
+        <i class="fa fa-briefcase"></i>
+        <br/>
+        Security Researcher
+      </div>
+    
+    
+      <div id="about-card-location">
+        <i class="fa fa-map-marker"></i>
+        <br/>
+        Germany
+      </div>
+    
+  </div>
+</div>
+
+    
+
+    
+  
+    
+      <div id="cover" style="background-image:url('https://hexgolems.com/imgs/dark_bg.jpg');"></div>
+    
+  
+
+
+    
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.4/jquery.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js" integrity="sha256-/BfiIkHlHoVihZdc6TFuj7MmJ0TWcWsMXkeDFwhi0zw=" crossorigin="anonymous"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.7/js/jquery.fancybox.min.js" integrity="sha256-GEAnjcTqVP+vBp3SSc8bEDQqvWAZMiHyUSIorrWwH50=" crossorigin="anonymous"></script>
+
+
+<script src="https://hexgolems.com/js/script-pcw6v3xilnxydl1vddzazdverrnn9ctynvnxgwho987mfyqkuylcb1nlt.min.js"></script>
+
+
+<script lang="javascript">
+window.onload = updateMinWidth;
+window.onresize = updateMinWidth;
+document.getElementById("sidebar").addEventListener("transitionend", updateMinWidth);
+function updateMinWidth() {
+  var sidebar = document.getElementById("sidebar");
+  var main = document.getElementById("main");
+  main.style.minWidth = "";
+  var w1 = getComputedStyle(main).getPropertyValue("min-width");
+  var w2 = getComputedStyle(sidebar).getPropertyValue("width");
+  var w3 = getComputedStyle(sidebar).getPropertyValue("left");
+  main.style.minWidth = `calc(${w1} - ${w2} - ${w3})`;
+}
+</script>
+
+<script>
+$(document).ready(function() {
+  hljs.configure({ classPrefix: '', useBR: false });
+  $('pre.code-highlight > code, pre > code').each(function(i, block) {
+    if (!$(this).hasClass('codeblock')) {
+      $(this).addClass('codeblock');
+    }
+    hljs.highlightBlock(block);
+  });
+});
+</script>
+
+
+  
+    
+  
+
+
+
+
+    
+  </body>
+</html>
+

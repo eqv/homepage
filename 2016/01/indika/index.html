@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    
+    <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="author" content="Cornelius Aschermann">
+<meta name="keywords" content="">
+<meta name="description" content="View On Github
+In reverse engineering, one often tries to identify well known functions in a stripped and statically linked binary. It is often possible to generate fingerprints for functions and match them against a debug build of the same libraries. Current approaches such as FLIRT signatures typically require a debug build with very similar compiler options. Additionally most current approaches require a one to one comparision between all pairs of functions.">
+
+
+<meta property="og:description" content="View On Github
+In reverse engineering, one often tries to identify well known functions in a stripped and statically linked binary. It is often possible to generate fingerprints for functions and match them against a debug build of the same libraries. Current approaches such as FLIRT signatures typically require a debug build with very similar compiler options. Additionally most current approaches require a one to one comparision between all pairs of functions.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Indika">
+<meta name="twitter:title" content="Indika">
+<meta property="og:url" content="https://hexgolems.com/2016/01/indika/">
+<meta property="twitter:url" content="https://hexgolems.com/2016/01/indika/">
+<meta property="og:site_name" content="Hexgolems">
+<meta property="og:description" content="View On Github
+In reverse engineering, one often tries to identify well known functions in a stripped and statically linked binary. It is often possible to generate fingerprints for functions and match them against a debug build of the same libraries. Current approaches such as FLIRT signatures typically require a debug build with very similar compiler options. Additionally most current approaches require a one to one comparision between all pairs of functions.">
+<meta name="twitter:description" content="View On Github
+In reverse engineering, one often tries to identify well known functions in a stripped and statically linked binary. It is often possible to generate fingerprints for functions and match them against a debug build of the same libraries. Current approaches such as FLIRT signatures typically require a debug build with very similar compiler options. Additionally most current approaches require a one to one comparision between all pairs of functions.">
+<meta property="og:locale" content="en">
+
+  
+    <meta property="article:published_time" content="2016-01-01T00:00:00">
+  
+  
+    <meta property="article:modified_time" content="2016-01-01T00:00:00">
+  
+  
+  
+  
+    
+      <meta property="article:tag" content="binary">
+    
+      <meta property="article:tag" content="reversing">
+    
+      <meta property="article:tag" content="github">
+    
+  
+
+
+<meta name="twitter:card" content="summary">
+
+  <meta name="twitter:site" content="@is_eqv">
+
+
+  <meta name="twitter:creator" content="@is_eqv">
+
+
+
+
+
+
+  <meta property="og:image" content="https://hexgolems.com/imgs/indika_img.png">
+  <meta property="twitter:image" content="https://hexgolems.com/imgs/indika_img.png">
+
+
+  <meta property="og:image" content="https://hexgolems.com/imgs/indika_img.png">
+  <meta property="twitter:image" content="https://hexgolems.com/imgs/indika_img.png">
+
+
+
+
+  <meta property="og:image" content="https://hexgolems.com/imgs/avatar.png">
+  <meta property="twitter:image" content="https://hexgolems.com/imgs/avatar.png">
+
+
+    <title>Indika</title>
+
+    <link rel="icon" href="https://hexgolems.com/favicon.png">
+    
+
+    
+
+    <link rel="canonical" href="https://hexgolems.com/2016/01/indika/">
+
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha256-eZrrJcwDc/3uDhsdt61sL2oOBY362qM3lon1gyExkL0=" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.4/jquery.fancybox.min.css" integrity="sha256-vuXZ9LGmmwtjqFX1F+EKin1ThZMub58gKULUyf0qECk=" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.4/helpers/jquery.fancybox-thumbs.min.css" integrity="sha256-SEa4XYAHihTcEP1f5gARTB2K26Uk8PsndQYHQC1f4jU=" crossorigin="anonymous" />
+    
+    
+    <link rel="stylesheet" href="https://hexgolems.com/css/style-twzjdbqhmnnacqs0pwwdzcdbt8yhv8giawvjqjmyfoqnvazl0dalmnhdkvp7.min.css" />
+    
+    
+
+    
+      
+    
+    
+  </head>
+
+  <body>
+    <div id="blog">
+      <header id="header" data-behavior="5">
+  <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
+  <div class="header-title">
+    <a class="header-title-link" href="https://hexgolems.com/">Hexgolems</a>
+  </div>
+  
+    
+      <a class="header-right-picture "
+         href="https://hexgolems.com/#about">
+    
+    
+    
+      
+        <img class="header-picture" src="https://hexgolems.com/imgs/avatar.png" alt="" />
+      
+    
+    </a>
+  
+</header>
+
+      <nav id="sidebar" data-behavior="5">
+  <div class="sidebar-container">
+    
+      <div class="sidebar-profile">
+        <a href="https://hexgolems.com/#about">
+          <img class="sidebar-profile-picture" src="https://hexgolems.com/imgs/avatar.png" alt="" />
+        </a>
+        <h4 class="sidebar-profile-name">Cornelius Aschermann</h4>
+        
+          <h5 class="sidebar-profile-bio">Fuzzing, Reverse Engineering, Binary Analysis</h5>
+        
+      </div>
+    
+    <ul class="sidebar-buttons">
+      
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://hexgolems.com/">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-home"></i>
+      
+      <span class="sidebar-button-desc">Home</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://hexgolems.com/#about">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-question"></i>
+      
+      <span class="sidebar-button-desc">About</span>
+    </a>
+  </li>
+
+
+    </ul>
+    <ul class="sidebar-buttons">
+      
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://hexgolems.com/tags/github">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-github"></i>
+      
+      <span class="sidebar-button-desc">GitHub</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://twitter.com/is_eqv" target="_blank" rel="noopener">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-twitter"></i>
+      
+      <span class="sidebar-button-desc">Twitter</span>
+    </a>
+  </li>
+
+
+    </ul>
+    <ul class="sidebar-buttons">
+      
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://hexgolems.com/index.xml">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-rss"></i>
+      
+      <span class="sidebar-button-desc">RSS</span>
+    </a>
+  </li>
+
+
+    </ul>
+  </div>
+</nav>
+
+      
+  <div class="post-header-cover
+              text-center
+              post-header-cover--partial"
+       style="background-image:url('/imgs/indika_img.png')"
+       data-behavior="5">
+    
+  </div>
+
+
+      <div id="main" data-behavior="5"
+        class="hasCover
+               hasCoverMetaOut
+               ">
+        <article class="post" itemscope itemType="http://schema.org/BlogPosting">
+          
+          
+            <div class="post-header main-content-wrap text-center">
+  
+    <h1 class="post-title" itemprop="headline">
+      Indika
+    </h1>
+  
+  
+  <div class="postShorten-meta post-meta">
+    
+      <time itemprop="datePublished" datetime="2016-01-01T00:00:00Z">
+        January, 2016
+
+      </time>
+    
+    
+  </div>
+
+</div>
+          
+          <div class="post-content markdown" itemprop="articleBody">
+            <div class="main-content-wrap">
+              
+
+<p align=center><a href="https://github.com/eqv/indika" class="btn btn--primary" text-align="center"><i class="fa fa-github" aria-hidden="true"></i> View On Github</a></p>
+
+<p>In reverse engineering, one often tries to identify well known functions in a stripped and statically linked binary. It
+is often possible to generate fingerprints for functions and match them against a debug build of the same libraries.
+Current approaches such as FLIRT signatures typically require a debug build with very similar compiler options.
+Additionally most current approaches require a one to one comparision between all pairs of functions. This prevents
+large databases of known libraries to be used to easily identify known functions.</p>
+
+<p>To overcome this problem Indika generates robust hashes based on the semnatic of a function, that allow O(1) lookups in
+very large databases of known functions.</p>
+
+<p>Even if a function is compiled with completely different compilers, for different platforms, using different optimization levels, the
+function fundamentally still needs to perform the same task. Using a <a href="https://seclab.bu.edu/papers/blex-usenix2014.pdf" title="Blanket Execution: Dynamic Similarity Testing  for Program Binaries and Components)">Blanket Execution</a> engine build on top
+of <a href="https://www.unicorn-engine.org/">Unicorn</a>, Indika gathers a set of traces covering all branches in the function. It observes all globally
+visible side effects. This set of side effects are a pretty good fingerprint for the actual function, independent of the
+actual compiler implementation. To map this set of features to a unique hash, we use min hashing. Assigning a unique
+hash has one very large advantage over current pairwise function similarity approaches. It becomes trivial to store the
+hashes of a very large number of applications in a database, and lookup unknown functions very fast.</p>
+
+<p>A presentation on Indika can be found <a href="https://github.com/eqv/hexslides/raw/master/examples/fuzzy_hashes.pdf">here</a>.</p>
+
+<h1 id="side-effect-filtering">Side Effect Filtering</h1>
+
+<p>Unfortunately, compiler optimizations often do change globally visible behavior such as memory accesses. Particularly,
+stack accesses are often optimized out. To achieve robust results, we need to filter events, if they are not stable
+across different compilers, versions, platforms or optimization levels. We manually identified a set of heuristics used
+to exclude events.</p>
+
+<p>To name a few of the problems:</p>
+
+<ul>
+<li>Stack access</li>
+<li>Redundant reads/writes</li>
+<li>Inlined functions</li>
+<li>Leaf functions</li>
+</ul>
+
+<h1 id="update">Update</h1>
+
+<p>A student (and now colleague) of mine improved upon this project in his (unpublished) master thesis, using machine learning to predict which effects are stable
+across targets and which are not, significantly raising the number of perfect matches.
+After hashing and inserting functions from roughly 2000 libraries present on a common linux system (compiled using GCC, 64 bit, no optimization), the database contains more than one million hashes.
+Afterwards, some of the libraries were recompiled using the highest optimization level of Visual Studio for 32 bit. Even though both compilation processes differ in nearly every parameter, in all but one case, more than 50% of the functions were uniquely identified by the hash. In fact, typically around 80% of the functions are identified perfectly. Common tricks for min hasing based nearest neighbor search can be used to search for near matches to further improve the performance.</p>
+
+              
+            </div>
+          </div>
+          <div id="post-footer" class="post-footer main-content-wrap">
+            
+              
+                
+                
+                  <div class="post-footer-tags">
+                    <span class="text-color-light text-small"></span><br/>
+                    
+  <a class="tag tag--primary tag--small" href="https://hexgolems.com/tags/binary/">binary</a>
+
+  <a class="tag tag--primary tag--small" href="https://hexgolems.com/tags/reversing/">reversing</a>
+
+  <a class="tag tag--primary tag--small" href="https://hexgolems.com/tags/github/">github</a>
+
+                  </div>
+                
+              
+            
+            <div class="post-actions-wrap">
+  
+      <nav >
+        <ul class="post-actions post-action-nav">
+          
+            <li class="post-action">
+              
+                <a class="post-action-btn btn btn--default tooltip--top" href="https://hexgolems.com/2016/03/rdbg/" data-tooltip="RDBG">
+              
+                  <i class="fa fa-angle-left"></i>
+                  <span class="hide-xs hide-sm text-small icon-ml"></span>
+                </a>
+            </li>
+            <li class="post-action">
+              
+                <a class="post-action-btn btn btn--default tooltip--top" href="https://hexgolems.com/2015/04/reverse-game-of-life/" data-tooltip="Reverse Game Of Life">
+              
+                  <span class="hide-xs hide-sm text-small icon-mr"></span>
+                  <i class="fa fa-angle-right"></i>
+                </a>
+            </li>
+          
+        </ul>
+      </nav>
+    <ul class="post-actions post-action-share" >
+      
+      
+      <li class="post-action">
+        
+          <a class="post-action-btn btn btn--default" href="#">
+        
+          <i class="fa fa-list"></i>
+        </a>
+      </li>
+    </ul>
+  
+</div>
+
+            
+              
+            
+          </div>
+        </article>
+        <footer id="footer" class="main-content-wrap">
+  <span class="copyrights">
+    &copy; 2019 Cornelius Aschermann. 
+  </span>
+</footer>
+
+      </div>
+      <div id="bottom-bar" class="post-bottom-bar" data-behavior="5">
+        <div class="post-actions-wrap">
+  
+      <nav >
+        <ul class="post-actions post-action-nav">
+          
+            <li class="post-action">
+              
+                <a class="post-action-btn btn btn--default tooltip--top" href="https://hexgolems.com/2016/03/rdbg/" data-tooltip="RDBG">
+              
+                  <i class="fa fa-angle-left"></i>
+                  <span class="hide-xs hide-sm text-small icon-ml"></span>
+                </a>
+            </li>
+            <li class="post-action">
+              
+                <a class="post-action-btn btn btn--default tooltip--top" href="https://hexgolems.com/2015/04/reverse-game-of-life/" data-tooltip="Reverse Game Of Life">
+              
+                  <span class="hide-xs hide-sm text-small icon-mr"></span>
+                  <i class="fa fa-angle-right"></i>
+                </a>
+            </li>
+          
+        </ul>
+      </nav>
+    <ul class="post-actions post-action-share" >
+      
+      
+      <li class="post-action">
+        
+          <a class="post-action-btn btn btn--default" href="#">
+        
+          <i class="fa fa-list"></i>
+        </a>
+      </li>
+    </ul>
+  
+</div>
+
+      </div>
+      <div id="share-options-bar" class="share-options-bar" data-behavior="5">
+  <i id="btn-close-shareoptions" class="fa fa-close"></i>
+  <ul class="share-options">
+    
+      <li class="share-option">
+        <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fhexgolems.com%2F2016%2F01%2Findika%2F">
+          <i class="fa fa-facebook-official"></i><span>%!(EXTRA string=Facebook)</span>
+        </a>
+      </li>
+    
+      <li class="share-option">
+        <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=https%3A%2F%2Fhexgolems.com%2F2016%2F01%2Findika%2F">
+          <i class="fa fa-twitter"></i><span>%!(EXTRA string=Twitter)</span>
+        </a>
+      </li>
+    
+      <li class="share-option">
+        <a class="share-option-btn" target="new" href="https://plus.google.com/share?url=https%3A%2F%2Fhexgolems.com%2F2016%2F01%2Findika%2F">
+          <i class="fa fa-google-plus"></i><span>%!(EXTRA string=Google&#43;)</span>
+        </a>
+      </li>
+    
+  </ul>
+</div>
+<div id="share-options-mask" class="share-options-mask"></div>
+    </div>
+    
+    <div id="about">
+  <div id="about-card">
+    <div id="about-btn-close">
+      <i class="fa fa-remove"></i>
+    </div>
+    
+      <img id="about-card-picture" src="https://hexgolems.com/imgs/avatar.png" alt="" />
+    
+    <h4 id="about-card-name">Cornelius Aschermann</h4>
+    
+      <div id="about-card-bio">Fuzzing, Reverse Engineering, Binary Analysis</div>
+    
+    
+      <div id="about-card-job">
+        <i class="fa fa-briefcase"></i>
+        <br/>
+        Security Researcher
+      </div>
+    
+    
+      <div id="about-card-location">
+        <i class="fa fa-map-marker"></i>
+        <br/>
+        Germany
+      </div>
+    
+  </div>
+</div>
+
+    
+
+    
+  
+    
+      <div id="cover" style="background-image:url('https://hexgolems.com/imgs/dark_bg.jpg');"></div>
+    
+  
+
+
+    
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.4/jquery.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js" integrity="sha256-/BfiIkHlHoVihZdc6TFuj7MmJ0TWcWsMXkeDFwhi0zw=" crossorigin="anonymous"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.7/js/jquery.fancybox.min.js" integrity="sha256-GEAnjcTqVP+vBp3SSc8bEDQqvWAZMiHyUSIorrWwH50=" crossorigin="anonymous"></script>
+
+
+<script src="https://hexgolems.com/js/script-pcw6v3xilnxydl1vddzazdverrnn9ctynvnxgwho987mfyqkuylcb1nlt.min.js"></script>
+
+
+<script lang="javascript">
+window.onload = updateMinWidth;
+window.onresize = updateMinWidth;
+document.getElementById("sidebar").addEventListener("transitionend", updateMinWidth);
+function updateMinWidth() {
+  var sidebar = document.getElementById("sidebar");
+  var main = document.getElementById("main");
+  main.style.minWidth = "";
+  var w1 = getComputedStyle(main).getPropertyValue("min-width");
+  var w2 = getComputedStyle(sidebar).getPropertyValue("width");
+  var w3 = getComputedStyle(sidebar).getPropertyValue("left");
+  main.style.minWidth = `calc(${w1} - ${w2} - ${w3})`;
+}
+</script>
+
+<script>
+$(document).ready(function() {
+  hljs.configure({ classPrefix: '', useBR: false });
+  $('pre.code-highlight > code, pre > code').each(function(i, block) {
+    if (!$(this).hasClass('codeblock')) {
+      $(this).addClass('codeblock');
+    }
+    hljs.highlightBlock(block);
+  });
+});
+</script>
+
+
+  
+    
+  
+
+
+
+
+    
+  </body>
+</html>
+

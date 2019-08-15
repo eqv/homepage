@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Ruby on Hexgolems</title>
+    <link>https://hexgolems.com/tags/ruby/</link>
+    <description>Recent content in Ruby on Hexgolems</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Wed, 01 Apr 2015 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="https://hexgolems.com/tags/ruby/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Reverse Game Of Life</title>
+      <link>https://hexgolems.com/2015/04/reverse-game-of-life/</link>
+      <pubDate>Wed, 01 Apr 2015 00:00:00 +0000</pubDate>
+      
+      <guid>https://hexgolems.com/2015/04/reverse-game-of-life/</guid>
+      <description>View On Github
+Ever wanted to create a preimage of an arbitrary Game Of Life pattern? Running a simulated version of the game of life is very simple. However, as GOL is in fact turing complete, runnning it backwards is rather hard. In fact we know that there are so called garden of eden patterns that do not have any predecsessor. If one restricts the world to a fixed size, GOL is still able to compute arbitrary boolean functions.</description>
+    </item>
+    
+  </channel>
+</rss>

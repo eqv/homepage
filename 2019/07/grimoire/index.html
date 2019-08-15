@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    
+    <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="author" content="Cornelius Aschermann">
+<meta name="keywords" content="">
+<meta name="description" content="Grimoire   Authors: Tim Blazytko, Cornelius Aschermann, Ali Abbasi, Sergej Schumilo, Simon Wörner, Thorsten Holz
+Grimoire is a fast binary only fuzzer, that infers structural information during the fuzzing process itself. To produce better test coverage, it it observes how chunks from the learned inputs can be recombined in a weak form of grammar. This process piggybacks on the usual fuzzing process. It only uses the information obtained from a AFL-style feedback bitmap.">
+
+
+<meta property="og:description" content="Grimoire   Authors: Tim Blazytko, Cornelius Aschermann, Ali Abbasi, Sergej Schumilo, Simon Wörner, Thorsten Holz
+Grimoire is a fast binary only fuzzer, that infers structural information during the fuzzing process itself. To produce better test coverage, it it observes how chunks from the learned inputs can be recombined in a weak form of grammar. This process piggybacks on the usual fuzzing process. It only uses the information obtained from a AFL-style feedback bitmap.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Grimoire">
+<meta name="twitter:title" content="Grimoire">
+<meta property="og:url" content="https://hexgolems.com/2019/07/grimoire/">
+<meta property="twitter:url" content="https://hexgolems.com/2019/07/grimoire/">
+<meta property="og:site_name" content="Hexgolems">
+<meta property="og:description" content="Grimoire   Authors: Tim Blazytko, Cornelius Aschermann, Ali Abbasi, Sergej Schumilo, Simon Wörner, Thorsten Holz
+Grimoire is a fast binary only fuzzer, that infers structural information during the fuzzing process itself. To produce better test coverage, it it observes how chunks from the learned inputs can be recombined in a weak form of grammar. This process piggybacks on the usual fuzzing process. It only uses the information obtained from a AFL-style feedback bitmap.">
+<meta name="twitter:description" content="Grimoire   Authors: Tim Blazytko, Cornelius Aschermann, Ali Abbasi, Sergej Schumilo, Simon Wörner, Thorsten Holz
+Grimoire is a fast binary only fuzzer, that infers structural information during the fuzzing process itself. To produce better test coverage, it it observes how chunks from the learned inputs can be recombined in a weak form of grammar. This process piggybacks on the usual fuzzing process. It only uses the information obtained from a AFL-style feedback bitmap.">
+<meta property="og:locale" content="en">
+
+  
+    <meta property="article:published_time" content="2019-07-17T00:00:00">
+  
+  
+    <meta property="article:modified_time" content="2019-07-17T00:00:00">
+  
+  
+  
+  
+    
+      <meta property="article:tag" content="fuzzing">
+    
+      <meta property="article:tag" content="paper">
+    
+  
+
+
+<meta name="twitter:card" content="summary">
+
+  <meta name="twitter:site" content="@is_eqv">
+
+
+  <meta name="twitter:creator" content="@is_eqv">
+
+
+
+
+
+
+  <meta property="og:image" content="https://hexgolems.com/imgs/grimoire_img.png">
+  <meta property="twitter:image" content="https://hexgolems.com/imgs/grimoire_img.png">
+
+
+  <meta property="og:image" content="https://hexgolems.com/imgs/grimoire_img.png">
+  <meta property="twitter:image" content="https://hexgolems.com/imgs/grimoire_img.png">
+
+
+
+
+  <meta property="og:image" content="https://hexgolems.com/imgs/avatar.png">
+  <meta property="twitter:image" content="https://hexgolems.com/imgs/avatar.png">
+
+
+    <title>Grimoire</title>
+
+    <link rel="icon" href="https://hexgolems.com/favicon.png">
+    
+
+    
+
+    <link rel="canonical" href="https://hexgolems.com/2019/07/grimoire/">
+
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha256-eZrrJcwDc/3uDhsdt61sL2oOBY362qM3lon1gyExkL0=" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.4/jquery.fancybox.min.css" integrity="sha256-vuXZ9LGmmwtjqFX1F+EKin1ThZMub58gKULUyf0qECk=" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.4/helpers/jquery.fancybox-thumbs.min.css" integrity="sha256-SEa4XYAHihTcEP1f5gARTB2K26Uk8PsndQYHQC1f4jU=" crossorigin="anonymous" />
+    
+    
+    <link rel="stylesheet" href="https://hexgolems.com/css/style-twzjdbqhmnnacqs0pwwdzcdbt8yhv8giawvjqjmyfoqnvazl0dalmnhdkvp7.min.css" />
+    
+    
+
+    
+      
+    
+    
+  </head>
+
+  <body>
+    <div id="blog">
+      <header id="header" data-behavior="5">
+  <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
+  <div class="header-title">
+    <a class="header-title-link" href="https://hexgolems.com/">Hexgolems</a>
+  </div>
+  
+    
+      <a class="header-right-picture "
+         href="https://hexgolems.com/#about">
+    
+    
+    
+      
+        <img class="header-picture" src="https://hexgolems.com/imgs/avatar.png" alt="" />
+      
+    
+    </a>
+  
+</header>
+
+      <nav id="sidebar" data-behavior="5">
+  <div class="sidebar-container">
+    
+      <div class="sidebar-profile">
+        <a href="https://hexgolems.com/#about">
+          <img class="sidebar-profile-picture" src="https://hexgolems.com/imgs/avatar.png" alt="" />
+        </a>
+        <h4 class="sidebar-profile-name">Cornelius Aschermann</h4>
+        
+          <h5 class="sidebar-profile-bio">Fuzzing, Reverse Engineering, Binary Analysis</h5>
+        
+      </div>
+    
+    <ul class="sidebar-buttons">
+      
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://hexgolems.com/">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-home"></i>
+      
+      <span class="sidebar-button-desc">Home</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://hexgolems.com/#about">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-question"></i>
+      
+      <span class="sidebar-button-desc">About</span>
+    </a>
+  </li>
+
+
+    </ul>
+    <ul class="sidebar-buttons">
+      
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://hexgolems.com/tags/github">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-github"></i>
+      
+      <span class="sidebar-button-desc">GitHub</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://twitter.com/is_eqv" target="_blank" rel="noopener">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-twitter"></i>
+      
+      <span class="sidebar-button-desc">Twitter</span>
+    </a>
+  </li>
+
+
+    </ul>
+    <ul class="sidebar-buttons">
+      
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://hexgolems.com/index.xml">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-rss"></i>
+      
+      <span class="sidebar-button-desc">RSS</span>
+    </a>
+  </li>
+
+
+    </ul>
+  </div>
+</nav>
+
+      
+  <div class="post-header-cover
+              text-center
+              post-header-cover--partial"
+       style="background-image:url('/imgs/grimoire_img.png')"
+       data-behavior="5">
+    
+  </div>
+
+
+      <div id="main" data-behavior="5"
+        class="hasCover
+               hasCoverMetaOut
+               ">
+        <article class="post" itemscope itemType="http://schema.org/BlogPosting">
+          
+          
+            <div class="post-header main-content-wrap text-center">
+  
+    <h1 class="post-title" itemprop="headline">
+      Grimoire
+    </h1>
+  
+  
+  <div class="postShorten-meta post-meta">
+    
+      <time itemprop="datePublished" datetime="2019-07-17T00:00:00Z">
+        July, 2019
+
+      </time>
+    
+    
+  </div>
+
+</div>
+          
+          <div class="post-content markdown" itemprop="articleBody">
+            <div class="main-content-wrap">
+              
+
+<h3 id="grimoire">Grimoire</h3>
+
+<p>
+<a href="https://www.syssec.ruhr-uni-bochum.de/media/emma/veroeffentlichungen/2019/06/03/grimoire.pdf"> <img align="right" width="200"  src="https://hexgolems.com/imgs/grimoire_paper.png"> </a>
+</p>
+
+<p><strong>Authors:</strong>
+<a href="http://synthesis.to/">Tim Blazytko</a>, Cornelius Aschermann, <a href="https://www.syssec.ruhr-uni-bochum.de/chair/staff/aliabbasi/">Ali Abbasi</a>, <a href="https://t.co/c4LvtKPq2M">Sergej Schumilo</a>, <a href="http://simon-woerner.de/">Simon Wörner</a>, <a href="https://www.syssec.ruhr-uni-bochum.de/chair/staff/tho/">Thorsten Holz</a></p>
+
+<p>Grimoire is a fast binary only fuzzer, that infers structural information during the fuzzing process itself. To produce
+better test coverage, it it observes how chunks from the learned inputs can be recombined in a weak form of grammar. This
+process piggybacks on the usual fuzzing process. It only uses the information obtained from
+a AFL-style feedback bitmap. As a consequence it is very cheap and greatly improves the performance of fuzzers when
+fuzzing structured formats.</p>
+
+<p>Grimoire helped to find and report multiple bugs, including:</p>
+
+<ul>
+<li>gnuplot (<strong>CVE-2018-19490</strong>)</li>
+<li>gnuplot (<strong>CVE-2018-19491</strong>)</li>
+<li>gnuplot (<strong>CVE-2018-19492</strong>)</li>
+<li>tcc     (<strong>CVE-2018-20376</strong>)</li>
+<li>tcc     (<strong>CVE-2018-20375</strong>)</li>
+<li>tcc     (<strong>CVE-2018-20374</strong>)</li>
+<li>tinyCC  (<strong>CVE-2019-9754</strong>)</li>
+<li>tinyCC  (<strong>CVE-2019-12495</strong>)</li>
+<li>Boolector (<strong>CVE-2019-7559</strong>)</li>
+<li>Boolector (<strong>CVE-2019-7560</strong>)</li>
+<li>NASM      (<strong>CVE-2019-8343</strong></li>
+</ul>
+
+              
+            </div>
+          </div>
+          <div id="post-footer" class="post-footer main-content-wrap">
+            
+              
+                
+                
+                  <div class="post-footer-tags">
+                    <span class="text-color-light text-small"></span><br/>
+                    
+  <a class="tag tag--primary tag--small" href="https://hexgolems.com/tags/fuzzing/">fuzzing</a>
+
+  <a class="tag tag--primary tag--small" href="https://hexgolems.com/tags/paper/">paper</a>
+
+                  </div>
+                
+              
+            
+            <div class="post-actions-wrap">
+  
+      <nav >
+        <ul class="post-actions post-action-nav">
+          
+            <li class="post-action">
+              
+                <a class="post-action-btn btn btn--default tooltip--top" href="https://hexgolems.com/2019/07/antifuzz/" data-tooltip="Antifuzz">
+              
+                  <i class="fa fa-angle-left"></i>
+                  <span class="hide-xs hide-sm text-small icon-ml"></span>
+                </a>
+            </li>
+            <li class="post-action">
+              
+                <a class="post-action-btn btn btn--default tooltip--top" href="https://hexgolems.com/2019/02/gdb_probe.rs/" data-tooltip="gdb_probe.rs">
+              
+                  <span class="hide-xs hide-sm text-small icon-mr"></span>
+                  <i class="fa fa-angle-right"></i>
+                </a>
+            </li>
+          
+        </ul>
+      </nav>
+    <ul class="post-actions post-action-share" >
+      
+      
+      <li class="post-action">
+        
+          <a class="post-action-btn btn btn--default" href="#">
+        
+          <i class="fa fa-list"></i>
+        </a>
+      </li>
+    </ul>
+  
+</div>
+
+            
+              
+            
+          </div>
+        </article>
+        <footer id="footer" class="main-content-wrap">
+  <span class="copyrights">
+    &copy; 2019 Cornelius Aschermann. 
+  </span>
+</footer>
+
+      </div>
+      <div id="bottom-bar" class="post-bottom-bar" data-behavior="5">
+        <div class="post-actions-wrap">
+  
+      <nav >
+        <ul class="post-actions post-action-nav">
+          
+            <li class="post-action">
+              
+                <a class="post-action-btn btn btn--default tooltip--top" href="https://hexgolems.com/2019/07/antifuzz/" data-tooltip="Antifuzz">
+              
+                  <i class="fa fa-angle-left"></i>
+                  <span class="hide-xs hide-sm text-small icon-ml"></span>
+                </a>
+            </li>
+            <li class="post-action">
+              
+                <a class="post-action-btn btn btn--default tooltip--top" href="https://hexgolems.com/2019/02/gdb_probe.rs/" data-tooltip="gdb_probe.rs">
+              
+                  <span class="hide-xs hide-sm text-small icon-mr"></span>
+                  <i class="fa fa-angle-right"></i>
+                </a>
+            </li>
+          
+        </ul>
+      </nav>
+    <ul class="post-actions post-action-share" >
+      
+      
+      <li class="post-action">
+        
+          <a class="post-action-btn btn btn--default" href="#">
+        
+          <i class="fa fa-list"></i>
+        </a>
+      </li>
+    </ul>
+  
+</div>
+
+      </div>
+      <div id="share-options-bar" class="share-options-bar" data-behavior="5">
+  <i id="btn-close-shareoptions" class="fa fa-close"></i>
+  <ul class="share-options">
+    
+      <li class="share-option">
+        <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fhexgolems.com%2F2019%2F07%2Fgrimoire%2F">
+          <i class="fa fa-facebook-official"></i><span>%!(EXTRA string=Facebook)</span>
+        </a>
+      </li>
+    
+      <li class="share-option">
+        <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=https%3A%2F%2Fhexgolems.com%2F2019%2F07%2Fgrimoire%2F">
+          <i class="fa fa-twitter"></i><span>%!(EXTRA string=Twitter)</span>
+        </a>
+      </li>
+    
+      <li class="share-option">
+        <a class="share-option-btn" target="new" href="https://plus.google.com/share?url=https%3A%2F%2Fhexgolems.com%2F2019%2F07%2Fgrimoire%2F">
+          <i class="fa fa-google-plus"></i><span>%!(EXTRA string=Google&#43;)</span>
+        </a>
+      </li>
+    
+  </ul>
+</div>
+<div id="share-options-mask" class="share-options-mask"></div>
+    </div>
+    
+    <div id="about">
+  <div id="about-card">
+    <div id="about-btn-close">
+      <i class="fa fa-remove"></i>
+    </div>
+    
+      <img id="about-card-picture" src="https://hexgolems.com/imgs/avatar.png" alt="" />
+    
+    <h4 id="about-card-name">Cornelius Aschermann</h4>
+    
+      <div id="about-card-bio">Fuzzing, Reverse Engineering, Binary Analysis</div>
+    
+    
+      <div id="about-card-job">
+        <i class="fa fa-briefcase"></i>
+        <br/>
+        Security Researcher
+      </div>
+    
+    
+      <div id="about-card-location">
+        <i class="fa fa-map-marker"></i>
+        <br/>
+        Germany
+      </div>
+    
+  </div>
+</div>
+
+    
+
+    
+  
+    
+      <div id="cover" style="background-image:url('https://hexgolems.com/imgs/dark_bg.jpg');"></div>
+    
+  
+
+
+    
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.4/jquery.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js" integrity="sha256-/BfiIkHlHoVihZdc6TFuj7MmJ0TWcWsMXkeDFwhi0zw=" crossorigin="anonymous"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.7/js/jquery.fancybox.min.js" integrity="sha256-GEAnjcTqVP+vBp3SSc8bEDQqvWAZMiHyUSIorrWwH50=" crossorigin="anonymous"></script>
+
+
+<script src="https://hexgolems.com/js/script-pcw6v3xilnxydl1vddzazdverrnn9ctynvnxgwho987mfyqkuylcb1nlt.min.js"></script>
+
+
+<script lang="javascript">
+window.onload = updateMinWidth;
+window.onresize = updateMinWidth;
+document.getElementById("sidebar").addEventListener("transitionend", updateMinWidth);
+function updateMinWidth() {
+  var sidebar = document.getElementById("sidebar");
+  var main = document.getElementById("main");
+  main.style.minWidth = "";
+  var w1 = getComputedStyle(main).getPropertyValue("min-width");
+  var w2 = getComputedStyle(sidebar).getPropertyValue("width");
+  var w3 = getComputedStyle(sidebar).getPropertyValue("left");
+  main.style.minWidth = `calc(${w1} - ${w2} - ${w3})`;
+}
+</script>
+
+<script>
+$(document).ready(function() {
+  hljs.configure({ classPrefix: '', useBR: false });
+  $('pre.code-highlight > code, pre > code').each(function(i, block) {
+    if (!$(this).hasClass('codeblock')) {
+      $(this).addClass('codeblock');
+    }
+    hljs.highlightBlock(block);
+  });
+});
+</script>
+
+
+  
+    
+  
+
+
+
+
+    
+  </body>
+</html>
+

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Talk on Hexgolems</title>
+    <link>https://hexgolems.com/tags/talk/</link>
+    <description>Recent content in Talk on Hexgolems</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Mon, 17 Dec 2018 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="https://hexgolems.com/tags/talk/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Nautilus - Fuzzing with Grammars</title>
+      <link>https://hexgolems.com/2018/12/nautilus---fuzzing-with-grammars/</link>
+      <pubDate>Mon, 17 Dec 2018 00:00:00 +0000</pubDate>
+      
+      <guid>https://hexgolems.com/2018/12/nautilus---fuzzing-with-grammars/</guid>
+      <description>View On Github
+Nautilus   Authors: Cornelius Aschermann, Tommaso Frassetto, Thorsten Holz, Patrick Jauernig, Ahmad-Reza Sadeghi, Daniel Teuchert
+Nautilus is a feedback fuzzer inspired by AFL. However it allows to specify a grammar. Using this grammar, the fuzzer generates and internally uses the abstract syntax tree of the input. This also allows for very complex mutations. Then it converts the tree to the actual input. Knowing the exact tree shape greatly improves the performance for highly structured input formats, such as many text formats and programming languages.</description>
+    </item>
+    
+    <item>
+      <title>Redqueen</title>
+      <link>https://hexgolems.com/2018/12/redqueen/</link>
+      <pubDate>Mon, 17 Dec 2018 00:00:00 +0000</pubDate>
+      
+      <guid>https://hexgolems.com/2018/12/redqueen/</guid>
+      <description>Redqueen   Authors: Cornelius Aschermann, Sergej Schumilo, Tim Blazytko, Robert Gawlik, Thorsten Holz
+Very fast binary-only fuzzer. It can automatically overcome checksums and magic bytes without falling back to complex and fragile program analysis techniques such as symbolic execution. It works by observing the arguments to function calls and compare instructions. Then the traced values are used to provide inputs specific mutations. More details can be found in the paper.</description>
+    </item>
+    
+    <item>
+      <title>SMT Solver Workshop</title>
+      <link>https://hexgolems.com/2016/08/smt-solver-workshop/</link>
+      <pubDate>Mon, 01 Aug 2016 00:00:00 +0000</pubDate>
+      
+      <guid>https://hexgolems.com/2016/08/smt-solver-workshop/</guid>
+      <description>View On Github
+This is a one day Workshop on using SMT solvers for reverse engineering I gave at the Honeynet Project Annual Workshop in 2016. It contains the full slides, as well as the tasks and solutions. It teaches the basics of how program behavior is encoded in SMT formulas (more precisely, quantifier free theory of bitvectors - no theory of arrays / separation logic content in a one day workshop, sorry) and how one can use these formulas to get answers to questions about low level program behavior.</description>
+    </item>
+    
+  </channel>
+</rss>

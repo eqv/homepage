@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Github on Hexgolems</title>
+    <link>https://hexgolems.com/tags/github/</link>
+    <description>Recent content in Github on Hexgolems</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Fri, 01 Feb 2019 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="https://hexgolems.com/tags/github/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>gdb_probe.rs</title>
+      <link>https://hexgolems.com/2019/02/gdb_probe.rs/</link>
+      <pubDate>Fri, 01 Feb 2019 00:00:00 +0000</pubDate>
+      
+      <guid>https://hexgolems.com/2019/02/gdb_probe.rs/</guid>
+      <description>View On Github
+You love ipdb.set_trace() in python or binding.pry in ruby? You are sad that rust doesn&amp;rsquo;t offer the same comfort? gdb_probe.rs is here to safe the day! With a simple call, it suspends the current process, spawns a new terminal and attaches gdb. This has many advantages:
+ Comfortable debugging. If you program in an IDE with limited debugger support, you get a much simpler debugging story than manually using gdb.</description>
+    </item>
+    
+    <item>
+      <title>HexTD</title>
+      <link>https://hexgolems.com/2019/01/hextd/</link>
+      <pubDate>Tue, 01 Jan 2019 00:00:00 +0000</pubDate>
+      
+      <guid>https://hexgolems.com/2019/01/hextd/</guid>
+      <description>View On Github
+HexTD is a Tower Defense game that features deck building mechanics similar to the board game Dominion. It was written in Rust together with a friend as a learning project. It allready features the complete set of deck building mechanics, a shop to aquire new cards, enemies, towers and buff cards as well as a set of cards that allow to interact with the gameplay itself. It is based on the ggez library.</description>
+    </item>
+    
+    <item>
+      <title>Nautilus - Fuzzing with Grammars</title>
+      <link>https://hexgolems.com/2018/12/nautilus---fuzzing-with-grammars/</link>
+      <pubDate>Mon, 17 Dec 2018 00:00:00 +0000</pubDate>
+      
+      <guid>https://hexgolems.com/2018/12/nautilus---fuzzing-with-grammars/</guid>
+      <description>View On Github
+Nautilus   Authors: Cornelius Aschermann, Tommaso Frassetto, Thorsten Holz, Patrick Jauernig, Ahmad-Reza Sadeghi, Daniel Teuchert
+Nautilus is a feedback fuzzer inspired by AFL. However it allows to specify a grammar. Using this grammar, the fuzzer generates and internally uses the abstract syntax tree of the input. This also allows for very complex mutations. Then it converts the tree to the actual input. Knowing the exact tree shape greatly improves the performance for highly structured input formats, such as many text formats and programming languages.</description>
+    </item>
+    
+    <item>
+      <title>Syntia</title>
+      <link>https://hexgolems.com/2017/12/syntia/</link>
+      <pubDate>Sun, 17 Dec 2017 00:00:00 +0000</pubDate>
+      
+      <guid>https://hexgolems.com/2017/12/syntia/</guid>
+      <description>View On Github
+Syntia   Authors: Tim Blazytko, Moritz Contag, Cornelius Aschermann, Thorsten Holz
+Syntia uses a Monte Carlo Tree Search based approach to program syntheses to learn program semantics from input/output examples. While synthesizing semantics from input/output examples only works for simple targets, it is extremely robust to common obfuscation schemes. As a consequence it is highly useful to deobfuscate the custom instruction sets from common VM based obfuscators such as Themida or VMProtect.</description>
+    </item>
+    
+    <item>
+      <title>kAFL</title>
+      <link>https://hexgolems.com/2017/08/kafl/</link>
+      <pubDate>Thu, 17 Aug 2017 00:00:00 +0000</pubDate>
+      
+      <guid>https://hexgolems.com/2017/08/kafl/</guid>
+      <description>View On Github
+kAFL   Authors: Sergej Schumilo, Cornelius Aschermann, Robert Gawlik, Sebastian Schinzel, Thorsten Holz
+kAFL is a blazing fast x86-64 VM kernel fuzzing framework with performant VM reloads for Linux, MacOS and Windows. It works by running the target operating system inside a hardware accelerated VM, giving it full controll over the environment. This very helpfull to properly recover from crashes. Intels Processor Trace (Intel PT) feature is used to obtain coverage information from the code running inside of the VM.</description>
+    </item>
+    
+    <item>
+      <title>Interval Tree</title>
+      <link>https://hexgolems.com/2017/05/interval-tree/</link>
+      <pubDate>Mon, 01 May 2017 00:00:00 +0000</pubDate>
+      
+      <guid>https://hexgolems.com/2017/05/interval-tree/</guid>
+      <description>View On Github
+When implementing analysis software for memory dumps one often needs to store information on ranges of memory. For example, one might want to store ranges that represent basic blocks or functions, in code or memory allocations and type information in memory dumps. Afterwards one might want to answer queries such as &amp;ldquo;give me all allocations intersecting some range (x,y)&amp;rdquo;. In particular, this crate can be used to create better hex editor views, incorporating additional information.</description>
+    </item>
+    
+    <item>
+      <title>Loaded Dice</title>
+      <link>https://hexgolems.com/2017/02/loaded-dice/</link>
+      <pubDate>Wed, 01 Feb 2017 00:00:00 +0000</pubDate>
+      
+      <guid>https://hexgolems.com/2017/02/loaded-dice/</guid>
+      <description>View On Github
+Sometimes you need to sample from a set of options. This crate allows you to sample from discrete probability distributions efficiently (O(1) per sample).
+It implements a random sampler implementing based on the alias method (https://en.wikipedia.org/wiki/Alias_method). One uses it by passing a vector of probabilites to the constructor. The constructor builds a data structure in O(n*n*log(n)) (Note: It would be quite possible to implement this in O(n*log(n)), however for reasonable sized number of values this method is faster than using the more effictient data strucutres.</description>
+    </item>
+    
+    <item>
+      <title>SMT Solver Workshop</title>
+      <link>https://hexgolems.com/2016/08/smt-solver-workshop/</link>
+      <pubDate>Mon, 01 Aug 2016 00:00:00 +0000</pubDate>
+      
+      <guid>https://hexgolems.com/2016/08/smt-solver-workshop/</guid>
+      <description>View On Github
+This is a one day Workshop on using SMT solvers for reverse engineering I gave at the Honeynet Project Annual Workshop in 2016. It contains the full slides, as well as the tasks and solutions. It teaches the basics of how program behavior is encoded in SMT formulas (more precisely, quantifier free theory of bitvectors - no theory of arrays / separation logic content in a one day workshop, sorry) and how one can use these formulas to get answers to questions about low level program behavior.</description>
+    </item>
+    
+    <item>
+      <title>Pwgen</title>
+      <link>https://hexgolems.com/2016/03/pwgen/</link>
+      <pubDate>Tue, 01 Mar 2016 00:00:00 +0000</pubDate>
+      
+      <guid>https://hexgolems.com/2016/03/pwgen/</guid>
+      <description>View On Github
+pwgen.rb A better pwgeneration / file checksuming tool that uses the algorithm discussed in XKCD 936 to create highly secure and memorable passwords. When generating passwords, it allows to specify the strength of the password in bits. Additionally, it can be used to generate multiple passwords for different accounts/usecases from the same master password, to compare files by means of their fingerprint and to memorize fingerprints of arbitrary files (e.</description>
+    </item>
+    
+    <item>
+      <title>RDBG</title>
+      <link>https://hexgolems.com/2016/03/rdbg/</link>
+      <pubDate>Tue, 01 Mar 2016 00:00:00 +0000</pubDate>
+      
+      <guid>https://hexgolems.com/2016/03/rdbg/</guid>
+      <description>View On Github
+RDBG RDBG is a ruby library that provides binary level debug access to processes.
+it wraps the ptrace api to control the target (and read registers), it uses the /proc/$pid/mem and /proc$pid/mapping interfaces to allow proper access to the targets memory and it allows to set breakpoints. Using ptrace to inject breakpoints is actually suprisingly complicated and requires a somewhat complex statemachine to handle events like singlestepping on a breakpoint or capturing signals in combination with breakpoints.</description>
+    </item>
+    
+    <item>
+      <title>Indika</title>
+      <link>https://hexgolems.com/2016/01/indika/</link>
+      <pubDate>Fri, 01 Jan 2016 00:00:00 +0000</pubDate>
+      
+      <guid>https://hexgolems.com/2016/01/indika/</guid>
+      <description>View On Github
+In reverse engineering, one often tries to identify well known functions in a stripped and statically linked binary. It is often possible to generate fingerprints for functions and match them against a debug build of the same libraries. Current approaches such as FLIRT signatures typically require a debug build with very similar compiler options. Additionally most current approaches require a one to one comparision between all pairs of functions.</description>
+    </item>
+    
+    <item>
+      <title>Reverse Game Of Life</title>
+      <link>https://hexgolems.com/2015/04/reverse-game-of-life/</link>
+      <pubDate>Wed, 01 Apr 2015 00:00:00 +0000</pubDate>
+      
+      <guid>https://hexgolems.com/2015/04/reverse-game-of-life/</guid>
+      <description>View On Github
+Ever wanted to create a preimage of an arbitrary Game Of Life pattern? Running a simulated version of the game of life is very simple. However, as GOL is in fact turing complete, runnning it backwards is rather hard. In fact we know that there are so called garden of eden patterns that do not have any predecsessor. If one restricts the world to a fixed size, GOL is still able to compute arbitrary boolean functions.</description>
+    </item>
+    
+    <item>
+      <title>Pint</title>
+      <link>https://hexgolems.com/2014/10/pint/</link>
+      <pubDate>Wed, 01 Oct 2014 00:00:00 +0000</pubDate>
+      
+      <guid>https://hexgolems.com/2014/10/pint/</guid>
+      <description>View On Github
+Pint is a PIN tool that exposes the PIN API to lua scripts. Pint runs on 64 bit Ubuntu and 32 bit Windows XP, it should run on 32 bit Ubuntu and 64 bit XP as well but this is yet untested.
+PIN is a dynamic instrumentation engine developed by Intel. Basically, it is a JIT compiler for binaries. It will disassemble the binary, one basic block at a time, and recompile it with additional instructions inserted at arbitrary positions.</description>
+    </item>
+    
+    <item>
+      <title>SchemDBG</title>
+      <link>https://hexgolems.com/2014/10/schemdbg/</link>
+      <pubDate>Wed, 01 Oct 2014 00:00:00 +0000</pubDate>
+      
+      <guid>https://hexgolems.com/2014/10/schemdbg/</guid>
+      <description>View On Github
+SchemDBG SchemDBG is a back-end agnostic debugger front-end that focuses on debugging binaries without access to the source code.
+SchemDBG grew from the frustration with reversing in Linux environments (e.G. no proper binary-only-frontends for GDB). Currently, SchemDBG features a plain GDB server back-end and a PIN based back-end running on both 32 and 64 bit binaries in a Ubuntu host. SchemDBG hasn&amp;rsquo;t been tested with the PIN back-end on a Windows host but the PIN debug server works under windows #17.</description>
+    </item>
+    
+    <item>
+      <title>Brainfuck JIT</title>
+      <link>https://hexgolems.com/2014/07/brainfuck-jit/</link>
+      <pubDate>Tue, 01 Jul 2014 00:00:00 +0000</pubDate>
+      
+      <guid>https://hexgolems.com/2014/07/brainfuck-jit/</guid>
+      <description>View On Github
+A Compiler and JITer for brainfuck based on LLVM - build in literate ruby. It should be noted that this implementation produces horribly insecure binaries, and easily allows to overflow the programs memory, as it was used during a CTF exercise.
+
+   &amp;#182;  Disclaimer
+This is the commented version of my little Brainfuck compiler, The code is meant for educational purpose. Please note that this compiler is NOT save.</description>
+    </item>
+    
+    <item>
+      <title>Battlefleet</title>
+      <link>https://hexgolems.com/2013/08/battlefleet/</link>
+      <pubDate>Thu, 01 Aug 2013 00:00:00 +0000</pubDate>
+      
+      <guid>https://hexgolems.com/2013/08/battlefleet/</guid>
+      <description>View On Github
+In Battlefleet a turn based strategy game, two players wage a battle in space. Both player plan their round independently, than the plans are executed in realtime (Play it Here). The game was written in CoffeScript using Crafty.js. It features multiple spaceships with different maneuverability and weapon characteristics and multiple levels, including a tutorial. We submitted it to the 27th Ludum dare competition, and unfortunately couldn&amp;rsquo;t find the time to add AI enemies.</description>
+    </item>
+    
+    <item>
+      <title>Azure VM</title>
+      <link>https://hexgolems.com/2012/12/azure-vm/</link>
+      <pubDate>Sat, 01 Dec 2012 00:00:00 +0000</pubDate>
+      
+      <guid>https://hexgolems.com/2012/12/azure-vm/</guid>
+      <description>View On Github
+This is a small custom VM written in golang that was used as a service during the 2012 RWTH-CTF. It features a very RISC architecture (no stack operations, no call instructions..), and a very powerful macro assembler that allows to use high level constructs such as if/then/else or functions. The goal behind this challenge was to reverse engineer the target application given only in bytecode. Due to the very verbose nature of the instruction set, this benefits greatly from some pattern matching to undo the macro assemblers instructions.</description>
+    </item>
+    
+    <item>
+      <title>CodeWars</title>
+      <link>https://hexgolems.com/2011/10/codewars/</link>
+      <pubDate>Sat, 01 Oct 2011 00:00:00 +0000</pubDate>
+      
+      <guid>https://hexgolems.com/2011/10/codewars/</guid>
+      <description>View On Github
+A custom CPU, a ring shaped memory and instruction pointer relative addressing. Two programs enter, one program leaves. A deadly low level programming competition to overwrite your opponents memory.
+In contrast to the original Corewars our custom CPU has some modern features, such as registers. We provide a debugger that allows to singlestep and inspect your fighters execution in the core. If you need to test your bot against another bot, there is a profiler that allows you to perform many battles in short amount of time.</description>
+    </item>
+    
+  </channel>
+</rss>

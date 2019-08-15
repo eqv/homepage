@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Tags on Hexgolems</title>
+    <link>https://hexgolems.com/tags/</link>
+    <description>Recent content in Tags on Hexgolems</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Thu, 01 Aug 2019 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="https://hexgolems.com/tags/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Beamer</title>
+      <link>https://hexgolems.com/tags/beamer/</link>
+      <pubDate>Thu, 01 Aug 2019 00:00:00 +0000</pubDate>
+      
+      <guid>https://hexgolems.com/tags/beamer/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Binary</title>
+      <link>https://hexgolems.com/tags/binary/</link>
+      <pubDate>Tue, 01 Mar 2016 00:00:00 +0000</pubDate>
+      
+      <guid>https://hexgolems.com/tags/binary/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Brainfuck</title>
+      <link>https://hexgolems.com/tags/brainfuck/</link>
+      <pubDate>Tue, 01 Jul 2014 00:00:00 +0000</pubDate>
+      
+      <guid>https://hexgolems.com/tags/brainfuck/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Compiler</title>
+      <link>https://hexgolems.com/tags/compiler/</link>
+      <pubDate>Tue, 01 Jul 2014 00:00:00 +0000</pubDate>
+      
+      <guid>https://hexgolems.com/tags/compiler/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Fuzzing</title>
+      <link>https://hexgolems.com/tags/fuzzing/</link>
+      <pubDate>Wed, 17 Jul 2019 00:00:00 +0000</pubDate>
+      
+      <guid>https://hexgolems.com/tags/fuzzing/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Gihub</title>
+      <link>https://hexgolems.com/tags/gihub/</link>
+      <pubDate>Thu, 01 Aug 2019 00:00:00 +0000</pubDate>
+      
+      <guid>https://hexgolems.com/tags/gihub/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Github</title>
+      <link>https://hexgolems.com/tags/github/</link>
+      <pubDate>Fri, 01 Feb 2019 00:00:00 +0000</pubDate>
+      
+      <guid>https://hexgolems.com/tags/github/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Inkscape</title>
+      <link>https://hexgolems.com/tags/inkscape/</link>
+      <pubDate>Thu, 01 Aug 2019 00:00:00 +0000</pubDate>
+      
+      <guid>https://hexgolems.com/tags/inkscape/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Llvm</title>
+      <link>https://hexgolems.com/tags/llvm/</link>
+      <pubDate>Tue, 01 Jul 2014 00:00:00 +0000</pubDate>
+      
+      <guid>https://hexgolems.com/tags/llvm/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Paper</title>
+      <link>https://hexgolems.com/tags/paper/</link>
+      <pubDate>Wed, 17 Jul 2019 00:00:00 +0000</pubDate>
+      
+      <guid>https://hexgolems.com/tags/paper/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Password</title>
+      <link>https://hexgolems.com/tags/password/</link>
+      <pubDate>Tue, 01 Mar 2016 00:00:00 +0000</pubDate>
+      
+      <guid>https://hexgolems.com/tags/password/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Reversing</title>
+      <link>https://hexgolems.com/tags/reversing/</link>
+      <pubDate>Tue, 01 Mar 2016 00:00:00 +0000</pubDate>
+      
+      <guid>https://hexgolems.com/tags/reversing/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Ruby</title>
+      <link>https://hexgolems.com/tags/ruby/</link>
+      <pubDate>Wed, 01 Apr 2015 00:00:00 +0000</pubDate>
+      
+      <guid>https://hexgolems.com/tags/ruby/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Rust</title>
+      <link>https://hexgolems.com/tags/rust/</link>
+      <pubDate>Fri, 01 Feb 2019 00:00:00 +0000</pubDate>
+      
+      <guid>https://hexgolems.com/tags/rust/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Svg</title>
+      <link>https://hexgolems.com/tags/svg/</link>
+      <pubDate>Thu, 01 Aug 2019 00:00:00 +0000</pubDate>
+      
+      <guid>https://hexgolems.com/tags/svg/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Talk</title>
+      <link>https://hexgolems.com/tags/talk/</link>
+      <pubDate>Mon, 17 Dec 2018 00:00:00 +0000</pubDate>
+      
+      <guid>https://hexgolems.com/tags/talk/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Web</title>
+      <link>https://hexgolems.com/tags/web/</link>
+      <pubDate>Thu, 01 Aug 2013 00:00:00 +0000</pubDate>
+      
+      <guid>https://hexgolems.com/tags/web/</guid>
+      <description></description>
+    </item>
+    
+  </channel>
+</rss>

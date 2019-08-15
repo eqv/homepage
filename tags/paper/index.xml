@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Paper on Hexgolems</title>
+    <link>https://hexgolems.com/tags/paper/</link>
+    <description>Recent content in Paper on Hexgolems</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Wed, 17 Jul 2019 00:00:00 +0000</lastBuildDate>
+    
+	<atom:link href="https://hexgolems.com/tags/paper/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Antifuzz</title>
+      <link>https://hexgolems.com/2019/07/antifuzz/</link>
+      <pubDate>Wed, 17 Jul 2019 00:00:00 +0000</pubDate>
+      
+      <guid>https://hexgolems.com/2019/07/antifuzz/</guid>
+      <description>Antifuzz   Authors: Emre Güler, Cornelius Aschermann, Ali Abbasi, Thorsten Holz
+In this work, we analysed various state of the art fuzzers and show that common obfuscation techniques do not help against attackers using fuzzer. Then we systematically attack the underlying assumptions of modern fuzzers and show how they can be attacked by relatively simple obfuscations mechanisms.</description>
+    </item>
+    
+    <item>
+      <title>Grimoire</title>
+      <link>https://hexgolems.com/2019/07/grimoire/</link>
+      <pubDate>Wed, 17 Jul 2019 00:00:00 +0000</pubDate>
+      
+      <guid>https://hexgolems.com/2019/07/grimoire/</guid>
+      <description>Grimoire   Authors: Tim Blazytko, Cornelius Aschermann, Ali Abbasi, Sergej Schumilo, Simon Wörner, Thorsten Holz
+Grimoire is a fast binary only fuzzer, that infers structural information during the fuzzing process itself. To produce better test coverage, it it observes how chunks from the learned inputs can be recombined in a weak form of grammar. This process piggybacks on the usual fuzzing process. It only uses the information obtained from a AFL-style feedback bitmap.</description>
+    </item>
+    
+    <item>
+      <title>Nautilus - Fuzzing with Grammars</title>
+      <link>https://hexgolems.com/2018/12/nautilus---fuzzing-with-grammars/</link>
+      <pubDate>Mon, 17 Dec 2018 00:00:00 +0000</pubDate>
+      
+      <guid>https://hexgolems.com/2018/12/nautilus---fuzzing-with-grammars/</guid>
+      <description>View On Github
+Nautilus   Authors: Cornelius Aschermann, Tommaso Frassetto, Thorsten Holz, Patrick Jauernig, Ahmad-Reza Sadeghi, Daniel Teuchert
+Nautilus is a feedback fuzzer inspired by AFL. However it allows to specify a grammar. Using this grammar, the fuzzer generates and internally uses the abstract syntax tree of the input. This also allows for very complex mutations. Then it converts the tree to the actual input. Knowing the exact tree shape greatly improves the performance for highly structured input formats, such as many text formats and programming languages.</description>
+    </item>
+    
+    <item>
+      <title>Redqueen</title>
+      <link>https://hexgolems.com/2018/12/redqueen/</link>
+      <pubDate>Mon, 17 Dec 2018 00:00:00 +0000</pubDate>
+      
+      <guid>https://hexgolems.com/2018/12/redqueen/</guid>
+      <description>Redqueen   Authors: Cornelius Aschermann, Sergej Schumilo, Tim Blazytko, Robert Gawlik, Thorsten Holz
+Very fast binary-only fuzzer. It can automatically overcome checksums and magic bytes without falling back to complex and fragile program analysis techniques such as symbolic execution. It works by observing the arguments to function calls and compare instructions. Then the traced values are used to provide inputs specific mutations. More details can be found in the paper.</description>
+    </item>
+    
+    <item>
+      <title>Syntia</title>
+      <link>https://hexgolems.com/2017/12/syntia/</link>
+      <pubDate>Sun, 17 Dec 2017 00:00:00 +0000</pubDate>
+      
+      <guid>https://hexgolems.com/2017/12/syntia/</guid>
+      <description>View On Github
+Syntia   Authors: Tim Blazytko, Moritz Contag, Cornelius Aschermann, Thorsten Holz
+Syntia uses a Monte Carlo Tree Search based approach to program syntheses to learn program semantics from input/output examples. While synthesizing semantics from input/output examples only works for simple targets, it is extremely robust to common obfuscation schemes. As a consequence it is highly useful to deobfuscate the custom instruction sets from common VM based obfuscators such as Themida or VMProtect.</description>
+    </item>
+    
+    <item>
+      <title>kAFL</title>
+      <link>https://hexgolems.com/2017/08/kafl/</link>
+      <pubDate>Thu, 17 Aug 2017 00:00:00 +0000</pubDate>
+      
+      <guid>https://hexgolems.com/2017/08/kafl/</guid>
+      <description>View On Github
+kAFL   Authors: Sergej Schumilo, Cornelius Aschermann, Robert Gawlik, Sebastian Schinzel, Thorsten Holz
+kAFL is a blazing fast x86-64 VM kernel fuzzing framework with performant VM reloads for Linux, MacOS and Windows. It works by running the target operating system inside a hardware accelerated VM, giving it full controll over the environment. This very helpfull to properly recover from crashes. Intels Processor Trace (Intel PT) feature is used to obtain coverage information from the code running inside of the VM.</description>
+    </item>
+    
+  </channel>
+</rss>
