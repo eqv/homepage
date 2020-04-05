@@ -6,10 +6,30 @@
     <description>Recent content in Fuzzing on Hexgolems</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Thu, 05 Dec 2019 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sat, 04 Apr 2020 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="https://hexgolems.com/tags/fuzzing/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Incorrectness Logic by Example</title>
+      <link>https://hexgolems.com/2020/04/incorrectness-logic-by-example/</link>
+      <pubDate>Sat, 04 Apr 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://hexgolems.com/2020/04/incorrectness-logic-by-example/</guid>
+      <description>Incorrectness Logic by Example Incorrectness Logic is a formal method to reason about program behavior. Similar formal reasoning techniques have been used for a multitude of different tasks in program verification, bug hunting and exploitation. To give some examples, Symbolic Execution (SE) has been used to generate hundreds of working exploits against a (at that time) current version of Debian [1]. While possible, it is often difficult to scale SE with all its precision to large targets.</description>
+    </item>
+    
+    <item>
+      <title>Nautilus 2.0</title>
+      <link>https://hexgolems.com/2020/04/nautilus-2.0/</link>
+      <pubDate>Wed, 01 Apr 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://hexgolems.com/2020/04/nautilus-2.0/</guid>
+      <description>View On Github
+Nautilus 2.0 We are glad to announce the released of v2.0 of our fuzzer Nautilus!
+Nautilus is a coverage guided, grammar based fuzzer. You can use it to improve your test coverage and find more bugs. By specifying the grammar of semi valid inputs, Nautilus is able to perform complex mutation and to uncover more interesting test cases. Many of the ideas behind this fuzzer are documented in a Paper published at NDSS 2019.</description>
+    </item>
     
     <item>
       <title>HotFuzz</title>

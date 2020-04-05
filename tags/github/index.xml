@@ -6,10 +6,21 @@
     <description>Recent content in Github on Hexgolems</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Fri, 01 Nov 2019 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Wed, 01 Apr 2020 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="https://hexgolems.com/tags/github/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Nautilus 2.0</title>
+      <link>https://hexgolems.com/2020/04/nautilus-2.0/</link>
+      <pubDate>Wed, 01 Apr 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://hexgolems.com/2020/04/nautilus-2.0/</guid>
+      <description>View On Github
+Nautilus 2.0 We are glad to announce the released of v2.0 of our fuzzer Nautilus!
+Nautilus is a coverage guided, grammar based fuzzer. You can use it to improve your test coverage and find more bugs. By specifying the grammar of semi valid inputs, Nautilus is able to perform complex mutation and to uncover more interesting test cases. Many of the ideas behind this fuzzer are documented in a Paper published at NDSS 2019.</description>
+    </item>
     
     <item>
       <title>Fast Cov</title>
