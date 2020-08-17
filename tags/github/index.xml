@@ -21,6 +21,15 @@
     </item>
     
     <item>
+      <title>EthBMC</title>
+      <link>https://hexgolems.com/2020/07/ethbmc/</link>
+      <pubDate>Tue, 14 Jul 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://hexgolems.com/2020/07/ethbmc/</guid>
+      <description>A bounded model checker for smart contracts, that can steal money. Published at USENIX Security 2020</description>
+    </item>
+    
+    <item>
       <title>Ijon</title>
       <link>https://hexgolems.com/2020/07/ijon/</link>
       <pubDate>Tue, 14 Jul 2020 00:00:00 +0000</pubDate>
