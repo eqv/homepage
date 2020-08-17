@@ -7,26 +7,18 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="author" content="Cornelius Aschermann">
 <meta name="keywords" content="">
-<meta name="description" content="View On Github
-RDBG RDBG is a ruby library that provides binary level debug access to processes.
-it wraps the ptrace api to control the target (and read registers), it uses the /proc/$pid/mem and /proc$pid/mapping interfaces to allow proper access to the targets memory and it allows to set breakpoints. Using ptrace to inject breakpoints is actually suprisingly complicated and requires a somewhat complex statemachine to handle events like singlestepping on a breakpoint or capturing signals in combination with breakpoints.">
+<meta name="description" content="A ruby programmable debugger library based on the linux ptrace API and /proc/$pid/ interfaces.">
 
 
-<meta property="og:description" content="View On Github
-RDBG RDBG is a ruby library that provides binary level debug access to processes.
-it wraps the ptrace api to control the target (and read registers), it uses the /proc/$pid/mem and /proc$pid/mapping interfaces to allow proper access to the targets memory and it allows to set breakpoints. Using ptrace to inject breakpoints is actually suprisingly complicated and requires a somewhat complex statemachine to handle events like singlestepping on a breakpoint or capturing signals in combination with breakpoints.">
+<meta property="og:description" content="A ruby programmable debugger library based on the linux ptrace API and /proc/$pid/ interfaces.">
 <meta property="og:type" content="article">
 <meta property="og:title" content="RDBG">
 <meta name="twitter:title" content="RDBG">
 <meta property="og:url" content="https://hexgolems.com/2016/03/rdbg/">
 <meta property="twitter:url" content="https://hexgolems.com/2016/03/rdbg/">
 <meta property="og:site_name" content="Hexgolems">
-<meta property="og:description" content="View On Github
-RDBG RDBG is a ruby library that provides binary level debug access to processes.
-it wraps the ptrace api to control the target (and read registers), it uses the /proc/$pid/mem and /proc$pid/mapping interfaces to allow proper access to the targets memory and it allows to set breakpoints. Using ptrace to inject breakpoints is actually suprisingly complicated and requires a somewhat complex statemachine to handle events like singlestepping on a breakpoint or capturing signals in combination with breakpoints.">
-<meta name="twitter:description" content="View On Github
-RDBG RDBG is a ruby library that provides binary level debug access to processes.
-it wraps the ptrace api to control the target (and read registers), it uses the /proc/$pid/mem and /proc$pid/mapping interfaces to allow proper access to the targets memory and it allows to set breakpoints. Using ptrace to inject breakpoints is actually suprisingly complicated and requires a somewhat complex statemachine to handle events like singlestepping on a breakpoint or capturing signals in combination with breakpoints.">
+<meta property="og:description" content="A ruby programmable debugger library based on the linux ptrace API and /proc/$pid/ interfaces.">
+<meta name="twitter:description" content="A ruby programmable debugger library based on the linux ptrace API and /proc/$pid/ interfaces.">
 <meta property="og:locale" content="en">
 
   
@@ -238,84 +230,76 @@ it wraps the ptrace api to control the target (and read registers), it uses the 
           
           <div class="post-content markdown" itemprop="articleBody">
             <div class="main-content-wrap">
-              
-
-<p align=center><a href="https://github.com/hexgolems/rdbg" class="btn btn--primary" text-align="center"><i class="fa fa-github" aria-hidden="true"></i> View On Github</a></p>
-
+              <p align=center><a href="https://github.com/hexgolems/rdbg" class="btn btn--primary" text-align="center"><i class="fa fa-github" aria-hidden="true"></i> View On Github</a></p>
 <h1 id="rdbg">RDBG</h1>
-
 <p>RDBG is a ruby library that provides binary level debug access to processes.</p>
-
 <p>it wraps the ptrace api to
 control the target (and read registers), it uses the <code>/proc/$pid/mem</code> and <code>/proc$pid/mapping</code> interfaces to allow proper access to
 the targets memory and it allows to set breakpoints. Using ptrace to inject breakpoints is
 actually suprisingly complicated and requires a somewhat complex statemachine to handle events like singlestepping on a
 breakpoint or capturing signals in combination with breakpoints.</p>
-
 <p>This can be used to automatize various debuggin or reversing task without relaying on the GDB scripting facilites or
 (even worse) the GDB Machine Interface. For example, we used it to build a cheat engine like tool that allows to find
 and fixate values in games memory, as demonstrated with the free linux game <a href="http://www.asahi-net.or.jp/~cs8k-cyu/windows/p47_e.html">PARSEC47</a>.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ruby" data-lang="ruby">require_relative <span style="color:#e6db74">&#39;../rdbg.rb&#39;</span>
 
-<pre><code class="language-ruby">require_relative '../rdbg.rb'
+cmd <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;/usr/games/parsec47&#34;</span>
 
-cmd = &quot;/usr/games/parsec47&quot;
+<span style="color:#75715e"># step first ten instructions, printing bytes at EIP and ESP</span>
 
-# step first ten instructions, printing bytes at EIP and ESP
+<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">get_writable_mappings</span>(d)
+  d<span style="color:#f92672">.</span>mappings<span style="color:#f92672">.</span>select{<span style="color:#f92672">|</span>m<span style="color:#f92672">|</span> m<span style="color:#f92672">[</span><span style="color:#e6db74">:permissions</span><span style="color:#f92672">].</span>include?(<span style="color:#e6db74">&#34;w&#34;</span>) <span style="color:#f92672">&amp;&amp;</span> <span style="color:#f92672">!</span>m<span style="color:#f92672">[</span><span style="color:#e6db74">:permissions</span><span style="color:#f92672">].</span>include?(<span style="color:#e6db74">&#34;s&#34;</span>)}
+<span style="color:#66d9ef">end</span>
 
-def get_writable_mappings(d)
-  d.mappings.select{|m| m[:permissions].include?(&quot;w&quot;) &amp;&amp; !m[:permissions].include?(&quot;s&quot;)}
-end
+<span style="color:#66d9ef">def</span> <span style="color:#a6e22e">run_and_wait</span>(d)
+  <span style="color:#75715e"># run the debugger until the user enters a value</span>
+  d<span style="color:#f92672">.</span>continue 
+  puts <span style="color:#e6db74">&#34;Enter the current value of lives&#34;</span>
+  target <span style="color:#f92672">=</span> gets<span style="color:#f92672">.</span>strip<span style="color:#f92672">.</span>to_i
+  <span style="color:#75715e"># pause the debugger</span>
+  d<span style="color:#f92672">.</span>pause
+  <span style="color:#66d9ef">return</span> target
+<span style="color:#66d9ef">end</span>
 
-def run_and_wait(d)
-  # run the debugger until the user enters a value
-  d.continue 
-  puts &quot;Enter the current value of lives&quot;
-  target = gets.strip.to_i
-  # pause the debugger
-  d.pause
-  return target
-end
+d <span style="color:#f92672">=</span> <span style="color:#66d9ef">RDBG</span><span style="color:#f92672">.</span>new(cmd)
+target <span style="color:#f92672">=</span> run_and_wait(d)
+offsets <span style="color:#f92672">=[]</span>
+puts <span style="color:#e6db74">&#34;blubl&#34;</span>
+get_writable_mappings(d)<span style="color:#f92672">.</span>each <span style="color:#66d9ef">do</span> <span style="color:#f92672">|</span>m<span style="color:#f92672">|</span>
+  puts <span style="color:#e6db74">&#34;reading mapping </span><span style="color:#e6db74">#{</span>m<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>
+  str <span style="color:#f92672">=</span> d<span style="color:#f92672">.</span>read_mem(m<span style="color:#f92672">[</span><span style="color:#e6db74">:range</span><span style="color:#f92672">].</span>min, m<span style="color:#f92672">[</span><span style="color:#e6db74">:range</span><span style="color:#f92672">].</span>max<span style="color:#f92672">-</span>m<span style="color:#f92672">[</span><span style="color:#e6db74">:range</span><span style="color:#f92672">].</span>min<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>)
+  puts str<span style="color:#f92672">[</span><span style="color:#ae81ff">0</span><span style="color:#f92672">..</span><span style="color:#ae81ff">1000</span><span style="color:#f92672">].</span>inspect
+  str<span style="color:#f92672">.</span>each_byte<span style="color:#f92672">.</span>with_index <span style="color:#66d9ef">do</span> <span style="color:#f92672">|</span>byte,offset<span style="color:#f92672">|</span>
+    offsets <span style="color:#f92672">&lt;&lt;</span> m<span style="color:#f92672">[</span><span style="color:#e6db74">:range</span><span style="color:#f92672">].</span>min<span style="color:#f92672">+</span>offset <span style="color:#66d9ef">if</span> byte <span style="color:#f92672">==</span> target
+  <span style="color:#66d9ef">end</span>
+  puts <span style="color:#e6db74">&#34;found </span><span style="color:#e6db74">#{</span>offsets<span style="color:#f92672">.</span>length<span style="color:#e6db74">}</span><span style="color:#e6db74"> addresses&#34;</span>
+<span style="color:#66d9ef">end</span>
 
-d = RDBG.new(cmd)
-target = run_and_wait(d)
-offsets =[]
-puts &quot;blubl&quot;
-get_writable_mappings(d).each do |m|
-  puts &quot;reading mapping #{m}&quot;
-  str = d.read_mem(m[:range].min, m[:range].max-m[:range].min+1)
-  puts str[0..1000].inspect
-  str.each_byte.with_index do |byte,offset|
-    offsets &lt;&lt; m[:range].min+offset if byte == target
-  end
-  puts &quot;found #{offsets.length} addresses&quot;
-end
+<span style="color:#66d9ef">loop</span> <span style="color:#66d9ef">do</span>
+  <span style="color:#75715e"># while no unique locations was identified, loop</span>
+  next_target <span style="color:#f92672">=</span> run_and_wait(d) 
+  next_offsets <span style="color:#f92672">=[]</span>
+  offsets<span style="color:#f92672">.</span>each <span style="color:#66d9ef">do</span> <span style="color:#f92672">|</span>o<span style="color:#f92672">|</span>
+    next_offsets <span style="color:#f92672">&lt;&lt;</span> o <span style="color:#66d9ef">if</span> d<span style="color:#f92672">.</span>read_mem(o,<span style="color:#ae81ff">1</span>) <span style="color:#f92672">==</span> next_target<span style="color:#f92672">.</span>chr
+  <span style="color:#66d9ef">end</span>
+  offsets <span style="color:#f92672">=</span> next_offsets
+  <span style="color:#66d9ef">if</span> offsets<span style="color:#f92672">.</span>length <span style="color:#f92672">==</span> <span style="color:#ae81ff">1</span>
+    puts <span style="color:#e6db74">&#34;found offset </span><span style="color:#e6db74">#{</span>offsets<span style="color:#f92672">.</span>first<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>
+    <span style="color:#66d9ef">break</span>
+  <span style="color:#66d9ef">end</span>
+  puts <span style="color:#e6db74">&#34;found </span><span style="color:#e6db74">#{</span>offsets<span style="color:#f92672">.</span>length<span style="color:#e6db74">}</span><span style="color:#e6db74"> addresses&#34;</span>
+  puts offsets <span style="color:#66d9ef">if</span> offsets<span style="color:#f92672">.</span>length <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">10</span>
+<span style="color:#66d9ef">end</span>
 
-loop do
-  # while no unique locations was identified, loop
-  next_target = run_and_wait(d) 
-  next_offsets =[]
-  offsets.each do |o|
-    next_offsets &lt;&lt; o if d.read_mem(o,1) == next_target.chr
-  end
-  offsets = next_offsets
-  if offsets.length == 1
-    puts &quot;found offset #{offsets.first}&quot;
-    break
-  end
-  puts &quot;found #{offsets.length} addresses&quot;
-  puts offsets if offsets.length &lt; 10
-end
+<span style="color:#75715e"># we found a pointer to the relevant value, overwrite it with 9999</span>
+d<span style="color:#f92672">.</span>write_mem(offsets<span style="color:#f92672">.</span>first,<span style="color:#f92672">[</span><span style="color:#ae81ff">9999</span><span style="color:#f92672">].</span>pack(<span style="color:#e6db74">&#34;L&#34;</span>))
+d<span style="color:#f92672">.</span>continue
 
-# we found a pointer to the relevant value, overwrite it with 9999
-d.write_mem(offsets.first,[9999].pack(&quot;L&quot;))
-d.continue
-
-# continue the target application forever
-loop do
-  sleep 1
-end
-</code></pre>
-
+<span style="color:#75715e"># continue the target application forever</span>
+<span style="color:#66d9ef">loop</span> <span style="color:#66d9ef">do</span>
+  sleep <span style="color:#ae81ff">1</span>
+<span style="color:#66d9ef">end</span>
+</code></pre></div>
               
             </div>
           </div>

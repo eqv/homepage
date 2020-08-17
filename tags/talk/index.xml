@@ -1,9 +1,9 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Talk on Hexgolems</title>
+    <title>talk on Hexgolems</title>
     <link>https://hexgolems.com/tags/talk/</link>
-    <description>Recent content in Talk on Hexgolems</description>
+    <description>Recent content in talk on Hexgolems</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Thu, 05 Dec 2019 00:00:00 +0000</lastBuildDate>
@@ -17,19 +17,16 @@
       <pubDate>Thu, 05 Dec 2019 00:00:00 +0000</pubDate>
       
       <guid>https://hexgolems.com/2019/12/hotfuzz/</guid>
-      <description>In this Presentation at Blackhat London 2019, Sergej and I present the results of the last 3 years of our fuzzing research. Besides presenting details on super fast vm reloads and a whole bunch of other proejects, we also try to predict research topics will be interesting to explore further in the next few years.
-   Talk Slides     Video will be linked when published     Authors: Cornelius Aschermann, Sergej Schumilo</description>
+      <description>Talking about our research on fuzzing and future research areas.</description>
     </item>
     
     <item>
       <title>Nautilus - Fuzzing with Grammars</title>
-      <link>https://hexgolems.com/2018/12/nautilus---fuzzing-with-grammars/</link>
+      <link>https://hexgolems.com/2018/12/nautilus-fuzzing-with-grammars/</link>
       <pubDate>Mon, 17 Dec 2018 00:00:00 +0000</pubDate>
       
-      <guid>https://hexgolems.com/2018/12/nautilus---fuzzing-with-grammars/</guid>
-      <description>View On Github
-Nautilus   Authors: Cornelius Aschermann, Tommaso Frassetto, Thorsten Holz, Patrick Jauernig, Ahmad-Reza Sadeghi, Daniel Teuchert
-Nautilus is a feedback fuzzer inspired by AFL. However it allows to specify a grammar. Using this grammar, the fuzzer generates and internally uses the abstract syntax tree of the input. This also allows for very complex mutations. Then it converts the tree to the actual input. Knowing the exact tree shape greatly improves the performance for highly structured input formats, such as many text formats and programming languages.</description>
+      <guid>https://hexgolems.com/2018/12/nautilus-fuzzing-with-grammars/</guid>
+      <description>An AFL style feedback fuzzer, that uses grammars to find more bugs. Written in Rust and published at NDSS 2019</description>
     </item>
     
     <item>
@@ -38,9 +35,7 @@ Nautilus is a feedback fuzzer inspired by AFL. However it allows to specify a gr
       <pubDate>Mon, 17 Dec 2018 00:00:00 +0000</pubDate>
       
       <guid>https://hexgolems.com/2018/12/redqueen/</guid>
-      <description>View On Github
-Redqueen   Authors: Cornelius Aschermann, Sergej Schumilo, Tim Blazytko, Robert Gawlik, Thorsten Holz
-Redqueen is a fast general purpose fuzzer for x86 binary applications. It can automatically overcome checksums and magic bytes without falling back to complex and fragile program analysis techniques, such as symbolic execution. It works by observing the arguments to function calls and compare instructions via virtual machine introspection. Observed values are used to provide inputs specific mutations.</description>
+      <description>A binary fuzzer that automatically solves magic Bytes and checksums during fuzzing. Published at NDSS 2019.</description>
     </item>
     
     <item>
@@ -49,8 +44,7 @@ Redqueen is a fast general purpose fuzzer for x86 binary applications. It can au
       <pubDate>Mon, 01 Aug 2016 00:00:00 +0000</pubDate>
       
       <guid>https://hexgolems.com/2016/08/smt-solver-workshop/</guid>
-      <description>View On Github
-This is a one day Workshop on using SMT solvers for reverse engineering I gave at the Honeynet Project Annual Workshop in 2016. It contains the full slides, as well as the tasks and solutions. It teaches the basics of how program behavior is encoded in SMT formulas (more precisely, quantifier free theory of bitvectors - no theory of arrays / separation logic content in a one day workshop, sorry) and how one can use these formulas to get answers to questions about low level program behavior.</description>
+      <description>A one day workshop on using SMT-Solvers and bounded model checker for reverse engineering and binary analysis.</description>
     </item>
     
   </channel>

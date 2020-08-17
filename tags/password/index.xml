@@ -1,9 +1,9 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Password on Hexgolems</title>
+    <title>password on Hexgolems</title>
     <link>https://hexgolems.com/tags/password/</link>
-    <description>Recent content in Password on Hexgolems</description>
+    <description>Recent content in password on Hexgolems</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Tue, 01 Mar 2016 00:00:00 +0000</lastBuildDate>
@@ -17,8 +17,7 @@
       <pubDate>Tue, 01 Mar 2016 00:00:00 +0000</pubDate>
       
       <guid>https://hexgolems.com/2016/03/pwgen/</guid>
-      <description>View On Github
-pwgen.rb A better pwgeneration / file checksuming tool that uses the algorithm discussed in XKCD 936 to create highly secure and memorable passwords. When generating passwords, it allows to specify the strength of the password in bits. Additionally, it can be used to generate multiple passwords for different accounts/usecases from the same master password, to compare files by means of their fingerprint and to memorize fingerprints of arbitrary files (e.</description>
+      <description>A human friendly pwgen based on XKCD 936</description>
     </item>
     
   </channel>

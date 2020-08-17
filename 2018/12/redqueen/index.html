@@ -7,26 +7,18 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="author" content="Cornelius Aschermann">
 <meta name="keywords" content="">
-<meta name="description" content="View On Github
-Redqueen   Authors: Cornelius Aschermann, Sergej Schumilo, Tim Blazytko, Robert Gawlik, Thorsten Holz
-Redqueen is a fast general purpose fuzzer for x86 binary applications. It can automatically overcome checksums and magic bytes without falling back to complex and fragile program analysis techniques, such as symbolic execution. It works by observing the arguments to function calls and compare instructions via virtual machine introspection. Observed values are used to provide inputs specific mutations.">
+<meta name="description" content="A binary fuzzer that automatically solves magic Bytes and checksums during fuzzing. Published at NDSS 2019.">
 
 
-<meta property="og:description" content="View On Github
-Redqueen   Authors: Cornelius Aschermann, Sergej Schumilo, Tim Blazytko, Robert Gawlik, Thorsten Holz
-Redqueen is a fast general purpose fuzzer for x86 binary applications. It can automatically overcome checksums and magic bytes without falling back to complex and fragile program analysis techniques, such as symbolic execution. It works by observing the arguments to function calls and compare instructions via virtual machine introspection. Observed values are used to provide inputs specific mutations.">
+<meta property="og:description" content="A binary fuzzer that automatically solves magic Bytes and checksums during fuzzing. Published at NDSS 2019.">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Redqueen">
 <meta name="twitter:title" content="Redqueen">
 <meta property="og:url" content="https://hexgolems.com/2018/12/redqueen/">
 <meta property="twitter:url" content="https://hexgolems.com/2018/12/redqueen/">
 <meta property="og:site_name" content="Hexgolems">
-<meta property="og:description" content="View On Github
-Redqueen   Authors: Cornelius Aschermann, Sergej Schumilo, Tim Blazytko, Robert Gawlik, Thorsten Holz
-Redqueen is a fast general purpose fuzzer for x86 binary applications. It can automatically overcome checksums and magic bytes without falling back to complex and fragile program analysis techniques, such as symbolic execution. It works by observing the arguments to function calls and compare instructions via virtual machine introspection. Observed values are used to provide inputs specific mutations.">
-<meta name="twitter:description" content="View On Github
-Redqueen   Authors: Cornelius Aschermann, Sergej Schumilo, Tim Blazytko, Robert Gawlik, Thorsten Holz
-Redqueen is a fast general purpose fuzzer for x86 binary applications. It can automatically overcome checksums and magic bytes without falling back to complex and fragile program analysis techniques, such as symbolic execution. It works by observing the arguments to function calls and compare instructions via virtual machine introspection. Observed values are used to provide inputs specific mutations.">
+<meta property="og:description" content="A binary fuzzer that automatically solves magic Bytes and checksums during fuzzing. Published at NDSS 2019.">
+<meta name="twitter:description" content="A binary fuzzer that automatically solves magic Bytes and checksums during fuzzing. Published at NDSS 2019.">
 <meta property="og:locale" content="en">
 
   
@@ -242,27 +234,18 @@ Redqueen is a fast general purpose fuzzer for x86 binary applications. It can au
           
           <div class="post-content markdown" itemprop="articleBody">
             <div class="main-content-wrap">
-              
-
-<p align=center><a href="https://github.com/RUB-SysSec/redqueen" class="post-action-btn btn btn--primary" text-align="center"><i class="fa fa-github" aria-hidden="true"></i> View On Github</a></p>
-
+              <p align=center><a href="https://github.com/RUB-SysSec/redqueen" class="post-action-btn btn btn--primary" text-align="center"><i class="fa fa-github" aria-hidden="true"></i> View On Github</a></p>
 <h3 id="redqueen">Redqueen</h3>
-
 <p>
 <a href="https://www.syssec.ruhr-uni-bochum.de/media/emma/veroeffentlichungen/2018/12/17/NDSS19-Redqueen.pdf"> <img align="right" width="200"  src="https://hexgolems.com/imgs/rq_paper.png"> </a>
 </p>
-
 <p><strong>Authors:</strong>
 Cornelius Aschermann, <a href="https://t.co/c4LvtKPq2M">Sergej Schumilo</a>, <a href="http://synthesis.to/">Tim Blazytko</a>, <a href="https://www.syssec.ruhr-uni-bochum.de/chair/staff/rgawlik/">Robert Gawlik</a>, <a href="https://www.syssec.ruhr-uni-bochum.de/chair/staff/tho/">Thorsten Holz</a></p>
-
 <p>Redqueen is a fast general purpose fuzzer for x86 binary applications. It can automatically overcome checksums and magic bytes without falling back to complex and fragile program analysis techniques, such as symbolic execution. It works by observing the arguments to function calls and compare instructions via virtual machine introspection. Observed values are used to provide inputs specific mutations. More details can be found in the paper. This fuzzer is built upon <a href="https://github.com/RUB-SysSec/kAFL">kAFL</a> and requires support for Intel VT-x as well as Intel Processor Trace.
 More details can be found in the paper.</p>
-
 <p><a> <img  src="https://hexgolems.com/imgs/rq_fuzzer.gif"> </a></p>
-
 <p>The paper describing Redqueen was published at NDSS 2019.
 A recording of the presentation and the slides can be found here:</p>
-
 <table>
 <thead>
 <tr>
@@ -270,7 +253,6 @@ A recording of the presentation and the slides can be found here:</p>
 <th>Slides</th>
 </tr>
 </thead>
-
 <tbody>
 <tr>
 <td><iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/9JpanJ29r_U" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></td>
@@ -278,9 +260,7 @@ A recording of the presentation and the slides can be found here:</p>
 </tr>
 </tbody>
 </table>
-
 <p>Redqueen helped to find and report multiple bugs, including:</p>
-
 <ul>
 <li>binutils nm-new                (<strong>CVE-2018-12641</strong>)</li>
 <li>binutils libiberty             (<strong>CVE-2018-12697</strong>)</li>
@@ -342,7 +322,7 @@ A recording of the presentation and the slides can be found here:</p>
           
             <li class="post-action">
               
-                <a class="post-action-btn btn btn--default tooltip--top" href="https://hexgolems.com/2018/12/nautilus---fuzzing-with-grammars/" data-tooltip="Nautilus - Fuzzing with Grammars">
+                <a class="post-action-btn btn btn--default tooltip--top" href="https://hexgolems.com/2018/12/nautilus-fuzzing-with-grammars/" data-tooltip="Nautilus - Fuzzing with Grammars">
               
                   
                   &lt;
@@ -395,7 +375,7 @@ A recording of the presentation and the slides can be found here:</p>
           
             <li class="post-action">
               
-                <a class="post-action-btn btn btn--default tooltip--top" href="https://hexgolems.com/2018/12/nautilus---fuzzing-with-grammars/" data-tooltip="Nautilus - Fuzzing with Grammars">
+                <a class="post-action-btn btn btn--default tooltip--top" href="https://hexgolems.com/2018/12/nautilus-fuzzing-with-grammars/" data-tooltip="Nautilus - Fuzzing with Grammars">
               
                   
                   &lt;

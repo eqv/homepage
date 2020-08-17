@@ -1,9 +1,9 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Web on Hexgolems</title>
+    <title>web on Hexgolems</title>
     <link>https://hexgolems.com/tags/web/</link>
-    <description>Recent content in Web on Hexgolems</description>
+    <description>Recent content in web on Hexgolems</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Thu, 01 Aug 2013 00:00:00 +0000</lastBuildDate>
@@ -17,8 +17,7 @@
       <pubDate>Thu, 01 Aug 2013 00:00:00 +0000</pubDate>
       
       <guid>https://hexgolems.com/2013/08/battlefleet/</guid>
-      <description>View On Github
-In Battlefleet a turn based strategy game, two players wage a battle in space. Both player plan their round independently, than the plans are executed in realtime (Play it Here). The game was written in CoffeScript using Crafty.js. It features multiple spaceships with different maneuverability and weapon characteristics and multiple levels, including a tutorial. We submitted it to the 27th Ludum dare competition, and unfortunately couldn&amp;rsquo;t find the time to add AI enemies.</description>
+      <description>A round based strategy game, build for the Ludum Dare 27 competition.</description>
     </item>
     
   </channel>

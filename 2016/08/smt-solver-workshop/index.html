@@ -7,22 +7,18 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="author" content="Cornelius Aschermann">
 <meta name="keywords" content="">
-<meta name="description" content="View On Github
-This is a one day Workshop on using SMT solvers for reverse engineering I gave at the Honeynet Project Annual Workshop in 2016. It contains the full slides, as well as the tasks and solutions. It teaches the basics of how program behavior is encoded in SMT formulas (more precisely, quantifier free theory of bitvectors - no theory of arrays / separation logic content in a one day workshop, sorry) and how one can use these formulas to get answers to questions about low level program behavior.">
+<meta name="description" content="A one day workshop on using SMT-Solvers and bounded model checker for reverse engineering and binary analysis.">
 
 
-<meta property="og:description" content="View On Github
-This is a one day Workshop on using SMT solvers for reverse engineering I gave at the Honeynet Project Annual Workshop in 2016. It contains the full slides, as well as the tasks and solutions. It teaches the basics of how program behavior is encoded in SMT formulas (more precisely, quantifier free theory of bitvectors - no theory of arrays / separation logic content in a one day workshop, sorry) and how one can use these formulas to get answers to questions about low level program behavior.">
+<meta property="og:description" content="A one day workshop on using SMT-Solvers and bounded model checker for reverse engineering and binary analysis.">
 <meta property="og:type" content="article">
 <meta property="og:title" content="SMT Solver Workshop">
 <meta name="twitter:title" content="SMT Solver Workshop">
 <meta property="og:url" content="https://hexgolems.com/2016/08/smt-solver-workshop/">
 <meta property="twitter:url" content="https://hexgolems.com/2016/08/smt-solver-workshop/">
 <meta property="og:site_name" content="Hexgolems">
-<meta property="og:description" content="View On Github
-This is a one day Workshop on using SMT solvers for reverse engineering I gave at the Honeynet Project Annual Workshop in 2016. It contains the full slides, as well as the tasks and solutions. It teaches the basics of how program behavior is encoded in SMT formulas (more precisely, quantifier free theory of bitvectors - no theory of arrays / separation logic content in a one day workshop, sorry) and how one can use these formulas to get answers to questions about low level program behavior.">
-<meta name="twitter:description" content="View On Github
-This is a one day Workshop on using SMT solvers for reverse engineering I gave at the Honeynet Project Annual Workshop in 2016. It contains the full slides, as well as the tasks and solutions. It teaches the basics of how program behavior is encoded in SMT formulas (more precisely, quantifier free theory of bitvectors - no theory of arrays / separation logic content in a one day workshop, sorry) and how one can use these formulas to get answers to questions about low level program behavior.">
+<meta property="og:description" content="A one day workshop on using SMT-Solvers and bounded model checker for reverse engineering and binary analysis.">
+<meta name="twitter:description" content="A one day workshop on using SMT-Solvers and bounded model checker for reverse engineering and binary analysis.">
 <meta property="og:locale" content="en">
 
   
@@ -235,7 +231,6 @@ This is a one day Workshop on using SMT solvers for reverse engineering I gave a
           <div class="post-content markdown" itemprop="articleBody">
             <div class="main-content-wrap">
               <p align=center><a href="https://github.com/eqv/Honeynet_SMT_Workshop" class="btn btn--primary" text-align="center"><i class="fa fa-github" aria-hidden="true"></i> View On Github</a></p>
-
 <p>This is a one day Workshop on using SMT solvers for reverse engineering I gave at the <a href="https://www.honeynet.org/">Honeynet Project</a> Annual Workshop in 2016. It
 contains the full <a href="https://github.com/eqv/Honeynet_SMT_Workshop/raw/master/full_length_version/slides.pdf">slides</a>, as well as the tasks and solutions. It teaches the basics of how program behavior
 is encoded in SMT formulas (more precisely, quantifier free theory of bitvectors - no theory of arrays / separation
@@ -243,7 +238,6 @@ logic content in a one day workshop, sorry) and how one can use these formulas t
 level program behavior. In particular, it addresses transformations such as SSA and how to deal with control flow such
 as if statements and loops. Then more practical examples are provided: obtain collisions and preimages for weak hash
 functions and use existing bounded model checkers to find bugs in C code.</p>
-
 <ul>
 <li><strong>Task 1:</strong> Setup SMT solver and use bitvectors to solve constraints with overflows.</li>
 <li><strong>Task 2:</strong> Check that an expression that was obfuscated using mixed boolean arithmetic is equivalent to the simpler
@@ -256,7 +250,6 @@ original expression.</li>
 <li><strong>Task 8:</strong> Use a bounded model checker to avoid doing all the manual work.</li>
 <li><strong>Task 9:</strong> Find security issues in a small C library using a bounded model checker.</li>
 </ul>
-
 <p>
 
  

@@ -1,9 +1,9 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Smt on Hexgolems</title>
+    <title>smt on Hexgolems</title>
     <link>https://hexgolems.com/tags/smt/</link>
-    <description>Recent content in Smt on Hexgolems</description>
+    <description>Recent content in smt on Hexgolems</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Mon, 01 Aug 2016 00:00:00 +0000</lastBuildDate>
@@ -17,8 +17,7 @@
       <pubDate>Mon, 01 Aug 2016 00:00:00 +0000</pubDate>
       
       <guid>https://hexgolems.com/2016/08/smt-solver-workshop/</guid>
-      <description>View On Github
-This is a one day Workshop on using SMT solvers for reverse engineering I gave at the Honeynet Project Annual Workshop in 2016. It contains the full slides, as well as the tasks and solutions. It teaches the basics of how program behavior is encoded in SMT formulas (more precisely, quantifier free theory of bitvectors - no theory of arrays / separation logic content in a one day workshop, sorry) and how one can use these formulas to get answers to questions about low level program behavior.</description>
+      <description>A one day workshop on using SMT-Solvers and bounded model checker for reverse engineering and binary analysis.</description>
     </item>
     
   </channel>

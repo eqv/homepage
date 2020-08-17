@@ -7,26 +7,18 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="author" content="Cornelius Aschermann">
 <meta name="keywords" content="">
-<meta name="description" content="View On Github
-kAFL   Authors: Sergej Schumilo, Cornelius Aschermann, Robert Gawlik, Sebastian Schinzel, Thorsten Holz
-kAFL is a blazing fast x86-64 VM kernel fuzzing framework with performant VM reloads for Linux, MacOS and Windows. It works by running the target operating system inside a hardware accelerated VM, giving it full controll over the environment. This very helpfull to properly recover from crashes. Intels Processor Trace (Intel PT) feature is used to obtain coverage information from the code running inside of the VM.">
+<meta name="description" content="An AFL style feedback fuzzer, that uses Intel-PT to trace operating systems without access to sourcecode. Published at USENIX Security 2017">
 
 
-<meta property="og:description" content="View On Github
-kAFL   Authors: Sergej Schumilo, Cornelius Aschermann, Robert Gawlik, Sebastian Schinzel, Thorsten Holz
-kAFL is a blazing fast x86-64 VM kernel fuzzing framework with performant VM reloads for Linux, MacOS and Windows. It works by running the target operating system inside a hardware accelerated VM, giving it full controll over the environment. This very helpfull to properly recover from crashes. Intels Processor Trace (Intel PT) feature is used to obtain coverage information from the code running inside of the VM.">
+<meta property="og:description" content="An AFL style feedback fuzzer, that uses Intel-PT to trace operating systems without access to sourcecode. Published at USENIX Security 2017">
 <meta property="og:type" content="article">
 <meta property="og:title" content="kAFL">
 <meta name="twitter:title" content="kAFL">
 <meta property="og:url" content="https://hexgolems.com/2017/08/kafl/">
 <meta property="twitter:url" content="https://hexgolems.com/2017/08/kafl/">
 <meta property="og:site_name" content="Hexgolems">
-<meta property="og:description" content="View On Github
-kAFL   Authors: Sergej Schumilo, Cornelius Aschermann, Robert Gawlik, Sebastian Schinzel, Thorsten Holz
-kAFL is a blazing fast x86-64 VM kernel fuzzing framework with performant VM reloads for Linux, MacOS and Windows. It works by running the target operating system inside a hardware accelerated VM, giving it full controll over the environment. This very helpfull to properly recover from crashes. Intels Processor Trace (Intel PT) feature is used to obtain coverage information from the code running inside of the VM.">
-<meta name="twitter:description" content="View On Github
-kAFL   Authors: Sergej Schumilo, Cornelius Aschermann, Robert Gawlik, Sebastian Schinzel, Thorsten Holz
-kAFL is a blazing fast x86-64 VM kernel fuzzing framework with performant VM reloads for Linux, MacOS and Windows. It works by running the target operating system inside a hardware accelerated VM, giving it full controll over the environment. This very helpfull to properly recover from crashes. Intels Processor Trace (Intel PT) feature is used to obtain coverage information from the code running inside of the VM.">
+<meta property="og:description" content="An AFL style feedback fuzzer, that uses Intel-PT to trace operating systems without access to sourcecode. Published at USENIX Security 2017">
+<meta name="twitter:description" content="An AFL style feedback fuzzer, that uses Intel-PT to trace operating systems without access to sourcecode. Published at USENIX Security 2017">
 <meta property="og:locale" content="en">
 
   
@@ -240,27 +232,19 @@ kAFL is a blazing fast x86-64 VM kernel fuzzing framework with performant VM rel
           
           <div class="post-content markdown" itemprop="articleBody">
             <div class="main-content-wrap">
-              
-
-<p align=center><a href="https://github.com/RUB-SysSec/kAFL" class="post-action-btn btn btn--primary" text-align="center"><i class="fa fa-github" aria-hidden="true"></i> View On Github</a></p>
-
+              <p align=center><a href="https://github.com/RUB-SysSec/kAFL" class="post-action-btn btn btn--primary" text-align="center"><i class="fa fa-github" aria-hidden="true"></i> View On Github</a></p>
 <h3 id="kafl">kAFL</h3>
-
 <p>
 <a href="https://www.syssec.ruhr-uni-bochum.de/media/emma/veroeffentlichungen/2017/08/16/usenix17-kAFL.pdf"> <img align="right" width="200"  src="https://hexgolems.com/imgs/kafl_paper.png"> </a>
 </p>
-
 <p><strong>Authors:</strong>
 <a href="https://t.co/c4LvtKPq2M">Sergej Schumilo</a>, Cornelius Aschermann, <a href="https://www.syssec.ruhr-uni-bochum.de/chair/staff/rgawlik/">Robert Gawlik</a>, <a href="https://www.fh-muenster.de/eti/personen/professoren/schinzel/index.php">Sebastian Schinzel</a>, <a href="https://www.syssec.ruhr-uni-bochum.de/chair/staff/tho/">Thorsten Holz</a></p>
-
 <p>kAFL is a blazing fast x86-64 VM kernel fuzzing framework with performant VM reloads for Linux, MacOS and Windows. It
 works by running the target operating system inside a hardware accelerated VM, giving it full controll over the
 environment. This very helpfull to properly recover from crashes. Intels Processor Trace (Intel PT) feature is used to
 obtain coverage information from the code running inside of the VM. This way, the fuzzing logic that is running outside
 of the VM can use the coverage information to guided fuzzing.</p>
-
 <p>kAFL helped find and report multiple bugs, including:</p>
-
 <ul>
 <li><a href="http://seclists.org/fulldisclosure/2016/Nov/76">Linux keyctl null pointer dereference</a> (<strong>CVE-2016-8650</strong>)</li>
 <li><a href="http://seclists.org/fulldisclosure/2016/Nov/75">Linux EXT4 memory corruption</a></li>
@@ -268,10 +252,8 @@ of the VM can use the coverage information to guided fuzzing.</p>
 <li><a href="https://support.apple.com/en-us/HT208221">macOS APFS memory corruption</a> (<strong>CVE-2017-13800</strong>)</li>
 <li><a href="https://support.apple.com/en-us/HT208221">macOS HFS memory corruption</a> (<strong>CVE-2017-13830</strong>)</li>
 </ul>
-
 <p>The paper describing kAFL was published at USENIX Security 2017.
 A recording of the presentation and the slides can be found here:</p>
-
 <table>
 <thead>
 <tr>
@@ -279,7 +261,6 @@ A recording of the presentation and the slides can be found here:</p>
 <th>Slides</th>
 </tr>
 </thead>
-
 <tbody>
 <tr>
 <td><iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/gZ808d7rQYU" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></td>

@@ -7,26 +7,18 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="author" content="Cornelius Aschermann">
 <meta name="keywords" content="">
-<meta name="description" content="View On Github
-Grimoire   Authors: Tim Blazytko, Cornelius Aschermann, Ali Abbasi, Sergej Schumilo, Simon Wörner, Thorsten Holz
-Grimoire is a fast binary only fuzzer, that infers structural information during the fuzzing process itself. To produce better test coverage, it it observes how chunks from the learned inputs can be recombined in a weak form of grammar. This process piggybacks on the usual fuzzing process. It only uses the information obtained from a AFL-style feedback bitmap.">
+<meta name="description" content="Automatically infer grammar like fragments during normal feedback fuzzing to improve test coverage. Published at USENIX Security 2019.">
 
 
-<meta property="og:description" content="View On Github
-Grimoire   Authors: Tim Blazytko, Cornelius Aschermann, Ali Abbasi, Sergej Schumilo, Simon Wörner, Thorsten Holz
-Grimoire is a fast binary only fuzzer, that infers structural information during the fuzzing process itself. To produce better test coverage, it it observes how chunks from the learned inputs can be recombined in a weak form of grammar. This process piggybacks on the usual fuzzing process. It only uses the information obtained from a AFL-style feedback bitmap.">
+<meta property="og:description" content="Automatically infer grammar like fragments during normal feedback fuzzing to improve test coverage. Published at USENIX Security 2019.">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Grimoire">
 <meta name="twitter:title" content="Grimoire">
 <meta property="og:url" content="https://hexgolems.com/2019/07/grimoire/">
 <meta property="twitter:url" content="https://hexgolems.com/2019/07/grimoire/">
 <meta property="og:site_name" content="Hexgolems">
-<meta property="og:description" content="View On Github
-Grimoire   Authors: Tim Blazytko, Cornelius Aschermann, Ali Abbasi, Sergej Schumilo, Simon Wörner, Thorsten Holz
-Grimoire is a fast binary only fuzzer, that infers structural information during the fuzzing process itself. To produce better test coverage, it it observes how chunks from the learned inputs can be recombined in a weak form of grammar. This process piggybacks on the usual fuzzing process. It only uses the information obtained from a AFL-style feedback bitmap.">
-<meta name="twitter:description" content="View On Github
-Grimoire   Authors: Tim Blazytko, Cornelius Aschermann, Ali Abbasi, Sergej Schumilo, Simon Wörner, Thorsten Holz
-Grimoire is a fast binary only fuzzer, that infers structural information during the fuzzing process itself. To produce better test coverage, it it observes how chunks from the learned inputs can be recombined in a weak form of grammar. This process piggybacks on the usual fuzzing process. It only uses the information obtained from a AFL-style feedback bitmap.">
+<meta property="og:description" content="Automatically infer grammar like fragments during normal feedback fuzzing to improve test coverage. Published at USENIX Security 2019.">
+<meta name="twitter:description" content="Automatically infer grammar like fragments during normal feedback fuzzing to improve test coverage. Published at USENIX Security 2019.">
 <meta property="og:locale" content="en">
 
   
@@ -238,27 +230,19 @@ Grimoire is a fast binary only fuzzer, that infers structural information during
           
           <div class="post-content markdown" itemprop="articleBody">
             <div class="main-content-wrap">
-              
-
-<p align=center><a href="https://github.com/RUB-SysSec/grimoire" class="post-action-btn btn btn--primary" text-align="center"><i class="fa fa-github" aria-hidden="true"></i> View On Github</a></p>
-
+              <p align=center><a href="https://github.com/RUB-SysSec/grimoire" class="post-action-btn btn btn--primary" text-align="center"><i class="fa fa-github" aria-hidden="true"></i> View On Github</a></p>
 <h3 id="grimoire">Grimoire</h3>
-
 <p>
 <a href="https://www.syssec.ruhr-uni-bochum.de/media/emma/veroeffentlichungen/2019/06/03/grimoire.pdf"> <img align="right" width="200"  src="https://hexgolems.com/imgs/grimoire_paper.png"> </a>
 </p>
-
 <p><strong>Authors:</strong>
 <a href="http://synthesis.to/">Tim Blazytko</a>, Cornelius Aschermann, <a href="https://www.syssec.ruhr-uni-bochum.de/chair/staff/aliabbasi/">Ali Abbasi</a>, <a href="https://t.co/c4LvtKPq2M">Sergej Schumilo</a>, <a href="http://simon-woerner.de/">Simon Wörner</a>, <a href="https://www.syssec.ruhr-uni-bochum.de/chair/staff/tho/">Thorsten Holz</a></p>
-
 <p>Grimoire is a fast binary only fuzzer, that infers structural information during the fuzzing process itself. To produce
 better test coverage, it it observes how chunks from the learned inputs can be recombined in a weak form of grammar. This
 process piggybacks on the usual fuzzing process. It only uses the information obtained from
 a AFL-style feedback bitmap. As a consequence it is very cheap and greatly improves the performance of fuzzers when
 fuzzing structured formats.</p>
-
 <p>Grimoire helped to find and report multiple bugs, including:</p>
-
 <ul>
 <li>gnuplot (<strong>CVE-2018-19490</strong>)</li>
 <li>gnuplot (<strong>CVE-2018-19491</strong>)</li>

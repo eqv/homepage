@@ -7,26 +7,18 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="author" content="Cornelius Aschermann">
 <meta name="keywords" content="">
-<meta name="description" content="View On Github
-You love ipdb.set_trace() in python or binding.pry in ruby? You are sad that rust doesn&rsquo;t offer the same comfort? gdb_probe.rs is here to safe the day! With a simple call, it suspends the current process, spawns a new terminal and attaches gdb. This has many advantages:
- Comfortable debugging. If you program in an IDE with limited debugger support, you get a much simpler debugging story than manually using gdb.">
+<meta name="description" content="Spawn a dynamic debugger from your application like ipdb.set_trace() / binding.pry, but in Rust.">
 
 
-<meta property="og:description" content="View On Github
-You love ipdb.set_trace() in python or binding.pry in ruby? You are sad that rust doesn&rsquo;t offer the same comfort? gdb_probe.rs is here to safe the day! With a simple call, it suspends the current process, spawns a new terminal and attaches gdb. This has many advantages:
- Comfortable debugging. If you program in an IDE with limited debugger support, you get a much simpler debugging story than manually using gdb.">
+<meta property="og:description" content="Spawn a dynamic debugger from your application like ipdb.set_trace() / binding.pry, but in Rust.">
 <meta property="og:type" content="article">
 <meta property="og:title" content="gdb_probe.rs">
 <meta name="twitter:title" content="gdb_probe.rs">
 <meta property="og:url" content="https://hexgolems.com/2019/02/gdb_probe.rs/">
 <meta property="twitter:url" content="https://hexgolems.com/2019/02/gdb_probe.rs/">
 <meta property="og:site_name" content="Hexgolems">
-<meta property="og:description" content="View On Github
-You love ipdb.set_trace() in python or binding.pry in ruby? You are sad that rust doesn&rsquo;t offer the same comfort? gdb_probe.rs is here to safe the day! With a simple call, it suspends the current process, spawns a new terminal and attaches gdb. This has many advantages:
- Comfortable debugging. If you program in an IDE with limited debugger support, you get a much simpler debugging story than manually using gdb.">
-<meta name="twitter:description" content="View On Github
-You love ipdb.set_trace() in python or binding.pry in ruby? You are sad that rust doesn&rsquo;t offer the same comfort? gdb_probe.rs is here to safe the day! With a simple call, it suspends the current process, spawns a new terminal and attaches gdb. This has many advantages:
- Comfortable debugging. If you program in an IDE with limited debugger support, you get a much simpler debugging story than manually using gdb.">
+<meta property="og:description" content="Spawn a dynamic debugger from your application like ipdb.set_trace() / binding.pry, but in Rust.">
+<meta name="twitter:description" content="Spawn a dynamic debugger from your application like ipdb.set_trace() / binding.pry, but in Rust.">
 <meta property="og:locale" content="en">
 
   
@@ -234,14 +226,10 @@ You love ipdb.set_trace() in python or binding.pry in ruby? You are sad that rus
           
           <div class="post-content markdown" itemprop="articleBody">
             <div class="main-content-wrap">
-              
-
-<p align=center><a href="https://github.com/eqv/gdb_probe.rs" class="btn btn--primary" text-align="center"><i class="fa fa-github" aria-hidden="true"></i> View On Github</a></p>
-
+              <p align=center><a href="https://github.com/eqv/gdb_probe.rs" class="btn btn--primary" text-align="center"><i class="fa fa-github" aria-hidden="true"></i> View On Github</a></p>
 <p>You love <code>ipdb.set_trace()</code> in python  or <code>binding.pry</code> in ruby? You are sad that rust doesn&rsquo;t offer the same comfort?
 <strong>gdb_probe.rs</strong> is here to safe the day! With a simple call, it suspends the current process, spawns a new terminal and
 attaches gdb. This has many advantages:</p>
-
 <ul>
 <li>Comfortable debugging. If you program in an IDE with limited debugger support, you get a much simpler debugging story
 than manually using gdb.</li>
@@ -249,26 +237,19 @@ than manually using gdb.</li>
 very fast.</li>
 <li>No more stdout mess. If you debug a program with output on stdout, the debugger outputs doesn&rsquo;t fight the programs output.</li>
 </ul>
-
 <h2 id="how-to-use">How to use</h2>
-
 <p>add <code>&quot;gdb_probe=&quot;0.1&quot;</code> to your Cargo.toml</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#66d9ef">extern</span> <span style="color:#66d9ef">crate</span> gdb_probe;
+<span style="color:#66d9ef">use</span> gdb_probe::gdb_probe;
 
-<pre><code class="language-rust">extern crate gdb_probe;
-use gdb_probe::gdb_probe;
-
-fn main() {
-    println!(&quot;Hello, world!&quot;);
-    let x = 3+4;
-    gdb_probe(); //spawns a new terminal (urxvt) with gdb attached at this position.
-}
-</code></pre>
-
-<h2 id="known-caveats">Known Caveats</h2>
-
+<span style="color:#66d9ef">fn</span> <span style="color:#a6e22e">main</span>() {
+    println<span style="color:#f92672">!</span>(<span style="color:#e6db74">&#34;Hello, world!&#34;</span>);
+    <span style="color:#66d9ef">let</span> x <span style="color:#f92672">=</span> <span style="color:#ae81ff">3</span><span style="color:#f92672">+</span><span style="color:#ae81ff">4</span>;
+    gdb_probe(); <span style="color:#75715e">//spawns a new terminal (urxvt) with gdb attached at this position.
+</span><span style="color:#75715e"></span>}
+</code></pre></div><h2 id="known-caveats">Known Caveats</h2>
 <p><em>Warning</em> If the target process dies before the debugger can attach, sometimes init is debugged instead. In that case forcefully
 terminating the debugger causes a reboot.</p>
-
 <p>Depends on urxvt as a terminal.</p>
 
               

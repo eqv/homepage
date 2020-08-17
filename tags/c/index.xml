@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>C on Hexgolems</title>
@@ -6,10 +6,28 @@
     <description>Recent content in C on Hexgolems</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Wed, 17 Jul 2019 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Tue, 14 Jul 2020 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="https://hexgolems.com/tags/c/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Aurora</title>
+      <link>https://hexgolems.com/2020/07/aurora/</link>
+      <pubDate>Tue, 14 Jul 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://hexgolems.com/2020/07/aurora/</guid>
+      <description>Aurora automatically identifies the root cause of bugs found via fuzzing. Published at USENIX Security 2020</description>
+    </item>
+    
+    <item>
+      <title>Ijon</title>
+      <link>https://hexgolems.com/2020/07/ijon/</link>
+      <pubDate>Tue, 14 Jul 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://hexgolems.com/2020/07/ijon/</guid>
+      <description>Allows the user to guide the fuzzer through the state space of the target program. Published at Oakland S&amp;amp;P 2020</description>
+    </item>
     
     <item>
       <title>Antifuzz</title>
@@ -17,8 +35,7 @@
       <pubDate>Wed, 17 Jul 2019 00:00:00 +0000</pubDate>
       
       <guid>https://hexgolems.com/2019/07/antifuzz/</guid>
-      <description>Antifuzz   Authors: Emre Güler, Cornelius Aschermann, Ali Abbasi, Thorsten Holz
-In this work, we analysed various state of the art fuzzers and show that common obfuscation techniques do not help against attackers using fuzzer. Then we systematically attack the underlying assumptions of modern fuzzers and show how they can be attacked by relatively simple obfuscations mechanisms.</description>
+      <description>Investigate weak points in current fuzzers to protect software from fully automatic fuzzing. Published at USENIX Security 2019</description>
     </item>
     
     <item>
@@ -27,9 +44,7 @@ In this work, we analysed various state of the art fuzzers and show that common 
       <pubDate>Mon, 17 Dec 2018 00:00:00 +0000</pubDate>
       
       <guid>https://hexgolems.com/2018/12/redqueen/</guid>
-      <description>View On Github
-Redqueen   Authors: Cornelius Aschermann, Sergej Schumilo, Tim Blazytko, Robert Gawlik, Thorsten Holz
-Redqueen is a fast general purpose fuzzer for x86 binary applications. It can automatically overcome checksums and magic bytes without falling back to complex and fragile program analysis techniques, such as symbolic execution. It works by observing the arguments to function calls and compare instructions via virtual machine introspection. Observed values are used to provide inputs specific mutations.</description>
+      <description>A binary fuzzer that automatically solves magic Bytes and checksums during fuzzing. Published at NDSS 2019.</description>
     </item>
     
     <item>
@@ -38,9 +53,7 @@ Redqueen is a fast general purpose fuzzer for x86 binary applications. It can au
       <pubDate>Thu, 17 Aug 2017 00:00:00 +0000</pubDate>
       
       <guid>https://hexgolems.com/2017/08/kafl/</guid>
-      <description>View On Github
-kAFL   Authors: Sergej Schumilo, Cornelius Aschermann, Robert Gawlik, Sebastian Schinzel, Thorsten Holz
-kAFL is a blazing fast x86-64 VM kernel fuzzing framework with performant VM reloads for Linux, MacOS and Windows. It works by running the target operating system inside a hardware accelerated VM, giving it full controll over the environment. This very helpfull to properly recover from crashes. Intels Processor Trace (Intel PT) feature is used to obtain coverage information from the code running inside of the VM.</description>
+      <description>An AFL style feedback fuzzer, that uses Intel-PT to trace operating systems without access to sourcecode. Published at USENIX Security 2017</description>
     </item>
     
     <item>
@@ -49,9 +62,7 @@ kAFL is a blazing fast x86-64 VM kernel fuzzing framework with performant VM rel
       <pubDate>Wed, 01 Oct 2014 00:00:00 +0000</pubDate>
       
       <guid>https://hexgolems.com/2014/10/pint/</guid>
-      <description>View On Github
-Pint is a PIN tool that exposes the PIN API to lua scripts. Pint runs on 64 bit Ubuntu and 32 bit Windows XP, it should run on 32 bit Ubuntu and 64 bit XP as well but this is yet untested.
-PIN is a dynamic instrumentation engine developed by Intel. Basically, it is a JIT compiler for binaries. It will disassemble the binary, one basic block at a time, and recompile it with additional instructions inserted at arbitrary positions.</description>
+      <description>Use LUA scripting for dynamic binary instrumentation and analysis using PIN.</description>
     </item>
     
   </channel>

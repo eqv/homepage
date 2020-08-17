@@ -7,26 +7,18 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="author" content="Cornelius Aschermann">
 <meta name="keywords" content="">
-<meta name="description" content="View On Github
-Pint is a PIN tool that exposes the PIN API to lua scripts. Pint runs on 64 bit Ubuntu and 32 bit Windows XP, it should run on 32 bit Ubuntu and 64 bit XP as well but this is yet untested.
-PIN is a dynamic instrumentation engine developed by Intel. Basically, it is a JIT compiler for binaries. It will disassemble the binary, one basic block at a time, and recompile it with additional instructions inserted at arbitrary positions.">
+<meta name="description" content="Use LUA scripting for dynamic binary instrumentation and analysis using PIN.">
 
 
-<meta property="og:description" content="View On Github
-Pint is a PIN tool that exposes the PIN API to lua scripts. Pint runs on 64 bit Ubuntu and 32 bit Windows XP, it should run on 32 bit Ubuntu and 64 bit XP as well but this is yet untested.
-PIN is a dynamic instrumentation engine developed by Intel. Basically, it is a JIT compiler for binaries. It will disassemble the binary, one basic block at a time, and recompile it with additional instructions inserted at arbitrary positions.">
+<meta property="og:description" content="Use LUA scripting for dynamic binary instrumentation and analysis using PIN.">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Pint">
 <meta name="twitter:title" content="Pint">
 <meta property="og:url" content="https://hexgolems.com/2014/10/pint/">
 <meta property="twitter:url" content="https://hexgolems.com/2014/10/pint/">
 <meta property="og:site_name" content="Hexgolems">
-<meta property="og:description" content="View On Github
-Pint is a PIN tool that exposes the PIN API to lua scripts. Pint runs on 64 bit Ubuntu and 32 bit Windows XP, it should run on 32 bit Ubuntu and 64 bit XP as well but this is yet untested.
-PIN is a dynamic instrumentation engine developed by Intel. Basically, it is a JIT compiler for binaries. It will disassemble the binary, one basic block at a time, and recompile it with additional instructions inserted at arbitrary positions.">
-<meta name="twitter:description" content="View On Github
-Pint is a PIN tool that exposes the PIN API to lua scripts. Pint runs on 64 bit Ubuntu and 32 bit Windows XP, it should run on 32 bit Ubuntu and 64 bit XP as well but this is yet untested.
-PIN is a dynamic instrumentation engine developed by Intel. Basically, it is a JIT compiler for binaries. It will disassemble the binary, one basic block at a time, and recompile it with additional instructions inserted at arbitrary positions.">
+<meta property="og:description" content="Use LUA scripting for dynamic binary instrumentation and analysis using PIN.">
+<meta name="twitter:description" content="Use LUA scripting for dynamic binary instrumentation and analysis using PIN.">
 <meta property="og:locale" content="en">
 
   
@@ -240,256 +232,209 @@ PIN is a dynamic instrumentation engine developed by Intel. Basically, it is a J
           
           <div class="post-content markdown" itemprop="articleBody">
             <div class="main-content-wrap">
-              
-
-<p align=center><a href="https://github.com/hexgolems/pint" class="btn btn--primary" text-align="center"><i class="fa fa-github" aria-hidden="true"></i> View On Github</a></p>
-
+              <p align=center><a href="https://github.com/hexgolems/pint" class="btn btn--primary" text-align="center"><i class="fa fa-github" aria-hidden="true"></i> View On Github</a></p>
 <p>Pint is a PIN tool that exposes the PIN API to lua scripts.  Pint runs on 64
 bit Ubuntu and 32 bit Windows XP, it should run on 32 bit Ubuntu and 64 bit XP as
 well but this is yet untested.</p>
-
 <p>PIN is a dynamic instrumentation engine developed by Intel. Basically, it is a
 JIT compiler for binaries. It will disassemble the binary, one basic block at a
 time, and recompile it with additional instructions inserted at arbitrary
 positions. Pint makes it possible to add lua code at this point.</p>
-
 <h1 id="installation">Installation</h1>
-
 <h2 id="under-windows">Under Windows</h2>
-
 <p>Make sure you have VC++2010 installed.
 Install cygwin and install the following packages: ruby, patch, wget, unzip
 Add C:\cygwin\bin to the %PATH% environment variable.
 Open a VC++ console.
 Move to your preferred directory and run:</p>
-
 <pre><code>git clone &quot;https://github.com/hexgolems/pint&quot;
 cd pint
 ruby make.rb setup
-</code></pre>
-
-<p>The setup target will download pin &amp; lua, apply patches where necessary and
+</code></pre><p>The setup target will download pin &amp; lua, apply patches where necessary and
 build Pint. The final pintool is called <code>runner.dll</code>.</p>
-
 <p>You can then run your lua script with:
 <code>pin.exe -t runner.dll -s path/to/scrip -- binary_to_instrument.exe args for exe</code></p>
-
 <h2 id="under-ubuntu">Under Ubuntu</h2>
-
 <p>Make sure you use ruby1.9 and have git installed and then run:</p>
-
 <pre><code>git clone &quot;https://github.com/hexgolems/pint&quot;
 cd pint
 ruby make.rb setup
-</code></pre>
-
-<p>The setup target will download pin &amp; lua, apply patches where necessary and
+</code></pre><p>The setup target will download pin &amp; lua, apply patches where necessary and
 build Pint. The final pintool is called <code>runner.so</code>.</p>
-
 <p>You can then run your lua script with:</p>
-
 <p><code>./pin/pin  -injection child -t runner.so -s path/to/scrip -- /path/to/binary_to_instrument args for prog</code></p>
-
 <h1 id="usage">Usage</h1>
-
 <p>Most of the original PIN functions are wrapped to lua. Names are changed
 slightly: <code>INS_IsSomeThing(INS a)</code> becomes <code>Ins.is_some_thing(a)</code> alternatively
 given an variable <code>a</code> containing an <code>INS</code> one can write <code>a:is_some_thing()</code>.</p>
-
 <h2 id="example-extract-call-graphs">Example: Extract Call Graphs</h2>
-
 <p>Use-case: You have a C++ program with a load of virtual function calls and you
 would like to extract all the targets of any dynamic jump (maybe you can use
 this to annotate you code in IDA or SchemDBG). Then you will have to register a
 callback for every newly assembled instruction. This callback will test if the
 new instruction is a call/jmp with an unknown target. If so, it will add another
 callback that logs the target of the call / jump.</p>
-
 <p>To begin with, we include a small lib with helper functions:</p>
-
-<pre><code class="language-lua">require(&quot;src.lib&quot;)
-</code></pre>
-
-<p>Then we need a table that stores all <code>from</code>, <code>to</code> pairs. We create a new global variable for that:</p>
-
-<pre><code class="language-lua">jmps = {}
-</code></pre>
-
-<p>The next step is to create a function that is called once for every instruction that we recompile:</p>
-
-<pre><code class="language-lua">function callback_ins(ins)
-	--do something with the instruction
-end
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-lua" data-lang="lua">require(<span style="color:#e6db74">&#34;src.lib&#34;</span>)
+</code></pre></div><p>Then we need a table that stores all <code>from</code>, <code>to</code> pairs. We create a new global variable for that:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-lua" data-lang="lua">jmps <span style="color:#f92672">=</span> {}
+</code></pre></div><p>The next step is to create a function that is called once for every instruction that we recompile:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-lua" data-lang="lua"><span style="color:#66d9ef">function</span> <span style="color:#a6e22e">callback_ins</span>(ins)
+	<span style="color:#75715e">--do something with the instruction</span>
+<span style="color:#66d9ef">end</span>
 
 CB.instruction(callback_ins)
-</code></pre>
+</code></pre></div><p>Now we need to create a callback function that is called if the given instruction is executed. It will take a <code>from</code>-address, a target and a boolean indicating if the jump was taken. We add the <code>form</code>, <code>to</code> pair to our mapping.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-lua" data-lang="lua"><span style="color:#66d9ef">function</span> <span style="color:#a6e22e">callback_jmp</span>(from, to, was_taken)
+	<span style="color:#66d9ef">if</span> was_taken <span style="color:#66d9ef">then</span> 
+		jmps[from] <span style="color:#f92672">=</span> jmps[from] <span style="color:#f92672">or</span> {}
+		jmps[from][to] <span style="color:#f92672">=</span> <span style="color:#66d9ef">true</span>
+	<span style="color:#66d9ef">end</span>
+<span style="color:#66d9ef">end</span>
+</code></pre></div><p>Now we need to add the newly created callback to all instructions that interests us. To do so we will test if the given instruction is a indirect call or jump (e.G. the target is determined at runtime). Then we add our callback to the instruction. To do so we first need to create a so called TypedCallback. A TypedCallback is an object that knows which values pin needs to pass to the callback.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-lua" data-lang="lua">jcall <span style="color:#f92672">=</span> TypedCallback.new(<span style="color:#e6db74">&#34;IARG_INST_PTR&#34;</span>,<span style="color:#e6db74">&#34;IARG_BRANCH_TARGET_ADDR&#34;</span>, <span style="color:#e6db74">&#34;IARG_BRANCH_TAKEN&#34;</span>, callback_jmp)
 
-<p>Now we need to create a callback function that is called if the given instruction is executed. It will take a <code>from</code>-address, a target and a boolean indicating if the jump was taken. We add the <code>form</code>, <code>to</code> pair to our mapping.</p>
+<span style="color:#66d9ef">function</span> <span style="color:#a6e22e">callback_ins</span>(ins)
+		<span style="color:#66d9ef">if</span> ins:is_indirect_branch_or_call() <span style="color:#66d9ef">then</span>
+			ins:add_callback( jcall,<span style="color:#e6db74">&#34;BEFORE&#34;</span>)
+		<span style="color:#66d9ef">end</span>
+<span style="color:#66d9ef">end</span>
+</code></pre></div><p>To wrap things up, we need to add a function that will be called upon the debugee exiting. This function will print the list pairs to stdout. Note that this will only properly work under Linux. Under windows the output will be printed into a log file since the process will close STDOUT/STDIN when exiting. Under Linux this was fixed by duping the fds. Under Windows we only reopen some log files as STDOUT/STDERR.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-lua" data-lang="lua"><span style="color:#66d9ef">function</span> <span style="color:#a6e22e">at_exit</span>(status)
+	<span style="color:#66d9ef">for</span> addr, targets <span style="color:#66d9ef">in</span> pairs(jmps) <span style="color:#66d9ef">do</span>
+		<span style="color:#66d9ef">for</span> target, _ <span style="color:#66d9ef">in</span> pairs(targets) <span style="color:#66d9ef">do</span>
+			print( hex(addr),<span style="color:#e6db74">&#34;--&gt;&#34;</span>, hex(target))
+		<span style="color:#66d9ef">end</span>
+	<span style="color:#66d9ef">end</span>
+<span style="color:#66d9ef">end</span>
+</code></pre></div><p>Thus the entire code for extracting a list of all call/jmp targets is just 28 lines of lua. Additional samples can be found in <code>src/tools</code></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-lua" data-lang="lua">require(<span style="color:#e6db74">&#34;src.lib&#34;</span>)
 
-<pre><code class="language-lua">function callback_jmp(from, to, was_taken)
-	if was_taken then 
-		jmps[from] = jmps[from] or {}
-		jmps[from][to] = true
-	end
-end
-</code></pre>
+jmps <span style="color:#f92672">=</span> {}
 
-<p>Now we need to add the newly created callback to all instructions that interests us. To do so we will test if the given instruction is a indirect call or jump (e.G. the target is determined at runtime). Then we add our callback to the instruction. To do so we first need to create a so called TypedCallback. A TypedCallback is an object that knows which values pin needs to pass to the callback.</p>
+<span style="color:#66d9ef">function</span> <span style="color:#a6e22e">callback_jmp</span>(from, to, was_taken)
+	<span style="color:#66d9ef">if</span> was_taken <span style="color:#66d9ef">then</span> 
+		jmps[from] <span style="color:#f92672">=</span> jmps[from] <span style="color:#f92672">or</span> {}
+		jmps[from][to] <span style="color:#f92672">=</span> <span style="color:#66d9ef">true</span>
+	<span style="color:#66d9ef">end</span>
+<span style="color:#66d9ef">end</span>
 
-<pre><code class="language-lua">jcall = TypedCallback.new(&quot;IARG_INST_PTR&quot;,&quot;IARG_BRANCH_TARGET_ADDR&quot;, &quot;IARG_BRANCH_TAKEN&quot;, callback_jmp)
+jcall <span style="color:#f92672">=</span> TypedCallback.new(<span style="color:#e6db74">&#34;IARG_INST_PTR&#34;</span>,<span style="color:#e6db74">&#34;IARG_BRANCH_TARGET_ADDR&#34;</span>, <span style="color:#e6db74">&#34;IARG_BRANCH_TAKEN&#34;</span>, callback_jmp)
 
-function callback_ins(ins)
-		if ins:is_indirect_branch_or_call() then
-			ins:add_callback( jcall,&quot;BEFORE&quot;)
-		end
-end
-</code></pre>
-
-<p>To wrap things up, we need to add a function that will be called upon the debugee exiting. This function will print the list pairs to stdout. Note that this will only properly work under Linux. Under windows the output will be printed into a log file since the process will close STDOUT/STDIN when exiting. Under Linux this was fixed by duping the fds. Under Windows we only reopen some log files as STDOUT/STDERR.</p>
-
-<pre><code class="language-lua">function at_exit(status)
-	for addr, targets in pairs(jmps) do
-		for target, _ in pairs(targets) do
-			print( hex(addr),&quot;--&gt;&quot;, hex(target))
-		end
-	end
-end
-</code></pre>
-
-<p>Thus the entire code for extracting a list of all call/jmp targets is just 28 lines of lua. Additional samples can be found in <code>src/tools</code></p>
-
-<pre><code class="language-lua">require(&quot;src.lib&quot;)
-
-jmps = {}
-
-function callback_jmp(from, to, was_taken)
-	if was_taken then 
-		jmps[from] = jmps[from] or {}
-		jmps[from][to] = true
-	end
-end
-
-jcall = TypedCallback.new(&quot;IARG_INST_PTR&quot;,&quot;IARG_BRANCH_TARGET_ADDR&quot;, &quot;IARG_BRANCH_TAKEN&quot;, callback_jmp)
-
-function callback_ins(ins)
-		if ins:is_indirect_branch_or_call() then
-			ins:add_callback( jcall,&quot;BEFORE&quot;)
-		end
-end
+<span style="color:#66d9ef">function</span> <span style="color:#a6e22e">callback_ins</span>(ins)
+		<span style="color:#66d9ef">if</span> ins:is_indirect_branch_or_call() <span style="color:#66d9ef">then</span>
+			ins:add_callback( jcall,<span style="color:#e6db74">&#34;BEFORE&#34;</span>)
+		<span style="color:#66d9ef">end</span>
+<span style="color:#66d9ef">end</span>
 
 CB.instruction(callback_ins)
 
-function at_exit(status)
-	for addr, targets in pairs(jmps) do
-		for target, _ in pairs(targets) do
-			print( hex(addr),&quot;--&gt;&quot;, hex(target))
-		end
-	end
-end
-</code></pre>
-
-<h2 id="example-extract-used-strings">Example: Extract Used Strings</h2>
-
+<span style="color:#66d9ef">function</span> <span style="color:#a6e22e">at_exit</span>(status)
+	<span style="color:#66d9ef">for</span> addr, targets <span style="color:#66d9ef">in</span> pairs(jmps) <span style="color:#66d9ef">do</span>
+		<span style="color:#66d9ef">for</span> target, _ <span style="color:#66d9ef">in</span> pairs(targets) <span style="color:#66d9ef">do</span>
+			print( hex(addr),<span style="color:#e6db74">&#34;--&gt;&#34;</span>, hex(target))
+		<span style="color:#66d9ef">end</span>
+	<span style="color:#66d9ef">end</span>
+<span style="color:#66d9ef">end</span>
+</code></pre></div><h2 id="example-extract-used-strings">Example: Extract Used Strings</h2>
 <p>You have some binary and wonder &ldquo;what strings does it use&rdquo;. Unfortunately, the <code>strings</code> tool doesn&rsquo;t show any. Maybe the binary contains encrypted/ziped strings? This example shows a tool that will monitor byte size reads to the memory and log any string found. The setup is pretty much the same as in the previous example: There is a callback that gets called once for every new instruction. It checks if the instruction reads one byte from memory, if so an callback is added to this instruction. The callback will peek at the memory address read from, determine if there is a printable string at the given address and if so log the string and the current IP. During runtime, all newly encountered strings are printed to STDOUT, and a precise listing of (address, strings) strings pairs will be printed <code>at_exit</code></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-lua" data-lang="lua">require(<span style="color:#e6db74">&#34;src.lib&#34;</span>)
 
-<pre><code class="language-lua">require(&quot;src.lib&quot;)
+print(<span style="color:#e6db74">&#34;This tool will take some time&#34;</span>)
 
-print(&quot;This tool will take some time&quot;)
+<span style="color:#75715e">-- This function checks if all characters in the given string are printable</span>
+<span style="color:#75715e">-- It returns true if so, false otherwise</span>
+<span style="color:#66d9ef">function</span> <span style="color:#a6e22e">is_printable</span>(str)
+	<span style="color:#66d9ef">if</span> <span style="color:#f92672">not</span> str <span style="color:#66d9ef">then</span>
+		<span style="color:#66d9ef">return</span> str
+	<span style="color:#66d9ef">end</span>
+	<span style="color:#66d9ef">for</span> c <span style="color:#66d9ef">in</span> str:gmatch<span style="color:#e6db74">&#34;.&#34;</span> <span style="color:#66d9ef">do</span>
+		b <span style="color:#f92672">=</span> c:byte(<span style="color:#ae81ff">1</span>)
+		<span style="color:#66d9ef">if</span> b <span style="color:#f92672">&lt;</span><span style="color:#ae81ff">8</span> <span style="color:#f92672">or</span> b <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">127</span> <span style="color:#66d9ef">then</span>
+			<span style="color:#66d9ef">return</span> <span style="color:#66d9ef">false</span>
+		<span style="color:#66d9ef">end</span>
+	<span style="color:#66d9ef">end</span>
+	<span style="color:#66d9ef">return</span> <span style="color:#66d9ef">true</span>
+<span style="color:#66d9ef">end</span>
 
--- This function checks if all characters in the given string are printable
--- It returns true if so, false otherwise
-function is_printable(str)
-	if not str then
-		return str
-	end
-	for c in str:gmatch&quot;.&quot; do
-		b = c:byte(1)
-		if b &lt;8 or b &gt; 127 then
-			return false
-		end
-	end
-	return true
-end
+<span style="color:#75715e">-- table containing string =&gt; address that this string was used from mappings</span>
+strings <span style="color:#f92672">=</span> {}
 
--- table containing string =&gt; address that this string was used from mappings
-strings = {}
+<span style="color:#75715e">-- This function will use Helper.read_mem(addr, length) to read a string from memory.</span>
+<span style="color:#75715e">-- It will look both forward and backward until it finds a non printable ASCII character</span>
+<span style="color:#75715e">-- It will return nil if [addr..addr+6] do not contain a printable string</span>
+<span style="color:#75715e">-- It returns a string of length &lt; 128 otherwise</span>
+<span style="color:#75715e">-- This string may start before the given address (e.G. address does not necessarily point to begin of the string)</span>
+<span style="color:#66d9ef">function</span> <span style="color:#a6e22e">read_string_from</span>(addr)
+	<span style="color:#66d9ef">local</span> res <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;&#34;</span>
+	<span style="color:#66d9ef">local</span> str <span style="color:#f92672">=</span> Helper.read_mem(addr,<span style="color:#ae81ff">6</span>)
+	<span style="color:#66d9ef">if</span> str:len() <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">6</span> <span style="color:#66d9ef">then</span> <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">nil</span> <span style="color:#66d9ef">end</span>
+	<span style="color:#66d9ef">while</span> <span style="color:#66d9ef">true</span> <span style="color:#66d9ef">do</span>
+		<span style="color:#66d9ef">if</span> <span style="color:#f92672">not</span> is_printable(str) <span style="color:#f92672">or</span> res:len() <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">64</span> <span style="color:#66d9ef">then</span> <span style="color:#66d9ef">break</span> <span style="color:#66d9ef">end</span>
+		res <span style="color:#f92672">=</span> res <span style="color:#f92672">..</span> str
+		str <span style="color:#f92672">=</span> Helper.read_mem(addr<span style="color:#f92672">+</span>res:len(),<span style="color:#ae81ff">1</span>)
+	<span style="color:#66d9ef">end</span>
 
--- This function will use Helper.read_mem(addr, length) to read a string from memory.
--- It will look both forward and backward until it finds a non printable ASCII character
--- It will return nil if [addr..addr+6] do not contain a printable string
--- It returns a string of length &lt; 128 otherwise
--- This string may start before the given address (e.G. address does not necessarily point to begin of the string)
-function read_string_from(addr)
-	local res = &quot;&quot;
-	local str = Helper.read_mem(addr,6)
-	if str:len() &lt; 6 then return nil end
-	while true do
-		if not is_printable(str) or res:len() &gt; 64 then break end
-		res = res .. str
-		str = Helper.read_mem(addr+res:len(),1)
-	end
+	prev <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;&#34;</span>
+	str <span style="color:#f92672">=</span> Helper.read_mem(addr<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>,<span style="color:#ae81ff">1</span>)
+	<span style="color:#66d9ef">while</span> <span style="color:#66d9ef">true</span> <span style="color:#66d9ef">do</span>
+		<span style="color:#66d9ef">if</span> <span style="color:#f92672">not</span> is_printable(str) <span style="color:#f92672">or</span> prev:len() <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">64</span> <span style="color:#66d9ef">then</span> <span style="color:#66d9ef">break</span> <span style="color:#66d9ef">end</span>
+		prev <span style="color:#f92672">=</span> str <span style="color:#f92672">..</span> prev
+		str <span style="color:#f92672">=</span> Helper.read_mem(addr<span style="color:#f92672">-</span>prev:len()<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>,<span style="color:#ae81ff">1</span>)
+	<span style="color:#66d9ef">end</span>
+	res <span style="color:#f92672">=</span> prev <span style="color:#f92672">..</span> res
+	<span style="color:#66d9ef">if</span> <span style="color:#f92672">not</span> (res <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;&#34;</span>) <span style="color:#66d9ef">then</span>
+		<span style="color:#66d9ef">return</span> res
+	<span style="color:#66d9ef">else</span>
+		<span style="color:#66d9ef">return</span> <span style="color:#66d9ef">nil</span>
+	<span style="color:#66d9ef">end</span>
+<span style="color:#66d9ef">end</span>
 
-	prev = &quot;&quot;
-	str = Helper.read_mem(addr-1,1)
-	while true do
-		if not is_printable(str) or prev:len() &gt; 64 then break end
-		prev = str .. prev
-		str = Helper.read_mem(addr-prev:len()-1,1)
-	end
-	res = prev .. res
-	if not (res == &quot;&quot;) then
-		return res
-	else
-		return nil
-	end
-end
+<span style="color:#75715e">-- This function is called once every time a one byte read is performed</span>
+<span style="color:#75715e">-- It will try to read a string from the accessed memory. It adds the (string, IP) pair to the global table of encountered strings.</span>
+<span style="color:#75715e">-- It will print the IP and string if this string was encountered for the first time</span>
+<span style="color:#66d9ef">function</span> <span style="color:#a6e22e">rip_string</span>(ip, read_offset)
+	str <span style="color:#f92672">=</span> read_string_from(read_offset)
+	<span style="color:#66d9ef">if</span> str <span style="color:#66d9ef">then</span>
+		<span style="color:#66d9ef">if</span> <span style="color:#f92672">not</span> strings[str] <span style="color:#66d9ef">then</span>
+		print(<span style="color:#e6db74">&#34;-- at &#34;</span>,hex(ip),<span style="color:#e6db74">&#34;used&#34;</span>,str)
+		<span style="color:#66d9ef">end</span>
+		strings[str] <span style="color:#f92672">=</span> strings[str] <span style="color:#f92672">or</span> {}
+		strings[str][ip] <span style="color:#f92672">=</span> <span style="color:#66d9ef">true</span>
+	<span style="color:#66d9ef">end</span>
+<span style="color:#66d9ef">end</span>
 
--- This function is called once every time a one byte read is performed
--- It will try to read a string from the accessed memory. It adds the (string, IP) pair to the global table of encountered strings.
--- It will print the IP and string if this string was encountered for the first time
-function rip_string(ip, read_offset)
-	str = read_string_from(read_offset)
-	if str then
-		if not strings[str] then
-		print(&quot;-- at &quot;,hex(ip),&quot;used&quot;,str)
-		end
-		strings[str] = strings[str] or {}
-		strings[str][ip] = true
-	end
-end
+<span style="color:#75715e">-- This is our TypedCallback. We need IP (IARG_INSTR_PTR) and the address where memory is read (IARG_MEMORYREAD_EA).</span>
+ins_call <span style="color:#f92672">=</span> TypedCallback.new(<span style="color:#e6db74">&#34;IARG_INST_PTR&#34;</span>,<span style="color:#e6db74">&#34;IARG_MEMORYREAD_EA&#34;</span>,rip_string)
 
--- This is our TypedCallback. We need IP (IARG_INSTR_PTR) and the address where memory is read (IARG_MEMORYREAD_EA).
-ins_call = TypedCallback.new(&quot;IARG_INST_PTR&quot;,&quot;IARG_MEMORYREAD_EA&quot;,rip_string)
-
--- This function is called every time the JIT Compiler encounters a new instruction the first time.
-function callback_ins(ins)
-	if ins:is_memory_read() and ins:memory_read_size() == 1 then
-		addr = ins:address()
-		img = Img.find_by_address(addr)
-		-- check that ins belongs to the Main Image
-		if img and img:is_main_executable() then
-			-- only add the TypedCallback to rip_strings if 
-			-- a) ins reads one byte from memory AND 
-			-- b) ins is a instruction from the main image
-			ins:add_callback( ins_call,&quot;BEFORE&quot;)
-		end
-	end
-end
+<span style="color:#75715e">-- This function is called every time the JIT Compiler encounters a new instruction the first time.</span>
+<span style="color:#66d9ef">function</span> <span style="color:#a6e22e">callback_ins</span>(ins)
+	<span style="color:#66d9ef">if</span> ins:is_memory_read() <span style="color:#f92672">and</span> ins:memory_read_size() <span style="color:#f92672">==</span> <span style="color:#ae81ff">1</span> <span style="color:#66d9ef">then</span>
+		addr <span style="color:#f92672">=</span> ins:address()
+		img <span style="color:#f92672">=</span> Img.find_by_address(addr)
+		<span style="color:#75715e">-- check that ins belongs to the Main Image</span>
+		<span style="color:#66d9ef">if</span> img <span style="color:#f92672">and</span> img:is_main_executable() <span style="color:#66d9ef">then</span>
+			<span style="color:#75715e">-- only add the TypedCallback to rip_strings if </span>
+			<span style="color:#75715e">-- a) ins reads one byte from memory AND </span>
+			<span style="color:#75715e">-- b) ins is a instruction from the main image</span>
+			ins:add_callback( ins_call,<span style="color:#e6db74">&#34;BEFORE&#34;</span>)
+		<span style="color:#66d9ef">end</span>
+	<span style="color:#66d9ef">end</span>
+<span style="color:#66d9ef">end</span>
 CB.instruction(callback_ins)
 
--- Print strings vs address Pairs at exit
-function at_exit(status)
-	for string, addrs in pairs(strings) do
-		print(string, &quot;:&quot;)
-			for addr,_ in pairs(addrs) do
-				print(&quot; from:&quot;, &quot;0x&quot;..hex(addr))
-		end
-	end
-end
+<span style="color:#75715e">-- Print strings vs address Pairs at exit</span>
+<span style="color:#66d9ef">function</span> <span style="color:#a6e22e">at_exit</span>(status)
+	<span style="color:#66d9ef">for</span> string, addrs <span style="color:#66d9ef">in</span> pairs(strings) <span style="color:#66d9ef">do</span>
+		print(string, <span style="color:#e6db74">&#34;:&#34;</span>)
+			<span style="color:#66d9ef">for</span> addr,_ <span style="color:#66d9ef">in</span> pairs(addrs) <span style="color:#66d9ef">do</span>
+				print(<span style="color:#e6db74">&#34; from:&#34;</span>, <span style="color:#e6db74">&#34;0x&#34;</span><span style="color:#f92672">..</span>hex(addr))
+		<span style="color:#66d9ef">end</span>
+	<span style="color:#66d9ef">end</span>
+<span style="color:#66d9ef">end</span>
 
-print(&quot;end of lua script\n&quot;)
-</code></pre>
-
+print(<span style="color:#e6db74">&#34;end of lua script</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>)
+</code></pre></div>
               
             </div>
           </div>

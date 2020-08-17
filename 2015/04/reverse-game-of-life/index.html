@@ -7,22 +7,18 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="author" content="Cornelius Aschermann">
 <meta name="keywords" content="">
-<meta name="description" content="View On Github
-Ever wanted to create a preimage of an arbitrary Game Of Life pattern? Running a simulated version of the game of life is very simple. However, as GOL is in fact turing complete, running it backwards is rather hard. In fact we know that there are so called garden of eden patterns that do not have any predecsessor. If one restricts the world to a fixed size, GOL is still able to compute arbitrary boolean functions.">
+<meta name="description" content="Use a SMT solver to invert the arrow of time in Game Of Life.">
 
 
-<meta property="og:description" content="View On Github
-Ever wanted to create a preimage of an arbitrary Game Of Life pattern? Running a simulated version of the game of life is very simple. However, as GOL is in fact turing complete, running it backwards is rather hard. In fact we know that there are so called garden of eden patterns that do not have any predecsessor. If one restricts the world to a fixed size, GOL is still able to compute arbitrary boolean functions.">
+<meta property="og:description" content="Use a SMT solver to invert the arrow of time in Game Of Life.">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Reverse Game Of Life">
 <meta name="twitter:title" content="Reverse Game Of Life">
 <meta property="og:url" content="https://hexgolems.com/2015/04/reverse-game-of-life/">
 <meta property="twitter:url" content="https://hexgolems.com/2015/04/reverse-game-of-life/">
 <meta property="og:site_name" content="Hexgolems">
-<meta property="og:description" content="View On Github
-Ever wanted to create a preimage of an arbitrary Game Of Life pattern? Running a simulated version of the game of life is very simple. However, as GOL is in fact turing complete, running it backwards is rather hard. In fact we know that there are so called garden of eden patterns that do not have any predecsessor. If one restricts the world to a fixed size, GOL is still able to compute arbitrary boolean functions.">
-<meta name="twitter:description" content="View On Github
-Ever wanted to create a preimage of an arbitrary Game Of Life pattern? Running a simulated version of the game of life is very simple. However, as GOL is in fact turing complete, running it backwards is rather hard. In fact we know that there are so called garden of eden patterns that do not have any predecsessor. If one restricts the world to a fixed size, GOL is still able to compute arbitrary boolean functions.">
+<meta property="og:description" content="Use a SMT solver to invert the arrow of time in Game Of Life.">
+<meta name="twitter:description" content="Use a SMT solver to invert the arrow of time in Game Of Life.">
 <meta property="og:locale" content="en">
 
   
@@ -233,8 +229,7 @@ Ever wanted to create a preimage of an arbitrary Game Of Life pattern? Running a
           <div class="post-content markdown" itemprop="articleBody">
             <div class="main-content-wrap">
               <p align=center><a href="https://github.com/eqv/reverse_gol" class="btn btn--primary" text-align="center"><i class="fa fa-github" aria-hidden="true"></i> View On Github</a></p>
-
-<p>Ever wanted to create a preimage of an arbitrary <strong>G</strong>ame <strong>O</strong>f <strong>L</strong>ife pattern?
+<p>Ever wanted to create a preimage of an arbitrary __G__ame __O__f __L__ife pattern?
 Running a simulated version of the game of life is very simple. However, as GOL is in fact <a href="http://rendell-attic.org/gol/tm.htm">turing complete</a>, running it backwards is rather hard. In fact
 we know that there are so called <a href="https://en.wikipedia.org/wiki/Garden_of_Eden_(cellular_automaton)">garden of eden patterns</a> that do not have any predecsessor. If one restricts
 the world to a fixed size, GOL is still able to compute arbitrary <a href="http://www.rennard.org/alife/english/logicellgb.html">boolean functions</a>. As a consequence,
@@ -242,16 +237,11 @@ inverting the direction of time in GOL is rather difficult. Others have used rat
 reverse GOL. Here we simply implement the evaluation rules of GOL in an SMT formula and use <a href="https://boolector.github.io/">boolector</a> to
 generate preimages. Using this approach, we can find preimages in a matter of seconds even for very large instances. In our case, the
 search space contains 525 bits or</p>
-
 <pre><code>109836762562089755439710412785302291476310964802292886550311415346968690934362496833960954250583272879636740982263693728593951807995466301001184452657840914432.
-</code></pre>
-
-<p>possible inputs. This nicely demonstrates the power of SMT solvers to quickly find solutions for NP-Hard problems that otherwise
+</code></pre><p>possible inputs. This nicely demonstrates the power of SMT solvers to quickly find solutions for NP-Hard problems that otherwise
 require rather clever algorithms to be solved efficiently.</p>
-
 <p>Using this approach to generate a preimage for the ASCII-art string &ldquo;COCO&rdquo; yields a preimage, that after exactly four
 steps turns into the intended image!</p>
-
 <pre><code>[generation 0]
         o   o   o oooo         oo     
    oo   o  oo    oo  o  oo oo   o     
@@ -302,7 +292,6 @@ oo  oo  oo  o   o  oo      o  o
       oooo  oooooo  oooo  ooooo       
                                       
 </code></pre>
-
               
             </div>
           </div>

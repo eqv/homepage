@@ -7,22 +7,18 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="author" content="Cornelius Aschermann">
 <meta name="keywords" content="">
-<meta name="description" content="View On Github
-pwgen.rb A better pwgeneration / file checksuming tool that uses the algorithm discussed in XKCD 936 to create highly secure and memorable passwords. When generating passwords, it allows to specify the strength of the password in bits. Additionally, it can be used to generate multiple passwords for different accounts/usecases from the same master password, to compare files by means of their fingerprint and to memorize fingerprints of arbitrary files (e.">
+<meta name="description" content="A human friendly pwgen based on XKCD 936">
 
 
-<meta property="og:description" content="View On Github
-pwgen.rb A better pwgeneration / file checksuming tool that uses the algorithm discussed in XKCD 936 to create highly secure and memorable passwords. When generating passwords, it allows to specify the strength of the password in bits. Additionally, it can be used to generate multiple passwords for different accounts/usecases from the same master password, to compare files by means of their fingerprint and to memorize fingerprints of arbitrary files (e.">
+<meta property="og:description" content="A human friendly pwgen based on XKCD 936">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Pwgen">
 <meta name="twitter:title" content="Pwgen">
 <meta property="og:url" content="https://hexgolems.com/2016/03/pwgen/">
 <meta property="twitter:url" content="https://hexgolems.com/2016/03/pwgen/">
 <meta property="og:site_name" content="Hexgolems">
-<meta property="og:description" content="View On Github
-pwgen.rb A better pwgeneration / file checksuming tool that uses the algorithm discussed in XKCD 936 to create highly secure and memorable passwords. When generating passwords, it allows to specify the strength of the password in bits. Additionally, it can be used to generate multiple passwords for different accounts/usecases from the same master password, to compare files by means of their fingerprint and to memorize fingerprints of arbitrary files (e.">
-<meta name="twitter:description" content="View On Github
-pwgen.rb A better pwgeneration / file checksuming tool that uses the algorithm discussed in XKCD 936 to create highly secure and memorable passwords. When generating passwords, it allows to specify the strength of the password in bits. Additionally, it can be used to generate multiple passwords for different accounts/usecases from the same master password, to compare files by means of their fingerprint and to memorize fingerprints of arbitrary files (e.">
+<meta property="og:description" content="A human friendly pwgen based on XKCD 936">
+<meta name="twitter:description" content="A human friendly pwgen based on XKCD 936">
 <meta property="og:locale" content="en">
 
   
@@ -232,42 +228,28 @@ pwgen.rb A better pwgeneration / file checksuming tool that uses the algorithm d
           
           <div class="post-content markdown" itemprop="articleBody">
             <div class="main-content-wrap">
-              
-
-<p align=center><a href="https://github.com/eqv/pwgen" class="btn btn--primary" text-align="center"><i class="fa fa-github" aria-hidden="true"></i> View On Github</a></p>
-
-<h1 id="pwgen-rb">pwgen.rb</h1>
-
+              <p align=center><a href="https://github.com/eqv/pwgen" class="btn btn--primary" text-align="center"><i class="fa fa-github" aria-hidden="true"></i> View On Github</a></p>
+<h1 id="pwgenrb">pwgen.rb</h1>
 <p>A better pwgeneration / file checksuming tool that uses the algorithm discussed in <a href="https://xkcd.com/936/">XKCD 936</a> to create highly secure and memorable passwords. When generating passwords, it allows to specify the strength of the password in bits.
 Additionally, it can be used to generate multiple passwords for different accounts/usecases from the same master password, to compare files by means of their fingerprint and to memorize fingerprints of arbitrary files (e.g gpg public keys) by generating passwords from the file.</p>
-
 <h1 id="usecases">Usecases</h1>
-
 <ul>
 <li>Generate a new random password with 64 bit entropy and copy it to the clipboard (this requires xclip to be installed)</li>
 </ul>
-
-<pre><code class="language-bash">ruby pwgen.rb
-</code></pre>
-
-<ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">ruby pwgen.rb
+</code></pre></div><ul>
 <li>Generate a new static password from a master password and a usecase/account and print it, note that this takes a while to prevent master password bruteforcing.</li>
 </ul>
-
-<pre><code class="language-bash">ruby pwgen.rb -ds &quot;some_mail@some_provi.der&quot;
-#Please enter your master password:
-#Thank you, I will now generate a password for the usecase &quot;some_mail@some_provi.der&quot;
-#ReestablishedOurselfMultipliedAlignmentsAleph8
-</code></pre>
-
-<ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">ruby pwgen.rb -ds <span style="color:#e6db74">&#34;some_mail@some_provi.der&#34;</span>
+<span style="color:#75715e">#Please enter your master password:</span>
+<span style="color:#75715e">#Thank you, I will now generate a password for the usecase &#34;some_mail@some_provi.der&#34;</span>
+<span style="color:#75715e">#ReestablishedOurselfMultipliedAlignmentsAleph8</span>
+</code></pre></div><ul>
 <li>To compare a file (in this case pwgen.rb itself) with someone else, generate a passphrase from it and read it aloud instead of the original hex fingerprint (This should be as secure as a full SHA256 fingerprint comparison).</li>
 </ul>
-
-<pre><code class="language-bash">ruby pwgen.rb -df pwgen.rb
-#InteractivityMobilFlirtsBoondoggleEcologistsLexicographerCastDohertyMaximaTieingAdmiralsInterRoderickBicentennialGrossmanScharfActuary9
-</code></pre>
-
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">ruby pwgen.rb -df pwgen.rb
+<span style="color:#75715e">#InteractivityMobilFlirtsBoondoggleEcologistsLexicographerCastDohertyMaximaTieingAdmiralsInterRoderickBicentennialGrossmanScharfActuary9</span>
+</code></pre></div>
               
             </div>
           </div>

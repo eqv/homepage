@@ -7,26 +7,18 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="author" content="Cornelius Aschermann">
 <meta name="keywords" content="">
-<meta name="description" content="View On Github
-Sometimes you need to sample from a set of options. This crate allows you to sample from discrete probability distributions efficiently (O(1) per sample).
-It implements a random sampler implementing based on the alias method (https://en.wikipedia.org/wiki/Alias_method). One uses it by passing a vector of probabilites to the constructor. The constructor builds a data structure in O(n*n*log(n)) (Note: It would be quite possible to implement this in O(n*log(n)), however for reasonable sized number of values this method is faster than using the more effictient data strucutres.">
+<meta name="description" content="Sample from discrete distributions in O(1). Very useful when building randomized generators and fuzzer in Rust.">
 
 
-<meta property="og:description" content="View On Github
-Sometimes you need to sample from a set of options. This crate allows you to sample from discrete probability distributions efficiently (O(1) per sample).
-It implements a random sampler implementing based on the alias method (https://en.wikipedia.org/wiki/Alias_method). One uses it by passing a vector of probabilites to the constructor. The constructor builds a data structure in O(n*n*log(n)) (Note: It would be quite possible to implement this in O(n*log(n)), however for reasonable sized number of values this method is faster than using the more effictient data strucutres.">
+<meta property="og:description" content="Sample from discrete distributions in O(1). Very useful when building randomized generators and fuzzer in Rust.">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Loaded Dice">
 <meta name="twitter:title" content="Loaded Dice">
 <meta property="og:url" content="https://hexgolems.com/2017/02/loaded-dice/">
 <meta property="twitter:url" content="https://hexgolems.com/2017/02/loaded-dice/">
 <meta property="og:site_name" content="Hexgolems">
-<meta property="og:description" content="View On Github
-Sometimes you need to sample from a set of options. This crate allows you to sample from discrete probability distributions efficiently (O(1) per sample).
-It implements a random sampler implementing based on the alias method (https://en.wikipedia.org/wiki/Alias_method). One uses it by passing a vector of probabilites to the constructor. The constructor builds a data structure in O(n*n*log(n)) (Note: It would be quite possible to implement this in O(n*log(n)), however for reasonable sized number of values this method is faster than using the more effictient data strucutres.">
-<meta name="twitter:description" content="View On Github
-Sometimes you need to sample from a set of options. This crate allows you to sample from discrete probability distributions efficiently (O(1) per sample).
-It implements a random sampler implementing based on the alias method (https://en.wikipedia.org/wiki/Alias_method). One uses it by passing a vector of probabilites to the constructor. The constructor builds a data structure in O(n*n*log(n)) (Note: It would be quite possible to implement this in O(n*log(n)), however for reasonable sized number of values this method is faster than using the more effictient data strucutres.">
+<meta property="og:description" content="Sample from discrete distributions in O(1). Very useful when building randomized generators and fuzzer in Rust.">
+<meta name="twitter:description" content="Sample from discrete distributions in O(1). Very useful when building randomized generators and fuzzer in Rust.">
 <meta property="og:locale" content="en">
 
   
@@ -235,27 +227,22 @@ It implements a random sampler implementing based on the alias method (https://e
           <div class="post-content markdown" itemprop="articleBody">
             <div class="main-content-wrap">
               <p align=center><a href="https://github.com/eqv/loaded_dice" class="btn btn--primary" text-align="center"><i class="fa fa-github" aria-hidden="true"></i> View On Github</a></p>
-
 <p>Sometimes you need to sample from a set of options.  This crate allows you to sample from discrete probability distributions efficiently (<code>O(1)</code> per sample).</p>
-
-<p>It implements a random sampler implementing based on the alias method (<a href="https://en.wikipedia.org/wiki/Alias_method">https://en.wikipedia.org/wiki/Alias_method</a>). One uses it by passing a vector of probabilites to the constructor. The constructor builds a data structure in <code>O(n*n*log(n))</code> (Note: It would be quite possible to implement this in <code>O(n*log(n))</code>, however for reasonable sized number of values this method is faster than using the more effictient data strucutres. If the construction is slow in your case, you might consider using min/max heaps insteat of resorting the array after each construction step). This data structure can then be used to to sample a numbers between <code>0</code> and <code>n</code> with the corresponding probabilites.</p>
-
+<p>It implements a random sampler implementing based on the alias method (<a href="https://en.wikipedia.org/wiki/Alias_method)">https://en.wikipedia.org/wiki/Alias_method)</a>. One uses it by passing a vector of probabilites to the constructor. The constructor builds a data structure in <code>O(n*n*log(n))</code> (Note: It would be quite possible to implement this in <code>O(n*log(n))</code>, however for reasonable sized number of values this method is faster than using the more effictient data strucutres. If the construction is slow in your case, you might consider using min/max heaps insteat of resorting the array after each construction step). This data structure can then be used to to sample a numbers between <code>0</code> and <code>n</code> with the corresponding probabilites.</p>
 <p>Assume we want to sample from the following distirbution: <code>p(0)=0.5, p(1)=0.3, p(2)=0.1, p(3)=0.1</code>:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#66d9ef">extern</span> <span style="color:#66d9ef">crate</span> loaded_dice;
+<span style="color:#66d9ef">extern</span> <span style="color:#66d9ef">crate</span> rand;
 
-<pre><code class="language-rust">extern crate loaded_dice;
-extern crate rand;
-
-use loaded_dice::LoadedDiceSampler;
-use rand::{thread_rng, Rng};
-fn main() {
-    let mut s = LoadedDiceSampler::new(vec!(0.5, 0.3, 0.1, 0.1), thread_rng());
-    let iter: usize = 100;
-    for i in (0..iter) {
-        println!(&quot;{}&quot;, s.sample());
+<span style="color:#66d9ef">use</span> loaded_dice::LoadedDiceSampler;
+<span style="color:#66d9ef">use</span> rand::{thread_rng, Rng};
+<span style="color:#66d9ef">fn</span> <span style="color:#a6e22e">main</span>() {
+    <span style="color:#66d9ef">let</span> <span style="color:#66d9ef">mut</span> s <span style="color:#f92672">=</span> LoadedDiceSampler::new(vec<span style="color:#f92672">!</span>(<span style="color:#ae81ff">0.5</span>, <span style="color:#ae81ff">0.3</span>, <span style="color:#ae81ff">0.1</span>, <span style="color:#ae81ff">0.1</span>), thread_rng());
+    <span style="color:#66d9ef">let</span> iter: <span style="color:#66d9ef">usize</span> <span style="color:#f92672">=</span> <span style="color:#ae81ff">100</span>;
+    <span style="color:#66d9ef">for</span> i <span style="color:#66d9ef">in</span> (<span style="color:#ae81ff">0</span>..iter) {
+        println<span style="color:#f92672">!</span>(<span style="color:#e6db74">&#34;{}&#34;</span>, s.sample());
     }
 }
-</code></pre>
-
+</code></pre></div>
               
             </div>
           </div>

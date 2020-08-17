@@ -1,9 +1,9 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Inkscape on Hexgolems</title>
+    <title>inkscape on Hexgolems</title>
     <link>https://hexgolems.com/tags/inkscape/</link>
-    <description>Recent content in Inkscape on Hexgolems</description>
+    <description>Recent content in inkscape on Hexgolems</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Thu, 01 Aug 2019 00:00:00 +0000</lastBuildDate>
@@ -17,9 +17,7 @@
       <pubDate>Thu, 01 Aug 2019 00:00:00 +0000</pubDate>
       
       <guid>https://hexgolems.com/2019/08/hexslides-death-to-death-by-powerpoint/</guid>
-      <description>View On Github
-Hexslides allows you to create presentations with highly expressive animations in your favorite vector graphic drawing tool (such as Inkscape). Then you combine svg graphics and masters/templates in beautiful presentations.
-Create highly visual presentations, that support what you are talking about instead of distracting from it! Easily create animations to better present your ideas!         Use textex for your math typesetting needs, and combine them with easy, manual layouting for complex situations and animations!</description>
+      <description>An opinionated tool to create beautiful presentations containing complex animations.</description>
     </item>
     
   </channel>

@@ -1,9 +1,9 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Ruby on Hexgolems</title>
+    <title>ruby on Hexgolems</title>
     <link>https://hexgolems.com/tags/ruby/</link>
-    <description>Recent content in Ruby on Hexgolems</description>
+    <description>Recent content in ruby on Hexgolems</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Thu, 01 Aug 2019 00:00:00 +0000</lastBuildDate>
@@ -17,9 +17,7 @@
       <pubDate>Thu, 01 Aug 2019 00:00:00 +0000</pubDate>
       
       <guid>https://hexgolems.com/2019/08/hexslides-death-to-death-by-powerpoint/</guid>
-      <description>View On Github
-Hexslides allows you to create presentations with highly expressive animations in your favorite vector graphic drawing tool (such as Inkscape). Then you combine svg graphics and masters/templates in beautiful presentations.
-Create highly visual presentations, that support what you are talking about instead of distracting from it! Easily create animations to better present your ideas!         Use textex for your math typesetting needs, and combine them with easy, manual layouting for complex situations and animations!</description>
+      <description>An opinionated tool to create beautiful presentations containing complex animations.</description>
     </item>
     
     <item>
@@ -28,8 +26,7 @@ Create highly visual presentations, that support what you are talking about inst
       <pubDate>Tue, 01 Mar 2016 00:00:00 +0000</pubDate>
       
       <guid>https://hexgolems.com/2016/03/pwgen/</guid>
-      <description>View On Github
-pwgen.rb A better pwgeneration / file checksuming tool that uses the algorithm discussed in XKCD 936 to create highly secure and memorable passwords. When generating passwords, it allows to specify the strength of the password in bits. Additionally, it can be used to generate multiple passwords for different accounts/usecases from the same master password, to compare files by means of their fingerprint and to memorize fingerprints of arbitrary files (e.</description>
+      <description>A human friendly pwgen based on XKCD 936</description>
     </item>
     
     <item>
@@ -38,9 +35,7 @@ pwgen.rb A better pwgeneration / file checksuming tool that uses the algorithm d
       <pubDate>Tue, 01 Mar 2016 00:00:00 +0000</pubDate>
       
       <guid>https://hexgolems.com/2016/03/rdbg/</guid>
-      <description>View On Github
-RDBG RDBG is a ruby library that provides binary level debug access to processes.
-it wraps the ptrace api to control the target (and read registers), it uses the /proc/$pid/mem and /proc$pid/mapping interfaces to allow proper access to the targets memory and it allows to set breakpoints. Using ptrace to inject breakpoints is actually suprisingly complicated and requires a somewhat complex statemachine to handle events like singlestepping on a breakpoint or capturing signals in combination with breakpoints.</description>
+      <description>A ruby programmable debugger library based on the linux ptrace API and /proc/$pid/ interfaces.</description>
     </item>
     
     <item>
@@ -49,18 +44,7 @@ it wraps the ptrace api to control the target (and read registers), it uses the 
       <pubDate>Wed, 01 Apr 2015 00:00:00 +0000</pubDate>
       
       <guid>https://hexgolems.com/2015/04/reverse-game-of-life/</guid>
-      <description>View On Github
-Ever wanted to create a preimage of an arbitrary Game Of Life pattern? Running a simulated version of the game of life is very simple. However, as GOL is in fact turing complete, running it backwards is rather hard. In fact we know that there are so called garden of eden patterns that do not have any predecsessor. If one restricts the world to a fixed size, GOL is still able to compute arbitrary boolean functions.</description>
-    </item>
-    
-    <item>
-      <title>Reverse Game Of Life</title>
-      <link>https://hexgolems.com/2015/04/reverse-game-of-life/</link>
-      <pubDate>Wed, 01 Apr 2015 00:00:00 +0000</pubDate>
-      
-      <guid>https://hexgolems.com/2015/04/reverse-game-of-life/</guid>
-      <description>View On Github
-Ever wanted to create a preimage of an arbitrary Game Of Life pattern? Running a simulated version of the game of life is very simple. However, as GOL is in fact turing complete, running it backwards is rather hard. In fact we know that there are so called garden of eden patterns that do not have any predecsessor. If one restricts the world to a fixed size, GOL is still able to compute arbitrary boolean functions.</description>
+      <description>Use a SMT solver to invert the arrow of time in Game Of Life.</description>
     </item>
     
     <item>
@@ -69,9 +53,7 @@ Ever wanted to create a preimage of an arbitrary Game Of Life pattern? Running a
       <pubDate>Wed, 01 Oct 2014 00:00:00 +0000</pubDate>
       
       <guid>https://hexgolems.com/2014/10/schemdbg/</guid>
-      <description>View On Github
-SchemDBG SchemDBG is a back-end agnostic debugger front-end that focuses on debugging binaries without access to the source code.
-SchemDBG grew from the frustration with reversing in Linux environments (e.G. no proper binary-only-frontends for GDB). Currently, SchemDBG features a plain GDB server back-end and a PIN based back-end running on both 32 and 64 bit binaries in a Ubuntu host. SchemDBG hasn&amp;rsquo;t been tested with the PIN back-end on a Windows host but the PIN debug server works under windows #17.</description>
+      <description>A web based debugger front-end for debugging and reversing binaries. Easily allows to create complex widgets and scripts.</description>
     </item>
     
     <item>
@@ -80,11 +62,7 @@ SchemDBG grew from the frustration with reversing in Linux environments (e.G. no
       <pubDate>Tue, 01 Jul 2014 00:00:00 +0000</pubDate>
       
       <guid>https://hexgolems.com/2014/07/brainfuck-jit/</guid>
-      <description>View On Github
-A Compiler and JITer for brainfuck based on LLVM - build in literate ruby. It should be noted that this implementation produces horribly insecure binaries, and easily allows to overflow the programs memory, as it was used during a CTF exercise.
-
-   &amp;#182;  Disclaimer
-This is the commented version of my little Brainfuck compiler, The code is meant for educational purpose. Please note that this compiler is NOT save.</description>
+      <description>A compiler, interpreter and JITer for brainfuck. Build in literate ruby.</description>
     </item>
     
     <item>
@@ -93,9 +71,7 @@ This is the commented version of my little Brainfuck compiler, The code is meant
       <pubDate>Sat, 01 Oct 2011 00:00:00 +0000</pubDate>
       
       <guid>https://hexgolems.com/2011/10/codewars/</guid>
-      <description>View On Github
-A custom CPU, a ring shaped memory and instruction pointer relative addressing. Two programs enter, one program leaves. A deadly low level programming competition to overwrite your opponents memory.
-In contrast to the original Corewars our custom CPU has some modern features, such as registers. We provide a debugger that allows to singlestep and inspect your fighters execution in the core. If you need to test your bot against another bot, there is a profiler that allows you to perform many battles in short amount of time.</description>
+      <description>A competitive programming challenge similar to Corewars, used in 2011 RWTH-CTF</description>
     </item>
     
   </channel>

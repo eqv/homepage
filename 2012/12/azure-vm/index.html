@@ -7,22 +7,18 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="author" content="Cornelius Aschermann">
 <meta name="keywords" content="">
-<meta name="description" content="View On Github
-This is a small custom VM written in golang that was used as a service during the 2012 RWTH-CTF. It features a very RISC architecture (no stack operations, no call instructions..), and a very powerful macro assembler that allows to use high level constructs such as if/then/else or functions. The goal behind this challenge was to reverse engineer the target application given only in bytecode. Due to the very verbose nature of the instruction set, this benefits greatly from some pattern matching to undo the macro assemblers instructions.">
+<meta name="description" content="A small custom VM written in golang that was used as a service during the 2012 RWTH-CTF.">
 
 
-<meta property="og:description" content="View On Github
-This is a small custom VM written in golang that was used as a service during the 2012 RWTH-CTF. It features a very RISC architecture (no stack operations, no call instructions..), and a very powerful macro assembler that allows to use high level constructs such as if/then/else or functions. The goal behind this challenge was to reverse engineer the target application given only in bytecode. Due to the very verbose nature of the instruction set, this benefits greatly from some pattern matching to undo the macro assemblers instructions.">
+<meta property="og:description" content="A small custom VM written in golang that was used as a service during the 2012 RWTH-CTF.">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Azure VM">
 <meta name="twitter:title" content="Azure VM">
 <meta property="og:url" content="https://hexgolems.com/2012/12/azure-vm/">
 <meta property="twitter:url" content="https://hexgolems.com/2012/12/azure-vm/">
 <meta property="og:site_name" content="Hexgolems">
-<meta property="og:description" content="View On Github
-This is a small custom VM written in golang that was used as a service during the 2012 RWTH-CTF. It features a very RISC architecture (no stack operations, no call instructions..), and a very powerful macro assembler that allows to use high level constructs such as if/then/else or functions. The goal behind this challenge was to reverse engineer the target application given only in bytecode. Due to the very verbose nature of the instruction set, this benefits greatly from some pattern matching to undo the macro assemblers instructions.">
-<meta name="twitter:description" content="View On Github
-This is a small custom VM written in golang that was used as a service during the 2012 RWTH-CTF. It features a very RISC architecture (no stack operations, no call instructions..), and a very powerful macro assembler that allows to use high level constructs such as if/then/else or functions. The goal behind this challenge was to reverse engineer the target application given only in bytecode. Due to the very verbose nature of the instruction set, this benefits greatly from some pattern matching to undo the macro assemblers instructions.">
+<meta property="og:description" content="A small custom VM written in golang that was used as a service during the 2012 RWTH-CTF.">
+<meta name="twitter:description" content="A small custom VM written in golang that was used as a service during the 2012 RWTH-CTF.">
 <meta property="og:locale" content="en">
 
   
@@ -230,164 +226,123 @@ This is a small custom VM written in golang that was used as a service during th
           
           <div class="post-content markdown" itemprop="articleBody">
             <div class="main-content-wrap">
-              
-
-<p align=center><a href="https://github.com/eqv/azure" class="btn btn--primary" text-align="center"><i class="fa fa-github" aria-hidden="true"></i> View On Github</a></p>
-
+              <p align=center><a href="https://github.com/eqv/azure" class="btn btn--primary" text-align="center"><i class="fa fa-github" aria-hidden="true"></i> View On Github</a></p>
 <p>This is a small custom VM written in golang that was used as a service during the 2012 RWTH-CTF. It features a very RISC
 architecture (no stack operations, no call instructions..), and a very powerful macro assembler that allows to use high level constructs such as <code>if/then/else</code> or
 functions. The goal behind this challenge was to reverse engineer the target application given only in bytecode. Due to
 the very verbose nature of the instruction set, this benefits greatly from some pattern matching to undo the macro
 assemblers instructions.</p>
-
 <p>A writeup by Team Lobotomy can be found here: <a href="https://web.archive.org/web/20130916051738/http://lobotomy.me/2012-12-01-rwth-ctf-2012---azure-coast---writeup-part1/">Part1</a> and <a href="https://web.archive.org/web/20130916040624/http://lobotomy.me/2012-12-01-rwth-ctf-2012---azure-coast---writeup-part2/">Part2</a>. Note that there are other vulnerabilites in this service, such as a buffer overflow into a shell injection in the <a href="https://github.com/eqv/azure/blob/master/service.rb#L128">Authentication</a>, and a <a href="https://github.com/eqv/azure/blob/master/service.rb#L166">backdoor</a>.</p>
-
 <h2 id="structure">Structure</h2>
-
 <p>The code of the implements the VM itself is stored in <code>./cpu/</code>. The original service image is stored in <code>./data/</code>.
 A simple macro assembler containing complex macros such as function definitions/calls and control flow is given in <code>compiler.rb</code>. A set of primitives for strings (strcopy println printi itou strlen etc), heap (malloc/free) and some crypto (weak hash/stream cipher) are implemented in <code>string.rb</code>, <code>libcrypt.rb</code>, <code>libmem.rb</code> and <code>string.rb</code>. Finally the code of the service is implemented in <code>service.rb</code>.</p>
-
 <p>The following document contains the information given to the participants.</p>
-
 <p>This service is an image for a VM simulating a custom CPU. For every incoming connection,
 one such VM is spawned and stdin/stdout fds (0 and 1) are mapped to the corresponding socket.
 The challenge is not to understand the VM (even though you may want to take a few looks in the code to understand what exactly certain instructions do). To the best of my knowledge there should be no exploitable bugs in the VM itself (go newb though). It is my intend to have an instruction set that is simple enough to write some interesting analysis tools during the CTF (you will have a hard time reading the code without). Thus the VM has a very small set of instructions. On the other hand this makes an macro assembler necessary for implementing programs. You can find a copy of the VM code, the assembler and even some parts of the code of the service in /home/service_sources. You have to recompile the VM with make.sh if you change the bytecode in data/img.go. Recompiling the VM takes the image from data/img.go and the rest of the code to produce a standalone binary. For make.sh to be successful the service has to be currently stopped, because the original binary is locked from the running process otherwise.</p>
-
-<pre><code class="language-sh">root@vuln $ sv stop azurecoast
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">root@vuln $ sv stop azurecoast
 root@vuln $ pkill binary
 root@vuln $ su service_source
-serv~@vul $ cd service/go/src/rwthctf &amp;&amp; sh make.sh
+serv~@vul $ cd service/go/src/rwthctf <span style="color:#f92672">&amp;&amp;</span> sh make.sh
 serv~@vul $ exit
 root@vuln $ sv start azurecoast
-</code></pre>
-
-<p>I also added the assembler I used to generate the image (compiler.rb). Once you obtained a proper disassembly of the service, you can use compiler.rb to recompile it.
+</code></pre></div><p>I also added the assembler I used to generate the image (compiler.rb). Once you obtained a proper disassembly of the service, you can use compiler.rb to recompile it.
 WARNING: if you run compiler.rb two things will happen: 1) it will crash (unless you have your own disassembled version of the service), because parts of the program are missing in the asm version and 2) it may overwrite data/img.go so don&rsquo;t do this unless you know what you are doing. Have fun reversing the byte code array in data/img.go :)</p>
-
-<h2 id="compiler-rb">compiler.rb</h2>
-
+<h2 id="compilerrb">compiler.rb</h2>
 <p>compiler.rb is a powerful macro assembler that runs under ruby1.9.3. Besides the primitiv instructions it supports a wide range of macros such as call, push/pop, function definitions, labels, if_then, if_else etc.
 To use compiler.rb you will have to write your code into a CodeGen object. This works by creating such an object
 and calling the asm method with a block containing you code.</p>
-
-<pre><code class="language-ruby">  code = CodeGen.new
-  code.asm do
-    mov t1,4
-    inc [t1]
-  end
-</code></pre>
-
-<p>you can also &ldquo;include&rdquo; classes that have a method code(gen) which calls gen.asm in the same manner (see libmem.rb). This is especially useful for you since you can output your code into a skeleton file containing just:</p>
-
-<pre><code class="language-ruby">  class Disassembly
-    def code(asm)
-      asm.asm do
-        %{disassembly}
-      end
-    end
-  end
-</code></pre>
-
-<p>and then replace the code in compiler.rb</p>
-
-<pre><code class="language-ruby">  asm = CodeGen.new
-  asm.asm do
-    ldw t0, ref(:entermain)
-    jmp_to :init_mem
-    ...
-  end
-</code></pre>
-
-<p>by just (not you also have to require the file itself in the beginning of compiler.rb).</p>
-
-<pre><code class="language-ruby">  asm.asm do
-    import(Disassembly.new)
-  end
-</code></pre>
-
-<p>labels are added with:</p>
-
-<pre><code class="language-ruby">  label :name
-</code></pre>
-
-<p>and referenced with</p>
-
-<pre><code class="language-ruby">  ldw t1, ref(:name)
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ruby" data-lang="ruby">  code <span style="color:#f92672">=</span> <span style="color:#66d9ef">CodeGen</span><span style="color:#f92672">.</span>new
+  code<span style="color:#f92672">.</span>asm <span style="color:#66d9ef">do</span>
+    mov t1,<span style="color:#ae81ff">4</span>
+    inc <span style="color:#f92672">[</span>t1<span style="color:#f92672">]</span>
+  <span style="color:#66d9ef">end</span>
+</code></pre></div><p>you can also &ldquo;include&rdquo; classes that have a method code(gen) which calls gen.asm in the same manner (see libmem.rb). This is especially useful for you since you can output your code into a skeleton file containing just:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ruby" data-lang="ruby">  <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">Disassembly</span>
+    <span style="color:#66d9ef">def</span> <span style="color:#a6e22e">code</span>(asm)
+      asm<span style="color:#f92672">.</span>asm <span style="color:#66d9ef">do</span>
+        <span style="color:#e6db74">%{disassembly}</span>
+      <span style="color:#66d9ef">end</span>
+    <span style="color:#66d9ef">end</span>
+  <span style="color:#66d9ef">end</span>
+</code></pre></div><p>and then replace the code in compiler.rb</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ruby" data-lang="ruby">  asm <span style="color:#f92672">=</span> <span style="color:#66d9ef">CodeGen</span><span style="color:#f92672">.</span>new
+  asm<span style="color:#f92672">.</span>asm <span style="color:#66d9ef">do</span>
+    ldw t0, ref(<span style="color:#e6db74">:entermain</span>)
+    jmp_to <span style="color:#e6db74">:init_mem</span>
+    <span style="color:#f92672">...</span>
+  <span style="color:#66d9ef">end</span>
+</code></pre></div><p>by just (not you also have to require the file itself in the beginning of compiler.rb).</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ruby" data-lang="ruby">  asm<span style="color:#f92672">.</span>asm <span style="color:#66d9ef">do</span>
+    import(<span style="color:#66d9ef">Disassembly</span><span style="color:#f92672">.</span>new)
+  <span style="color:#66d9ef">end</span>
+</code></pre></div><p>labels are added with:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ruby" data-lang="ruby">  label <span style="color:#e6db74">:name</span>
+</code></pre></div><p>and referenced with</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ruby" data-lang="ruby">  ldw t1, ref(<span style="color:#e6db74">:name</span>)
   jmp t1
-</code></pre>
-
-<p>you can place arbitrary data with the data macro</p>
-
-<pre><code class="language-ruby">  data(0x12345)
-</code></pre>
-
-<p>you can push/pop multiple values from the stack with the push/pop macros</p>
-
-<pre><code class="language-ruby">  push t1,t2,t3
-  pop t1,t2,t3  #note that the order for pop is inverted so that this will NOT change any registers
-</code></pre>
-
-<p>you can call to a arbitrary address by using the <code>call(target)</code> macro. The <code>call_to(:label)</code> macro will also handle getting the <code>ref(:label)</code> for you (same goes for the <code>jmp_to</code> macro). There are more macros (<code>get,set</code>, <code>if_then</code>, <code>if_else</code> etc.) but I&rsquo;m to lazy to document them all - have a look in the supplied code( libmem.rb etc) if you want to use / understand / replace them.</p>
-
+</code></pre></div><p>you can place arbitrary data with the data macro</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ruby" data-lang="ruby">  data(<span style="color:#ae81ff">0x12345</span>)
+</code></pre></div><p>you can push/pop multiple values from the stack with the push/pop macros</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ruby" data-lang="ruby">  push t1,t2,t3
+  pop t1,t2,t3  <span style="color:#75715e">#note that the order for pop is inverted so that this will NOT change any registers</span>
+</code></pre></div><p>you can call to a arbitrary address by using the <code>call(target)</code> macro. The <code>call_to(:label)</code> macro will also handle getting the <code>ref(:label)</code> for you (same goes for the <code>jmp_to</code> macro). There are more macros (<code>get,set</code>, <code>if_then</code>, <code>if_else</code> etc.) but I&rsquo;m to lazy to document them all - have a look in the supplied code( libmem.rb etc) if you want to use / understand / replace them.</p>
 <h2 id="cpu-specs">CPU specs</h2>
-
 <h3 id="wordsize">WORDSIZE</h3>
-
 <p>The smallest addressable unit is a 4 BYTE word. Every instruction is 4 byte
 long.  The only exception to this is the <code>ldw</code> instruction which uses two machine
 words (the first one is the instruction, the second one is the word that is
-    loaded into the dst of the instruction.</p>
-
+loaded into the dst of the instruction.</p>
 <h3 id="register">REGISTER</h3>
-
-<p>The CPU has the following registers: <code>ip, eq, smaller, bigger, t0, ..., t7</code>
-* <code>ip</code> is the program counter
-* <code>eq</code>, <code>smaller</code> and <code>bigger</code> are set to 0/1 depending on the result of the last
-arithmetic operation (eq to 0, smaller than etc).
-* <code>t0</code> to <code>t7</code> are general purpose registers. By convention <code>t7</code> is used as a stack pointer, <code>t6</code> is used in macros and should not be used. <code>t0</code> and <code>t1</code> are registers used to supply additional arguments to syscalls</p>
-
+<p>The CPU has the following registers: <code>ip, eq, smaller, bigger, t0, ..., t7</code></p>
+<ul>
+<li><code>ip</code> is the program counter</li>
+<li><code>eq</code>, <code>smaller</code> and <code>bigger</code> are set to 0/1 depending on the result of the last
+arithmetic operation (eq to 0, smaller than etc).</li>
+<li><code>t0</code> to <code>t7</code> are general purpose registers. By convention <code>t7</code> is used as a stack pointer, <code>t6</code> is used in macros and should not be used. <code>t0</code> and <code>t1</code> are registers used to supply additional arguments to syscalls</li>
+</ul>
 <h3 id="instructions">INSTRUCTIONS</h3>
-
 <p>All instructions are of the kind <code>[op dst src]</code>. However in some instructions src
 may be ignored.  dst and src may both be either a constant in from 0 to 255, a
 register or a register dereference.</p>
-
 <pre><code>	examples:
   mov t0,3 #copies 3 into register t0
   mov [t0],3 #copies 3 into the memory cell at *t0
-</code></pre>
-
-<p>The cpu understands the following operations:
+</code></pre><p>The cpu understands the following operations:
 Instructions = <code>[:add, :sub, :mul, :div, :mod, :rol, :band, :bor, :not, :xor, :cmp, :mov, :ldw, :jmp, :jnz, :jz, :sys]</code></p>
-
 <ul>
-<li><code>add</code>, <code>sub</code>, <code>mul</code>, <code>div</code>, <code>mod</code>, <code>rol</code>, <code>band</code>, <code>bor</code>, <code>not</code>, <code>xor</code> should be self explainatory
-(all of them set <code>eq</code>,<code>bigger</code>,`smaller* according to the result compared to 0)</li>
-<li><code>cmp</code> sets eq bigger and smaller according to dst compared to src</li>
-<li><code>mov</code> copies src to dest</li>
-
-<li><p><code>ldw</code> will only use the dst field and the next word in memory and copy the
+<li>
+<p><code>add</code>, <code>sub</code>, <code>mul</code>, <code>div</code>, <code>mod</code>, <code>rol</code>, <code>band</code>, <code>bor</code>, <code>not</code>, <code>xor</code> should be self explainatory
+(all of them set <code>eq</code>,<code>bigger</code>,`smaller* according to the result compared to 0)</p>
+</li>
+<li>
+<p><code>cmp</code> sets eq bigger and smaller according to dst compared to src</p>
+</li>
+<li>
+<p><code>mov</code> copies src to dest</p>
+</li>
+<li>
+<p><code>ldw</code> will only use the dst field and the next word in memory and copy the
 content of the next word into dst
 example (this will load 0x12356 into t1)</p>
-
-<p>ldw t1,0
-  0x12356</p></li>
-
-<li><p><code>jmp</code> jump to dst</p></li>
-
-<li><p><code>jnz</code> jz will jump to dst if src is != 0 or == 0 respectively</p></li>
-
-<li><p><code>sys</code> performs a syscall. The index is stored in dst, the first argument in src, the second argument in t0. <code>sys</code> may change t0 and t1 to return values</p></li>
+<pre><code>ldw t1,0
+0x12356
+</code></pre>
+</li>
+<li>
+<p><code>jmp</code> jump to dst</p>
+</li>
+<li>
+<p><code>jnz</code> jz will jump to dst if src is != 0 or == 0 respectively</p>
+</li>
+<li>
+<p><code>sys</code> performs a syscall. The index is stored in dst, the first argument in src, the second argument in t0. <code>sys</code> may change t0 and t1 to return values</p>
+</li>
 </ul>
-
 <h3 id="encoding">ENCODING</h3>
-
 <p>See cpu/dissassembler.go or compiler.rb if you want to dissassemble on word into one instruction</p>
-
 <h3 id="syscalls">SYSCALLS</h3>
-
 <p>There are a few syscalls:</p>
-
 <ul>
 <li>EXIT = 0 #terminates the VM, arg1,arg2 unused, does not return</li>
 <li>READB = 1 #reads one byte from fd arg1 and stores it in t0, returns 1 in t1 if read was successful, 0 else</li>
@@ -397,7 +352,7 @@ example (this will load 0x12356 into t1)</p>
 <li>EXEC = 5 #reads the string arg1 points to from the VM memory and executes it as shell instruction, returns a fd for the stdin/stdout pipe of the process in t0, returns 0 if starting fails</li>
 <li>BREAK = 6 #stops the CPU until enter is pressed on the stdin of the service (should not be used in production code)</li>
 <li>STEP = 7 #sets the single step flag to arg1 (1 = singlestepping, 0 = stop singlestepping). While stepping the cpu state is printed to stdout of the service and after every instruction enter has to be pressed</li>
-<li>OPEN = 8 #opens the file with path given as &ldquo;./storage/&rdquo;+get_string_from_VM_memory(arg1) rw, returning the fd in t0 (0 if opening failed)</li>
+<li>OPEN = 8 #opens the file with path given as &ldquo;./storage/&ldquo;+get_string_from_VM_memory(arg1) rw, returning the fd in t0 (0 if opening failed)</li>
 <li>CORE = 9 #returns some information about the core in t0 (size of memory) and t1 (size of initial code segment)</li>
 <li>CLOSE = 10 #closes the fd given by arg1</li>
 <li>CLOCK = 11 #sets t0 to the current time</li>

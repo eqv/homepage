@@ -7,18 +7,18 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="author" content="Cornelius Aschermann">
 <meta name="keywords" content="">
-<meta name="description" content="Incorrectness Logic by Example Incorrectness Logic is a formal method to reason about program behavior. Similar formal reasoning techniques have been used for a multitude of different tasks in program verification, bug hunting and exploitation. To give some examples, Symbolic Execution (SE) has been used to generate hundreds of working exploits against a (at that time) current version of Debian [1]. While possible, it is often difficult to scale SE with all its precision to large targets.">
+<meta name="description" content="Understanding Incorrectness Logic for program analysis with lots of examples.">
 
 
-<meta property="og:description" content="Incorrectness Logic by Example Incorrectness Logic is a formal method to reason about program behavior. Similar formal reasoning techniques have been used for a multitude of different tasks in program verification, bug hunting and exploitation. To give some examples, Symbolic Execution (SE) has been used to generate hundreds of working exploits against a (at that time) current version of Debian [1]. While possible, it is often difficult to scale SE with all its precision to large targets.">
+<meta property="og:description" content="Understanding Incorrectness Logic for program analysis with lots of examples.">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Incorrectness Logic by Example">
 <meta name="twitter:title" content="Incorrectness Logic by Example">
 <meta property="og:url" content="https://hexgolems.com/2020/04/incorrectness-logic-by-example/">
 <meta property="twitter:url" content="https://hexgolems.com/2020/04/incorrectness-logic-by-example/">
 <meta property="og:site_name" content="Hexgolems">
-<meta property="og:description" content="Incorrectness Logic by Example Incorrectness Logic is a formal method to reason about program behavior. Similar formal reasoning techniques have been used for a multitude of different tasks in program verification, bug hunting and exploitation. To give some examples, Symbolic Execution (SE) has been used to generate hundreds of working exploits against a (at that time) current version of Debian [1]. While possible, it is often difficult to scale SE with all its precision to large targets.">
-<meta name="twitter:description" content="Incorrectness Logic by Example Incorrectness Logic is a formal method to reason about program behavior. Similar formal reasoning techniques have been used for a multitude of different tasks in program verification, bug hunting and exploitation. To give some examples, Symbolic Execution (SE) has been used to generate hundreds of working exploits against a (at that time) current version of Debian [1]. While possible, it is often difficult to scale SE with all its precision to large targets.">
+<meta property="og:description" content="Understanding Incorrectness Logic for program analysis with lots of examples.">
+<meta name="twitter:description" content="Understanding Incorrectness Logic for program analysis with lots of examples.">
 <meta property="og:locale" content="en">
 
   
@@ -228,576 +228,449 @@
           
           <div class="post-content markdown" itemprop="articleBody">
             <div class="main-content-wrap">
-              
-
-<h1 id="incorrectness-logic-by-example">Incorrectness Logic by Example</h1>
-
+              <h1 id="incorrectness-logic-by-example">Incorrectness Logic by Example</h1>
 <p>Incorrectness Logic is a formal method to reason about program behavior. Similar formal reasoning techniques have been used for a multitude of different tasks in program verification, bug hunting and exploitation. To give some examples, Symbolic Execution (SE) has been used to generate hundreds of working exploits against a (at that time) current version of Debian [<a href="https://lwn.net/Articles/557297/">1</a>]. While possible, it is often difficult to scale SE with all its precision to large targets. However, SE can also be used to perform many smaller steps in the workflow of reverse engineers, bug hunters and vulnerability developers: In the past, it has been used to uncover novel ways to turn heap corruptions into useful exploitation primitives [<a href="https://www.usenix.org/system/files/conference/usenixsecurity18/sec18-eckert.pdf">2</a>], to deobfuscate bytecode handlers to reverse engineer VM based obfuscation [<a href="http://sebastien.bardin.free.fr/2018-final-dimva.pdf">3</a>], to search for very specific code patterns that allow to trigger memory access violations without crashing the target applications [<a href="http://synthesis.to/papers/autocrop_dsn17.pdf">4</a>], and many other program analysis tasks.</p>
-
 <p>Current techniques are usually based on overestimating the set of possible states. That is, the formal approach underlying  the mental models behind techniques such as SE, Abstract Interpretation and to some extend even Concolic Execution is usually heavily informed by the ideas behind the so called Hoare Logic [<a href="https://en.wikipedia.org/wiki/Hoare_logic">5</a>]. Hoare Logic was designed as a method to prove the correctness of programs, by overestimating the set of states that a program can possibly reach. If this larger set doesn&rsquo;t contain a faulty state, then the program must be correct. While this is very useful in theory, in practice its almost impossible to prove the correctness of even simple programs. Plus, many of us aren&rsquo;t even that interested in proving correctness, rather we want to find bugs.</p>
-
 <p>Incorrectness Logic simply adapts the ideas from Hoare Logic to underapproximation:  Where <strong>Hoare Logic proves that at most a set of states is reachable</strong>, we can use <strong>Incorrectness Logic  to prove that a set of states is definitely reachable</strong>. While we can show correctness using Hoare Logic to demonstrating that a bug is not reachable, we can prove incorrectness using Incorrectness Logic by proving that a bug is certainly reachable.</p>
-
 <p>Recently, two papers introduce this concept [<a href="https://plv.mpi-sws.org/ISL/paper.pdf">6</a>, <a href="http://www0.cs.ucl.ac.uk/staff/p.ohearn/papers/IncorrectnessLogic.pdf">7</a>] of Incorrectness Logic and it took me a while get my head around how to use Incorrectness Logic. To help, I applied it to a bunch of toy programs, and tried to figure out what we can do with it.</p>
-
 <h2 id="applying-hoare-logic">Applying Hoare Logic</h2>
-
 <p>To help understanding Incorrectness Logic, I give a short introduction into Hoare Logic. If you are already familiar with Hoare Logic, feel free to skip this part.</p>
-
 <p>In classic Hoare Logic, we create so called &ldquo;Hoare Triplets&rdquo; for each statement  of the program. Such a triple consists of a pre-condition, the statement and a post-condition. For example, if we know that <code>x==0</code> and we execute <code>int y = z;</code> the post-conditions would be <code>x==0 and y == z</code>.  Typically these conditions are written between <code>{</code> and <code>}</code>. So in a paper you see the following snippet:</p>
-
-<pre><code class="language-ruby">  {  x==0  }
-y = z
-  {  x==0 and y==z  }
-</code></pre>
-
-<p>In Hoare Logic  these triplets have to satisfy the following condition: If we execute the statement starting in a state that satisfies the pre-condition, then the result state after the statement has to satisfy the post-condition. It can be seen that our example has this property.  This property also allows us to &ldquo;forget&rdquo; constraints that we already know:</p>
-
-<pre><code class="language-ruby">  {  x==0  }
-y = z
-  {  y==z  }
-</code></pre>
-
-<p>We can see, that weakening the post-condition is always a valid operation in Hoare Logic, since this only increases the set of states that we are allowed to end up in.  To verify a complete program, we need to find such triples for each statement in the program, such that the post-condition of the last statement is the pre-condition of the next statement. This allows us to chain multiple individual steps together.</p>
-
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ruby" data-lang="ruby">  {  x<span style="color:#f92672">==</span><span style="color:#ae81ff">0</span>  }
+y <span style="color:#f92672">=</span> z
+  {  x<span style="color:#f92672">==</span><span style="color:#ae81ff">0</span> <span style="color:#f92672">and</span> y<span style="color:#f92672">==</span>z  }
+</code></pre></div><p>In Hoare Logic  these triplets have to satisfy the following condition: If we execute the statement starting in a state that satisfies the pre-condition, then the result state after the statement has to satisfy the post-condition. It can be seen that our example has this property.  This property also allows us to &ldquo;forget&rdquo; constraints that we already know:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ruby" data-lang="ruby">  {  x<span style="color:#f92672">==</span><span style="color:#ae81ff">0</span>  }
+y <span style="color:#f92672">=</span> z
+  {  y<span style="color:#f92672">==</span>z  }
+</code></pre></div><p>We can see, that weakening the post-condition is always a valid operation in Hoare Logic, since this only increases the set of states that we are allowed to end up in.  To verify a complete program, we need to find such triples for each statement in the program, such that the post-condition of the last statement is the pre-condition of the next statement. This allows us to chain multiple individual steps together.</p>
 <h4 id="example-1">Example 1</h4>
-
 <p>Consider a simple program like this example that calculates the absolute value of the input:</p>
-
-<pre><code class="language-ruby">x = user_input()
-y = 0
-if x &lt; 0 then 
-    y = -x
-else
-    y = x
-end
-assert(y &gt;= 0)
-</code></pre>
-
-<p>To prove that the program is correct, we need to show that the assert statement is always true, that is, the post-condition of the program needs to imply <code>y &gt;= 0</code>.  It&rsquo;s easy to build Hoare triples for the first statements:</p>
-
-<pre><code class="language-ruby">  {  true  }
-x = user_input() #we don't really learn anything about x
-  {  true  }
-y = 0
-  {  y==0  }
-</code></pre>
-
-<p>The <code>if</code> statement is a bit more tricky. Here we need to come up with a pre-condition <code>PRE</code> and a post-condition <code>POST</code> such that:</p>
-
-<pre><code class="language-ruby">    {  PRE  }               # `\
-  if C then                 #  | 
-        {  PRE and C  }     #  | `\
-      do_something          #  |   | must be valid
-        {  POST }           #  | ,/
-  else                      #  |
-        {  PRE and !C  }    #  | `\
-      do_something          #  |   | must be valid
-        {  POST }           #  | ,/
-  end                       #  | 
-    {  POST }               # ,/ { PRE }  if ... end { POST } is valid, 
-                            #    if the both branches are valid
-</code></pre>
-
-<p>In this example, the <code>PRE: y == 0</code> will work, while <code>POST</code> needs to imply <code>y &gt;= 0</code>. Consequently we pick, <code>POST:  y &gt;= 0</code>.  After inserting <code>PRE</code> and <code>POST</code> in our code, we obtain the following &ldquo;then&rdquo;-branch for the if. Note that we need to weaken the post-condition after the assignment <code>y = -x</code> to obtain <code>POST</code>. Normaly, we would assume that the post condition of this branch should be <code>y&gt;0</code>. While <code>y&gt;0</code> is indeed a valid post-condition for the &ldquo;then&rdquo; branch,it is not a valid post-condition for the overall &ldquo;if&rdquo; statement. Consequently we weaken the post-condition to <code>y&gt;=0</code> to</p>
-
-<pre><code class="language-ruby">  {  y==0 }                     # PRE
-if x &lt; 0 then 
-      {  y==0 and x&lt;0  }        # PRE and C
-    y = -x
-      {  y==-x and x&lt;0  }    
-      {  y&gt;=0  }                # POST (weaker than the line above)
-else
-#...
-</code></pre>
-
-<p>After filling in the &ldquo;else&rdquo;-branch, we obtain the whole triple for the whole program: If we start with any state at all, we are guaranteed that after executing the program <code>y &gt;= 0</code> holds. Consequently we have proven that the assertion can never be fail.</p>
-
-<pre><code class="language-ruby">  {  true  }
-x = user_input()        #we don't really learn anything about x
-  {  true  }
-y = 0
-   {  y==0 }                     # PRE
-if x &lt; 0 then 
-      {  y==0 and x&lt;0  }         # PRE and C
-    y = -x
-      {  y==-x and x&lt;0  }    
-      {  y&gt;=0  }                 # POST (weaker than the line above)
-else
-      {  y==0 and !(x&lt;0)  }      # PRE and !C
-    y = x
-      {  y==x and !(x&lt;0)  }  
-      {  y&gt;=0  }                 # POST (weaker than the line above)
-end
-  {  y&gt;=0  }                     # POST
-assert(y &gt;= 0)
-</code></pre>
-
-<h4 id="example-2">Example 2</h4>
-
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ruby" data-lang="ruby">x <span style="color:#f92672">=</span> user_input()
+y <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
+<span style="color:#66d9ef">if</span> x <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">0</span> <span style="color:#66d9ef">then</span> 
+    y <span style="color:#f92672">=</span> <span style="color:#f92672">-</span>x
+<span style="color:#66d9ef">else</span>
+    y <span style="color:#f92672">=</span> x
+<span style="color:#66d9ef">end</span>
+assert(y <span style="color:#f92672">&gt;=</span> <span style="color:#ae81ff">0</span>)
+</code></pre></div><p>To prove that the program is correct, we need to show that the assert statement is always true, that is, the post-condition of the program needs to imply <code>y &gt;= 0</code>.  It&rsquo;s easy to build Hoare triples for the first statements:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ruby" data-lang="ruby">  {  <span style="color:#66d9ef">true</span>  }
+x <span style="color:#f92672">=</span> user_input() <span style="color:#75715e">#we don&#39;t really learn anything about x</span>
+  {  <span style="color:#66d9ef">true</span>  }
+y <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
+  {  y<span style="color:#f92672">==</span><span style="color:#ae81ff">0</span>  }
+</code></pre></div><p>The <code>if</code> statement is a bit more tricky. Here we need to come up with a pre-condition <code>PRE</code> and a post-condition <code>POST</code> such that:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ruby" data-lang="ruby">    {  <span style="color:#66d9ef">PRE</span>  }               <span style="color:#75715e"># `\</span>
+  <span style="color:#66d9ef">if</span> C <span style="color:#66d9ef">then</span>                 <span style="color:#75715e">#  | </span>
+        {  <span style="color:#66d9ef">PRE</span> <span style="color:#f92672">and</span> C  }     <span style="color:#75715e">#  | `\</span>
+      do_something          <span style="color:#75715e">#  |   | must be valid</span>
+        {  <span style="color:#66d9ef">POST</span> }           <span style="color:#75715e">#  | ,/</span>
+  <span style="color:#66d9ef">else</span>                      <span style="color:#75715e">#  |</span>
+        {  <span style="color:#66d9ef">PRE</span> <span style="color:#f92672">and</span> <span style="color:#f92672">!</span>C  }    <span style="color:#75715e">#  | `\</span>
+      do_something          <span style="color:#75715e">#  |   | must be valid</span>
+        {  <span style="color:#66d9ef">POST</span> }           <span style="color:#75715e">#  | ,/</span>
+  <span style="color:#66d9ef">end</span>                       <span style="color:#75715e">#  | </span>
+    {  <span style="color:#66d9ef">POST</span> }               <span style="color:#75715e"># ,/ { PRE }  if ... end { POST } is valid, </span>
+                            <span style="color:#75715e">#    if the both branches are valid</span>
+</code></pre></div><p>In this example, the <code>PRE: y == 0</code> will work, while <code>POST</code> needs to imply <code>y &gt;= 0</code>. Consequently we pick, <code>POST:  y &gt;= 0</code>.  After inserting <code>PRE</code> and <code>POST</code> in our code, we obtain the following &ldquo;then&rdquo;-branch for the if. Note that we need to weaken the post-condition after the assignment <code>y = -x</code> to obtain <code>POST</code>. Normaly, we would assume that the post condition of this branch should be <code>y&gt;0</code>. While <code>y&gt;0</code> is indeed a valid post-condition for the &ldquo;then&rdquo; branch,it is not a valid post-condition for the overall &ldquo;if&rdquo; statement. Consequently we weaken the post-condition to <code>y&gt;=0</code> to</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ruby" data-lang="ruby">  {  y<span style="color:#f92672">==</span><span style="color:#ae81ff">0</span> }                     <span style="color:#75715e"># PRE</span>
+<span style="color:#66d9ef">if</span> x <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">0</span> <span style="color:#66d9ef">then</span> 
+      {  y<span style="color:#f92672">==</span><span style="color:#ae81ff">0</span> <span style="color:#f92672">and</span> x<span style="color:#f92672">&lt;</span><span style="color:#ae81ff">0</span>  }        <span style="color:#75715e"># PRE and C</span>
+    y <span style="color:#f92672">=</span> <span style="color:#f92672">-</span>x
+      {  y<span style="color:#f92672">==-</span>x <span style="color:#f92672">and</span> x<span style="color:#f92672">&lt;</span><span style="color:#ae81ff">0</span>  }    
+      {  y<span style="color:#f92672">&gt;=</span><span style="color:#ae81ff">0</span>  }                <span style="color:#75715e"># POST (weaker than the line above)</span>
+<span style="color:#66d9ef">else</span>
+<span style="color:#75715e">#...</span>
+</code></pre></div><p>After filling in the &ldquo;else&rdquo;-branch, we obtain the whole triple for the whole program: If we start with any state at all, we are guaranteed that after executing the program <code>y &gt;= 0</code> holds. Consequently we have proven that the assertion can never be fail.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ruby" data-lang="ruby">  {  <span style="color:#66d9ef">true</span>  }
+x <span style="color:#f92672">=</span> user_input()        <span style="color:#75715e">#we don&#39;t really learn anything about x</span>
+  {  <span style="color:#66d9ef">true</span>  }
+y <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
+   {  y<span style="color:#f92672">==</span><span style="color:#ae81ff">0</span> }                     <span style="color:#75715e"># PRE</span>
+<span style="color:#66d9ef">if</span> x <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">0</span> <span style="color:#66d9ef">then</span> 
+      {  y<span style="color:#f92672">==</span><span style="color:#ae81ff">0</span> <span style="color:#f92672">and</span> x<span style="color:#f92672">&lt;</span><span style="color:#ae81ff">0</span>  }         <span style="color:#75715e"># PRE and C</span>
+    y <span style="color:#f92672">=</span> <span style="color:#f92672">-</span>x
+      {  y<span style="color:#f92672">==-</span>x <span style="color:#f92672">and</span> x<span style="color:#f92672">&lt;</span><span style="color:#ae81ff">0</span>  }    
+      {  y<span style="color:#f92672">&gt;=</span><span style="color:#ae81ff">0</span>  }                 <span style="color:#75715e"># POST (weaker than the line above)</span>
+<span style="color:#66d9ef">else</span>
+      {  y<span style="color:#f92672">==</span><span style="color:#ae81ff">0</span> <span style="color:#f92672">and</span> <span style="color:#f92672">!</span>(x<span style="color:#f92672">&lt;</span><span style="color:#ae81ff">0</span>)  }      <span style="color:#75715e"># PRE and !C</span>
+    y <span style="color:#f92672">=</span> x
+      {  y<span style="color:#f92672">==</span>x <span style="color:#f92672">and</span> <span style="color:#f92672">!</span>(x<span style="color:#f92672">&lt;</span><span style="color:#ae81ff">0</span>)  }  
+      {  y<span style="color:#f92672">&gt;=</span><span style="color:#ae81ff">0</span>  }                 <span style="color:#75715e"># POST (weaker than the line above)</span>
+<span style="color:#66d9ef">end</span>
+  {  y<span style="color:#f92672">&gt;=</span><span style="color:#ae81ff">0</span>  }                     <span style="color:#75715e"># POST</span>
+assert(y <span style="color:#f92672">&gt;=</span> <span style="color:#ae81ff">0</span>)
+</code></pre></div><h4 id="example-2">Example 2</h4>
 <p>Consider a somewhat more complex program containing a loop like this:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ruby" data-lang="ruby">x <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>;
+y <span style="color:#f92672">=</span> user_input_unsigned() 
+z <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
+<span style="color:#66d9ef">while</span>( x <span style="color:#f92672">&lt;</span> y ) <span style="color:#66d9ef">do</span>
+    x<span style="color:#f92672">=</span>x<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>
+    z<span style="color:#f92672">=</span>z<span style="color:#f92672">+</span><span style="color:#ae81ff">2</span>
+<span style="color:#66d9ef">end</span>
 
-<pre><code class="language-ruby">x = 0;
-y = user_input_unsigned() 
-z = 0
-while( x &lt; y ) do
-    x=x+1
-    z=z+2
-end
+assert(z <span style="color:#f92672">==</span> <span style="color:#ae81ff">2</span><span style="color:#f92672">*</span>y);
+</code></pre></div><p>To prove that the program is correct (assuming unbounded integers), again, we need to show that the assert statement is always true. That is, the post-condition of the program needs to imply <code>z == 2*y</code>. This time however, we need to deal with a loop. Again, it&rsquo;s easy to build Hoare triples for the first statements:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ruby" data-lang="ruby">  {  <span style="color:#66d9ef">true</span>  }
+x <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
+  {  x<span style="color:#f92672">==</span><span style="color:#ae81ff">0</span>  }
+y <span style="color:#f92672">=</span> user_input_unsigned(); 
+  { x<span style="color:#f92672">==</span><span style="color:#ae81ff">0</span> <span style="color:#f92672">and</span> y<span style="color:#f92672">&gt;</span><span style="color:#ae81ff">0</span>  }
+z <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
+  {  x<span style="color:#f92672">==</span><span style="color:#ae81ff">0</span> <span style="color:#f92672">and</span> y<span style="color:#f92672">&gt;</span><span style="color:#ae81ff">0</span> <span style="color:#f92672">and</span> z<span style="color:#f92672">==</span><span style="color:#ae81ff">0</span>  }
+<span style="color:#75715e"># What now? How to deal with loops?</span>
+<span style="color:#66d9ef">while</span>( x <span style="color:#f92672">&lt;</span> y ) <span style="color:#66d9ef">do</span>
+    x<span style="color:#f92672">=</span>x<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>
+    z<span style="color:#f92672">=</span>z<span style="color:#f92672">+</span><span style="color:#ae81ff">2</span>
+<span style="color:#66d9ef">end</span>
 
-assert(z == 2*y);
-</code></pre>
-
-<p>To prove that the program is correct (assuming unbounded integers), again, we need to show that the assert statement is always true. That is, the post-condition of the program needs to imply <code>z == 2*y</code>. This time however, we need to deal with a loop. Again, it&rsquo;s easy to build Hoare triples for the first statements:</p>
-
-<pre><code class="language-ruby">  {  true  }
-x = 0
-  {  x==0  }
-y = user_input_unsigned(); 
-  { x==0 and y&gt;0  }
-z = 0
-  {  x==0 and y&gt;0 and z==0  }
-# What now? How to deal with loops?
-while( x &lt; y ) do
-    x=x+1
-    z=z+2
-end
-
-assert(z==2*y)
-</code></pre>
-
-<p>To build a valid Hoare triple for a loopy statement, we need to find a so called Loop Invariant. A loop invariant is a statement that holds before entering the loop, at the start of the loop and the end of the loop and after exiting the loop. Assuming we picked an Invariant <code>I</code>, we can show that it holds by showing that the following triplets are valid:</p>
-
-<pre><code class="language-ruby">  {  I  }                 # `\ 
-while( C ) do             #  |
-      {  I and C  }       #  | `\
-    do_something          #  |   | if this triple is valid
-      {  I  }             #  | ,/
-end                       #  |
-  {  I and !C  }          # ,/ { I } while ... end { I and !C } is valid
-</code></pre>
-
-<p>In our example, we can pick <code>I: x &lt;= y and z = 2*x</code> and we obtain the following program:</p>
-
-<pre><code class="language-ruby">#... code so far ...
-  {  x==0 and y&gt;0 and z==0  }
-  {  x&lt;=y and z==2*x  }
-while( x &lt; y ) do
-      {  x&lt;=y and z==2*x and x&lt;y  }
-    x=x+1
-    z=z+2
-      {  x&lt;=y and z==2*x  }
-end
-  {  x&lt;=y and z==2*x and !(x&lt;y)  }
-assert(z==2*y)
-</code></pre>
-
-<p>First of all, we need to check that the invariant is indeed implied by the post-condition of the code prior to the loop. Indeed we can see that since <code>x == 0 and y &gt; 0</code> it has also to be true that <code>x &lt;= y</code> and due to <code>x == 0 and z == 0</code> , <code>z = 2*x</code> also holds. The next step is to verify that the invariant also holds after executing the loop:</p>
-
-<pre><code class="language-ruby">#... code so far ...
-      {  x&lt;=y and z==2*x and x&lt;y  }    # I and C
-    x=x+1;
-    z=z+2;
-      {  x&lt;=y and z==2*x  }            # I
-</code></pre>
-
-<p>According to the rules of Hoare Logic, if we want to build post-conditions for a variable assignment <code>a = some_expr</code> , where <code>some_expr</code> contains <code>a</code>, we need to ensure that all occurrences of the variable <code>a</code> in the precondition are exactly of the shape <code>some_expr</code>. Again we use our ability to arbitrarily weaken the post-condition at any time to introduce intermediate conditions.</p>
-
-<pre><code class="language-ruby">   #... code so far ...
-      {  x&lt;=y and z==2*x and x&lt;y  }   # I and C
-      {  x&lt;y and z==2*x  &gt;            # (weaker than the line above)
-      {  x+1&lt;=y and z+2==2*(x+1)  }   # (weaker than the line above)
-    x=x+1;
-    z=z+2;
-      {  x&lt;=y and z==2*x  }           # I
-</code></pre>
-
-<p>Now all occurrences of updated variables have the right shape, and  we can simply replace all occurrences of <code>some_expr</code> by <code>a</code> :</p>
-
-<pre><code class="language-ruby"> #... code so far ...
-      {  x &lt;= y and z == 2*x and x &lt; y  } # I and C
-      {  x &lt; y and z == 2*x  &gt;            # (weaker than the line above)
-      {  x+1 &lt;= y and z+2 == 2*(x+1)  }   # (weaker than the line above)
-    x=x+1;
-      {  x &lt;= y and z+2 == 2*x  }
-    z=z+2;
-      {  x &lt;= y and z == 2*x  }           # I
-</code></pre>
-
-<p>Which proves that <code>I</code> was indeed a valid loop invariant. In total we get:</p>
-
-<pre><code class="language-ruby">  {  true  }
-x = 0
-  {  x==0  }
-y = user_input_unsigned() 
-  {  x==0 and y&gt;0  }
-z = 0
-  {  x==0 and y&gt;0 and z==0  }
-  {  x&lt;=y and z==2*x  }                 # I (weaker than the line above)
-while( x &lt; y ) do
-      {  x&lt;=y and z==2*x and x&lt;y  }     # I and C
-      {  x&lt;y and z==2*x  }              # (weaker than the line above)
-      {  x+1&lt;=y and z+2==2*(x+1)  }     # (weaker than the line above)
-    x=x+1
-      {  x&lt;=y and z+2==2*x  }
-    z=z+2
-      {  x&lt;=y and z==2*x  }             # I
-end
-  {  x&lt;=y and z==2*x and !(x&lt;y)  }      # I and !C
-  {  x==y and z==2*x  }                 # (weaker than the line above)
-  {  z==2*y  }                          # (weaker than the line above)
-assert(z == 2*y)
-</code></pre>
-
-<p>Since the last post-condition implies that the assert statement is true, we have proven the program correct. To be more precise,  we have shown that it never triggers the assert - it still might run into an infinite loop.</p>
-
+assert(z<span style="color:#f92672">==</span><span style="color:#ae81ff">2</span><span style="color:#f92672">*</span>y)
+</code></pre></div><p>To build a valid Hoare triple for a loopy statement, we need to find a so called Loop Invariant. A loop invariant is a statement that holds before entering the loop, at the start of the loop and the end of the loop and after exiting the loop. Assuming we picked an Invariant <code>I</code>, we can show that it holds by showing that the following triplets are valid:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ruby" data-lang="ruby">  {  I  }                 <span style="color:#75715e"># `\ </span>
+<span style="color:#66d9ef">while</span>( C ) <span style="color:#66d9ef">do</span>             <span style="color:#75715e">#  |</span>
+      {  I <span style="color:#f92672">and</span> C  }       <span style="color:#75715e">#  | `\</span>
+    do_something          <span style="color:#75715e">#  |   | if this triple is valid</span>
+      {  I  }             <span style="color:#75715e">#  | ,/</span>
+<span style="color:#66d9ef">end</span>                       <span style="color:#75715e">#  |</span>
+  {  I <span style="color:#f92672">and</span> <span style="color:#f92672">!</span>C  }          <span style="color:#75715e"># ,/ { I } while ... end { I and !C } is valid</span>
+</code></pre></div><p>In our example, we can pick <code>I: x &lt;= y and z = 2*x</code> and we obtain the following program:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ruby" data-lang="ruby"><span style="color:#75715e">#... code so far ...</span>
+  {  x<span style="color:#f92672">==</span><span style="color:#ae81ff">0</span> <span style="color:#f92672">and</span> y<span style="color:#f92672">&gt;</span><span style="color:#ae81ff">0</span> <span style="color:#f92672">and</span> z<span style="color:#f92672">==</span><span style="color:#ae81ff">0</span>  }
+  {  x<span style="color:#f92672">&lt;=</span>y <span style="color:#f92672">and</span> z<span style="color:#f92672">==</span><span style="color:#ae81ff">2</span><span style="color:#f92672">*</span>x  }
+<span style="color:#66d9ef">while</span>( x <span style="color:#f92672">&lt;</span> y ) <span style="color:#66d9ef">do</span>
+      {  x<span style="color:#f92672">&lt;=</span>y <span style="color:#f92672">and</span> z<span style="color:#f92672">==</span><span style="color:#ae81ff">2</span><span style="color:#f92672">*</span>x <span style="color:#f92672">and</span> x<span style="color:#f92672">&lt;</span>y  }
+    x<span style="color:#f92672">=</span>x<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>
+    z<span style="color:#f92672">=</span>z<span style="color:#f92672">+</span><span style="color:#ae81ff">2</span>
+      {  x<span style="color:#f92672">&lt;=</span>y <span style="color:#f92672">and</span> z<span style="color:#f92672">==</span><span style="color:#ae81ff">2</span><span style="color:#f92672">*</span>x  }
+<span style="color:#66d9ef">end</span>
+  {  x<span style="color:#f92672">&lt;=</span>y <span style="color:#f92672">and</span> z<span style="color:#f92672">==</span><span style="color:#ae81ff">2</span><span style="color:#f92672">*</span>x <span style="color:#f92672">and</span> <span style="color:#f92672">!</span>(x<span style="color:#f92672">&lt;</span>y)  }
+assert(z<span style="color:#f92672">==</span><span style="color:#ae81ff">2</span><span style="color:#f92672">*</span>y)
+</code></pre></div><p>First of all, we need to check that the invariant is indeed implied by the post-condition of the code prior to the loop. Indeed we can see that since <code>x == 0 and y &gt; 0</code> it has also to be true that <code>x &lt;= y</code> and due to <code>x == 0 and z == 0</code> , <code>z = 2*x</code> also holds. The next step is to verify that the invariant also holds after executing the loop:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ruby" data-lang="ruby"><span style="color:#75715e">#... code so far ...</span>
+      {  x<span style="color:#f92672">&lt;=</span>y <span style="color:#f92672">and</span> z<span style="color:#f92672">==</span><span style="color:#ae81ff">2</span><span style="color:#f92672">*</span>x <span style="color:#f92672">and</span> x<span style="color:#f92672">&lt;</span>y  }    <span style="color:#75715e"># I and C</span>
+    x<span style="color:#f92672">=</span>x<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>;
+    z<span style="color:#f92672">=</span>z<span style="color:#f92672">+</span><span style="color:#ae81ff">2</span>;
+      {  x<span style="color:#f92672">&lt;=</span>y <span style="color:#f92672">and</span> z<span style="color:#f92672">==</span><span style="color:#ae81ff">2</span><span style="color:#f92672">*</span>x  }            <span style="color:#75715e"># I</span>
+</code></pre></div><p>According to the rules of Hoare Logic, if we want to build post-conditions for a variable assignment <code>a = some_expr</code> , where <code>some_expr</code> contains <code>a</code>, we need to ensure that all occurrences of the variable <code>a</code> in the precondition are exactly of the shape <code>some_expr</code>. Again we use our ability to arbitrarily weaken the post-condition at any time to introduce intermediate conditions.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ruby" data-lang="ruby">   <span style="color:#75715e">#... code so far ...</span>
+      {  x<span style="color:#f92672">&lt;=</span>y <span style="color:#f92672">and</span> z<span style="color:#f92672">==</span><span style="color:#ae81ff">2</span><span style="color:#f92672">*</span>x <span style="color:#f92672">and</span> x<span style="color:#f92672">&lt;</span>y  }   <span style="color:#75715e"># I and C</span>
+      {  x<span style="color:#f92672">&lt;</span>y <span style="color:#f92672">and</span> z<span style="color:#f92672">==</span><span style="color:#ae81ff">2</span><span style="color:#f92672">*</span>x  <span style="color:#f92672">&gt;</span>            <span style="color:#75715e"># (weaker than the line above)</span>
+      {  x<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span><span style="color:#f92672">&lt;=</span>y <span style="color:#f92672">and</span> z<span style="color:#f92672">+</span><span style="color:#ae81ff">2</span><span style="color:#f92672">==</span><span style="color:#ae81ff">2</span><span style="color:#f92672">*</span>(x<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>)  }   <span style="color:#75715e"># (weaker than the line above)</span>
+    x<span style="color:#f92672">=</span>x<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>;
+    z<span style="color:#f92672">=</span>z<span style="color:#f92672">+</span><span style="color:#ae81ff">2</span>;
+      {  x<span style="color:#f92672">&lt;=</span>y <span style="color:#f92672">and</span> z<span style="color:#f92672">==</span><span style="color:#ae81ff">2</span><span style="color:#f92672">*</span>x  }           <span style="color:#75715e"># I</span>
+</code></pre></div><p>Now all occurrences of updated variables have the right shape, and  we can simply replace all occurrences of <code>some_expr</code> by <code>a</code> :</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ruby" data-lang="ruby"> <span style="color:#75715e">#... code so far ...</span>
+      {  x <span style="color:#f92672">&lt;=</span> y <span style="color:#f92672">and</span> z <span style="color:#f92672">==</span> <span style="color:#ae81ff">2</span><span style="color:#f92672">*</span>x <span style="color:#f92672">and</span> x <span style="color:#f92672">&lt;</span> y  } <span style="color:#75715e"># I and C</span>
+      {  x <span style="color:#f92672">&lt;</span> y <span style="color:#f92672">and</span> z <span style="color:#f92672">==</span> <span style="color:#ae81ff">2</span><span style="color:#f92672">*</span>x  <span style="color:#f92672">&gt;</span>            <span style="color:#75715e"># (weaker than the line above)</span>
+      {  x<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span> <span style="color:#f92672">&lt;=</span> y <span style="color:#f92672">and</span> z<span style="color:#f92672">+</span><span style="color:#ae81ff">2</span> <span style="color:#f92672">==</span> <span style="color:#ae81ff">2</span><span style="color:#f92672">*</span>(x<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>)  }   <span style="color:#75715e"># (weaker than the line above)</span>
+    x<span style="color:#f92672">=</span>x<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>;
+      {  x <span style="color:#f92672">&lt;=</span> y <span style="color:#f92672">and</span> z<span style="color:#f92672">+</span><span style="color:#ae81ff">2</span> <span style="color:#f92672">==</span> <span style="color:#ae81ff">2</span><span style="color:#f92672">*</span>x  }
+    z<span style="color:#f92672">=</span>z<span style="color:#f92672">+</span><span style="color:#ae81ff">2</span>;
+      {  x <span style="color:#f92672">&lt;=</span> y <span style="color:#f92672">and</span> z <span style="color:#f92672">==</span> <span style="color:#ae81ff">2</span><span style="color:#f92672">*</span>x  }           <span style="color:#75715e"># I</span>
+</code></pre></div><p>Which proves that <code>I</code> was indeed a valid loop invariant. In total we get:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ruby" data-lang="ruby">  {  <span style="color:#66d9ef">true</span>  }
+x <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
+  {  x<span style="color:#f92672">==</span><span style="color:#ae81ff">0</span>  }
+y <span style="color:#f92672">=</span> user_input_unsigned() 
+  {  x<span style="color:#f92672">==</span><span style="color:#ae81ff">0</span> <span style="color:#f92672">and</span> y<span style="color:#f92672">&gt;</span><span style="color:#ae81ff">0</span>  }
+z <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
+  {  x<span style="color:#f92672">==</span><span style="color:#ae81ff">0</span> <span style="color:#f92672">and</span> y<span style="color:#f92672">&gt;</span><span style="color:#ae81ff">0</span> <span style="color:#f92672">and</span> z<span style="color:#f92672">==</span><span style="color:#ae81ff">0</span>  }
+  {  x<span style="color:#f92672">&lt;=</span>y <span style="color:#f92672">and</span> z<span style="color:#f92672">==</span><span style="color:#ae81ff">2</span><span style="color:#f92672">*</span>x  }                 <span style="color:#75715e"># I (weaker than the line above)</span>
+<span style="color:#66d9ef">while</span>( x <span style="color:#f92672">&lt;</span> y ) <span style="color:#66d9ef">do</span>
+      {  x<span style="color:#f92672">&lt;=</span>y <span style="color:#f92672">and</span> z<span style="color:#f92672">==</span><span style="color:#ae81ff">2</span><span style="color:#f92672">*</span>x <span style="color:#f92672">and</span> x<span style="color:#f92672">&lt;</span>y  }     <span style="color:#75715e"># I and C</span>
+      {  x<span style="color:#f92672">&lt;</span>y <span style="color:#f92672">and</span> z<span style="color:#f92672">==</span><span style="color:#ae81ff">2</span><span style="color:#f92672">*</span>x  }              <span style="color:#75715e"># (weaker than the line above)</span>
+      {  x<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span><span style="color:#f92672">&lt;=</span>y <span style="color:#f92672">and</span> z<span style="color:#f92672">+</span><span style="color:#ae81ff">2</span><span style="color:#f92672">==</span><span style="color:#ae81ff">2</span><span style="color:#f92672">*</span>(x<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>)  }     <span style="color:#75715e"># (weaker than the line above)</span>
+    x<span style="color:#f92672">=</span>x<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>
+      {  x<span style="color:#f92672">&lt;=</span>y <span style="color:#f92672">and</span> z<span style="color:#f92672">+</span><span style="color:#ae81ff">2</span><span style="color:#f92672">==</span><span style="color:#ae81ff">2</span><span style="color:#f92672">*</span>x  }
+    z<span style="color:#f92672">=</span>z<span style="color:#f92672">+</span><span style="color:#ae81ff">2</span>
+      {  x<span style="color:#f92672">&lt;=</span>y <span style="color:#f92672">and</span> z<span style="color:#f92672">==</span><span style="color:#ae81ff">2</span><span style="color:#f92672">*</span>x  }             <span style="color:#75715e"># I</span>
+<span style="color:#66d9ef">end</span>
+  {  x<span style="color:#f92672">&lt;=</span>y <span style="color:#f92672">and</span> z<span style="color:#f92672">==</span><span style="color:#ae81ff">2</span><span style="color:#f92672">*</span>x <span style="color:#f92672">and</span> <span style="color:#f92672">!</span>(x<span style="color:#f92672">&lt;</span>y)  }      <span style="color:#75715e"># I and !C</span>
+  {  x<span style="color:#f92672">==</span>y <span style="color:#f92672">and</span> z<span style="color:#f92672">==</span><span style="color:#ae81ff">2</span><span style="color:#f92672">*</span>x  }                 <span style="color:#75715e"># (weaker than the line above)</span>
+  {  z<span style="color:#f92672">==</span><span style="color:#ae81ff">2</span><span style="color:#f92672">*</span>y  }                          <span style="color:#75715e"># (weaker than the line above)</span>
+assert(z <span style="color:#f92672">==</span> <span style="color:#ae81ff">2</span><span style="color:#f92672">*</span>y)
+</code></pre></div><p>Since the last post-condition implies that the assert statement is true, we have proven the program correct. To be more precise,  we have shown that it never triggers the assert - it still might run into an infinite loop.</p>
 <h4 id="more-exercises">More Exercises</h4>
-
 <p>If you have never used Hoare Logic before, I&rsquo;d recommend you try to find proofs for the following examples to get a feeling for finding invariants:</p>
-
-<pre><code class="language-ruby">i = 0
-y = user_input_unsigned()
-res = 1
-while (i &lt; y) do
- res *= 2
- i += 1
-end
-assert( res == 2**y )
-</code></pre>
-
-<pre><code class="language-ruby">i = 0
-y = user_input_unsigned()
-res = 0
-while (i &lt; y) do
-  res += i
-  i += 1
-end
-assert( res == sum(1..y) ) #hint: use res == sum(1..i) as invariant
-</code></pre>
-
-<pre><code class="language-ruby">i = 0
-y = user_input_unsigned()
-res = 1
-while (i &lt; y) do
-  if i % 2 == 0 then
-    res += i
-  end
-  i += 1
-end
-assert( res % 2 == 1 )
-</code></pre>
-
-<h2 id="applying-incorrectness-logic">Applying Incorrectness Logic</h2>
-
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ruby" data-lang="ruby">i <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
+y <span style="color:#f92672">=</span> user_input_unsigned()
+res <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>
+<span style="color:#66d9ef">while</span> (i <span style="color:#f92672">&lt;</span> y) <span style="color:#66d9ef">do</span>
+ res <span style="color:#f92672">*=</span> <span style="color:#ae81ff">2</span>
+ i <span style="color:#f92672">+=</span> <span style="color:#ae81ff">1</span>
+<span style="color:#66d9ef">end</span>
+assert( res <span style="color:#f92672">==</span> <span style="color:#ae81ff">2</span><span style="color:#f92672">**</span>y )
+</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ruby" data-lang="ruby">i <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
+y <span style="color:#f92672">=</span> user_input_unsigned()
+res <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
+<span style="color:#66d9ef">while</span> (i <span style="color:#f92672">&lt;</span> y) <span style="color:#66d9ef">do</span>
+  res <span style="color:#f92672">+=</span> i
+  i <span style="color:#f92672">+=</span> <span style="color:#ae81ff">1</span>
+<span style="color:#66d9ef">end</span>
+assert( res <span style="color:#f92672">==</span> sum(<span style="color:#ae81ff">1</span><span style="color:#f92672">..</span>y) ) <span style="color:#75715e">#hint: use res == sum(1..i) as invariant</span>
+</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ruby" data-lang="ruby">i <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
+y <span style="color:#f92672">=</span> user_input_unsigned()
+res <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>
+<span style="color:#66d9ef">while</span> (i <span style="color:#f92672">&lt;</span> y) <span style="color:#66d9ef">do</span>
+  <span style="color:#66d9ef">if</span> i <span style="color:#f92672">%</span> <span style="color:#ae81ff">2</span> <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span> <span style="color:#66d9ef">then</span>
+    res <span style="color:#f92672">+=</span> i
+  <span style="color:#66d9ef">end</span>
+  i <span style="color:#f92672">+=</span> <span style="color:#ae81ff">1</span>
+<span style="color:#66d9ef">end</span>
+assert( res <span style="color:#f92672">%</span> <span style="color:#ae81ff">2</span> <span style="color:#f92672">==</span> <span style="color:#ae81ff">1</span> )
+</code></pre></div><h2 id="applying-incorrectness-logic">Applying Incorrectness Logic</h2>
 <p>Similar to Hoare Logic, Incorrectness Logic operates on triples of the shape <code>[pre]statement[post]</code>. However, the interpretation of the <code>pre</code> and <code>post</code> conditions changes. Since the goal is to show that some states are definitively reachable, we require that any state that satisfies the <code>post</code> condition is reached after execution <code>statement</code> by at least one state that satisfies <code>pre</code>. Consider a simple assignment without any information about the right hand side, <code>x = y</code>. The most obvious, valid, IL triple would also be a valid Hoare triple <code>[ true ]x = y[ x==y ]</code>. However while <code>{ true }x = y{ true }</code> is a valid Hoare triple, it is not a valid IL triple. For example, the state where <code>x==1 and y==2</code>, satisfies the post-condition, while also being unreachable. However, the IL triple <code>[true]x=y[  0 &lt; x &lt; 10 and x==y ]</code> is valid in IL, but not in Hoare Logic. This is due to the fact that we are free to explicitly exclude any states in IL.  Similarly, while in Hoare Logic we always have to consider all paths, we are free to drop paths in IL. This affects the rules for control flow. In IL the following rules are all valid for <code>if</code>  statements:</p>
-
-<pre><code class="language-ruby">  [  PRE  ]              # `\
-if C then                #   |
-    [  PRE and C  ]      #   | `\
-    do_then              #   |   |  if this is valid
-    [  POST  ]           #   | ,/
-else                     #   | 
-   # ignore else case    #   | Then the whole statement is valid.
-   do_else               #   | Since we are underaproximating, we can 
-end                      #   | ignore paths, such as the `else` case.
-  [  POST  ]             # ,/
-</code></pre>
-
-<pre><code class="language-ruby">  [  PRE  ]              # `\
-if C then                #   |  Similarly, we can ignore the `then` case
-    # ignore then case   #   |  if the else case is valid.
-    do_then              #   |
-else                     #   |
-      [  PRE and !C  ]   #   | `\
-    do_else              #   |   | if this is valid
-      [  POST  ]         #   | ,/
-end                      #   |
-  [  POST  ]             # ,/
-</code></pre>
-
-<p>Obviously, the rule for loops changes as well, as we are now free to pick any number of loop iterations.  Again there is multiple valid ways to construct IL triples:</p>
-
-<pre><code class="language-ruby">  [  PRE  ]          # `\
-while C do           #   |  This is always valid, since it represents
-    do_something     #   |  the case where we never enter the loop.
-end                  #   |  Hence the body has no effect.
-  [  PRE and !C  ]   # ,/
-</code></pre>
-
-<p>We can also unroll the loop any number of times:</p>
-
-<pre><code class="language-ruby">  [  PRE  ]               # `\
-while C do                #   |
-      [  PRE and C]       #   |  `\
-    do_something          #   |   |  if all of these are valid,
-      [  POST_1 and C ]   #   |  &lt;
-    do_something          #   |   |
-      [  POST_2 and C ]   #   |  &lt;
-    do_something          #   |   |
-      [  POST_3 and C ]   #   | ,/
-    # ...                 #   | 
-end                       #   |  unrolling the loop n times is valid.
-  [  POST_n and !C  ]     # ,/
-</code></pre>
-
-<p>Lastly, we can use IL to prove that some states are reachable with any number of loop iterations. Here we will need a loop invariant again. However we are now parameterising the loop invariant with the number of loop iterations taken <code>n</code>. The &ldquo;loop invariant&rdquo; <code>I(n)</code> is then proven by induction:</p>
-
-<pre><code class="language-ruby">  [  I(0)  ]                                 # `\
-while C do                                   #   |
-      [  n&gt;=0 and I(n) and C ]               #   | `\
-    do_something                             #   |   | if this is valid,
-      [  I(n+1)  ]                           #   | ,/
-end                                          #   | this is valid too.
-  [ 'it exist a n&gt;0 such that' I(n) and !C ] # ,/
-</code></pre>
-
-<p>Note how in contrast to Hoare Logic the result explicitly mentions the number of loop iterations taken.  Also, if the loop is not terminating, the post-condition is still valid: it is unsatisfiable.  While in Hoare Logic <code>{ true }</code> is always a valid post-condition, in IL <code>[ false ]</code> is always valid.</p>
-
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ruby" data-lang="ruby">  <span style="color:#f92672">[</span>  <span style="color:#66d9ef">PRE</span>  <span style="color:#f92672">]</span>              <span style="color:#75715e"># `\</span>
+<span style="color:#66d9ef">if</span> C <span style="color:#66d9ef">then</span>                <span style="color:#75715e">#   |</span>
+    <span style="color:#f92672">[</span>  <span style="color:#66d9ef">PRE</span> <span style="color:#f92672">and</span> C  <span style="color:#f92672">]</span>      <span style="color:#75715e">#   | `\</span>
+    do_then              <span style="color:#75715e">#   |   |  if this is valid</span>
+    <span style="color:#f92672">[</span>  <span style="color:#66d9ef">POST</span>  <span style="color:#f92672">]</span>           <span style="color:#75715e">#   | ,/</span>
+<span style="color:#66d9ef">else</span>                     <span style="color:#75715e">#   | </span>
+   <span style="color:#75715e"># ignore else case    #   | Then the whole statement is valid.</span>
+   do_else               <span style="color:#75715e">#   | Since we are underaproximating, we can </span>
+<span style="color:#66d9ef">end</span>                      <span style="color:#75715e">#   | ignore paths, such as the `else` case.</span>
+  <span style="color:#f92672">[</span>  <span style="color:#66d9ef">POST</span>  <span style="color:#f92672">]</span>             <span style="color:#75715e"># ,/</span>
+</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ruby" data-lang="ruby">  <span style="color:#f92672">[</span>  <span style="color:#66d9ef">PRE</span>  <span style="color:#f92672">]</span>              <span style="color:#75715e"># `\</span>
+<span style="color:#66d9ef">if</span> C <span style="color:#66d9ef">then</span>                <span style="color:#75715e">#   |  Similarly, we can ignore the `then` case</span>
+    <span style="color:#75715e"># ignore then case   #   |  if the else case is valid.</span>
+    do_then              <span style="color:#75715e">#   |</span>
+<span style="color:#66d9ef">else</span>                     <span style="color:#75715e">#   |</span>
+      <span style="color:#f92672">[</span>  <span style="color:#66d9ef">PRE</span> <span style="color:#f92672">and</span> <span style="color:#f92672">!</span>C  <span style="color:#f92672">]</span>   <span style="color:#75715e">#   | `\</span>
+    do_else              <span style="color:#75715e">#   |   | if this is valid</span>
+      <span style="color:#f92672">[</span>  <span style="color:#66d9ef">POST</span>  <span style="color:#f92672">]</span>         <span style="color:#75715e">#   | ,/</span>
+<span style="color:#66d9ef">end</span>                      <span style="color:#75715e">#   |</span>
+  <span style="color:#f92672">[</span>  <span style="color:#66d9ef">POST</span>  <span style="color:#f92672">]</span>             <span style="color:#75715e"># ,/</span>
+</code></pre></div><p>Obviously, the rule for loops changes as well, as we are now free to pick any number of loop iterations.  Again there is multiple valid ways to construct IL triples:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ruby" data-lang="ruby">  <span style="color:#f92672">[</span>  <span style="color:#66d9ef">PRE</span>  <span style="color:#f92672">]</span>          <span style="color:#75715e"># `\</span>
+<span style="color:#66d9ef">while</span> C <span style="color:#66d9ef">do</span>           <span style="color:#75715e">#   |  This is always valid, since it represents</span>
+    do_something     <span style="color:#75715e">#   |  the case where we never enter the loop.</span>
+<span style="color:#66d9ef">end</span>                  <span style="color:#75715e">#   |  Hence the body has no effect.</span>
+  <span style="color:#f92672">[</span>  <span style="color:#66d9ef">PRE</span> <span style="color:#f92672">and</span> <span style="color:#f92672">!</span>C  <span style="color:#f92672">]</span>   <span style="color:#75715e"># ,/</span>
+</code></pre></div><p>We can also unroll the loop any number of times:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ruby" data-lang="ruby">  <span style="color:#f92672">[</span>  <span style="color:#66d9ef">PRE</span>  <span style="color:#f92672">]</span>               <span style="color:#75715e"># `\</span>
+<span style="color:#66d9ef">while</span> C <span style="color:#66d9ef">do</span>                <span style="color:#75715e">#   |</span>
+      <span style="color:#f92672">[</span>  <span style="color:#66d9ef">PRE</span> <span style="color:#f92672">and</span> C<span style="color:#f92672">]</span>       <span style="color:#75715e">#   |  `\</span>
+    do_something          <span style="color:#75715e">#   |   |  if all of these are valid,</span>
+      <span style="color:#f92672">[</span>  <span style="color:#66d9ef">POST_1</span> <span style="color:#f92672">and</span> C <span style="color:#f92672">]</span>   <span style="color:#75715e">#   |  &lt;</span>
+    do_something          <span style="color:#75715e">#   |   |</span>
+      <span style="color:#f92672">[</span>  <span style="color:#66d9ef">POST_2</span> <span style="color:#f92672">and</span> C <span style="color:#f92672">]</span>   <span style="color:#75715e">#   |  &lt;</span>
+    do_something          <span style="color:#75715e">#   |   |</span>
+      <span style="color:#f92672">[</span>  <span style="color:#66d9ef">POST_3</span> <span style="color:#f92672">and</span> C <span style="color:#f92672">]</span>   <span style="color:#75715e">#   | ,/</span>
+    <span style="color:#75715e"># ...                 #   | </span>
+<span style="color:#66d9ef">end</span>                       <span style="color:#75715e">#   |  unrolling the loop n times is valid.</span>
+  <span style="color:#f92672">[</span>  <span style="color:#66d9ef">POST_n</span> <span style="color:#f92672">and</span> <span style="color:#f92672">!</span>C  <span style="color:#f92672">]</span>     <span style="color:#75715e"># ,/</span>
+</code></pre></div><p>Lastly, we can use IL to prove that some states are reachable with any number of loop iterations. Here we will need a loop invariant again. However we are now parameterising the loop invariant with the number of loop iterations taken <code>n</code>. The &ldquo;loop invariant&rdquo; <code>I(n)</code> is then proven by induction:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ruby" data-lang="ruby">  <span style="color:#f92672">[</span>  I(<span style="color:#ae81ff">0</span>)  <span style="color:#f92672">]</span>                                 <span style="color:#75715e"># `\</span>
+<span style="color:#66d9ef">while</span> C <span style="color:#66d9ef">do</span>                                   <span style="color:#75715e">#   |</span>
+      <span style="color:#f92672">[</span>  n<span style="color:#f92672">&gt;=</span><span style="color:#ae81ff">0</span> <span style="color:#f92672">and</span> I(n) <span style="color:#f92672">and</span> C <span style="color:#f92672">]</span>               <span style="color:#75715e">#   | `\</span>
+    do_something                             <span style="color:#75715e">#   |   | if this is valid,</span>
+      <span style="color:#f92672">[</span>  I(n<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>)  <span style="color:#f92672">]</span>                           <span style="color:#75715e">#   | ,/</span>
+<span style="color:#66d9ef">end</span>                                          <span style="color:#75715e">#   | this is valid too.</span>
+  <span style="color:#f92672">[</span> <span style="color:#e6db74">&#39;it exist a n&gt;0 such that&#39;</span> I(n) <span style="color:#f92672">and</span> <span style="color:#f92672">!</span>C <span style="color:#f92672">]</span> <span style="color:#75715e"># ,/</span>
+</code></pre></div><p>Note how in contrast to Hoare Logic the result explicitly mentions the number of loop iterations taken.  Also, if the loop is not terminating, the post-condition is still valid: it is unsatisfiable.  While in Hoare Logic <code>{ true }</code> is always a valid post-condition, in IL <code>[ false ]</code> is always valid.</p>
 <h2 id="example-1-1">Example 1</h2>
-
 <p>Consider the following program that is a horrible manual implementation of multiplication.</p>
-
-<pre><code class="language-ruby">x = user_input_unsigned()
-y = user_input_unsigned() 
-z = 0
-res = 0
-while( z &lt; y ) do
-  res=res+x
-  z=z+1
-end
-assert(res != 20)
-</code></pre>
-
-<p>Using IL, there is many (in fact infinitely many) ways we can analyze the program. The most restricted version is a picking an arbitrary concrete execution:</p>
-
-<pre><code class="language-ruby">  [ true ]
-x = user_input_unsigned()
-  [ x==50 ]
-y = user_input_unsigned() 
-  [ x==50 and y==2 ]
-z = 0
-  [ x==50 and y==2 and z==0 ]
-res = 0
-  [ x==50 and y==2 and z==0 and res==0 ]
-while( z &lt; y ) do
-    [ x==50 and y==2 and z==0 and res==0 and z&lt;y ]# `\
-  res=res+x                                       #   |
-    [ x==50 and y==2 and z==0 and res==50 ]       #   | unroll #1
-  z=z+1                                           #   |
-    [ x==50 and y==2 and z==1 and res==50 ]       # ,/
-    [ x==50 and y==2 and z==0 and res==0 and z&lt;y ]# `\
-  res=res+x                                       #   |
-    [ x==50 and y==2 and z==0 and res==100 ]      #   | unroll #2
-  z=z+1                                           #   |
-    [ x==50 and y==2 and z==2 and res==100 ]      # ,/
-end
-[ x==50 and y==2 and z==2 and res==100 and !(z&lt;y) ]
-assert(res != 20)
-</code></pre>
-
-<p>This is probably not something we are overly interested in, as we don&rsquo;t really need a logic to perform concrete execution. We can simply use the CPU to execute the program and observe the outcome. Also, using this particular trace we cannot show that the assertion fails.</p>
-
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ruby" data-lang="ruby">x <span style="color:#f92672">=</span> user_input_unsigned()
+y <span style="color:#f92672">=</span> user_input_unsigned() 
+z <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
+res <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
+<span style="color:#66d9ef">while</span>( z <span style="color:#f92672">&lt;</span> y ) <span style="color:#66d9ef">do</span>
+  res<span style="color:#f92672">=</span>res<span style="color:#f92672">+</span>x
+  z<span style="color:#f92672">=</span>z<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>
+<span style="color:#66d9ef">end</span>
+assert(res <span style="color:#f92672">!=</span> <span style="color:#ae81ff">20</span>)
+</code></pre></div><p>Using IL, there is many (in fact infinitely many) ways we can analyze the program. The most restricted version is a picking an arbitrary concrete execution:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ruby" data-lang="ruby">  <span style="color:#f92672">[</span> <span style="color:#66d9ef">true</span> <span style="color:#f92672">]</span>
+x <span style="color:#f92672">=</span> user_input_unsigned()
+  <span style="color:#f92672">[</span> x<span style="color:#f92672">==</span><span style="color:#ae81ff">50</span> <span style="color:#f92672">]</span>
+y <span style="color:#f92672">=</span> user_input_unsigned() 
+  <span style="color:#f92672">[</span> x<span style="color:#f92672">==</span><span style="color:#ae81ff">50</span> <span style="color:#f92672">and</span> y<span style="color:#f92672">==</span><span style="color:#ae81ff">2</span> <span style="color:#f92672">]</span>
+z <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
+  <span style="color:#f92672">[</span> x<span style="color:#f92672">==</span><span style="color:#ae81ff">50</span> <span style="color:#f92672">and</span> y<span style="color:#f92672">==</span><span style="color:#ae81ff">2</span> <span style="color:#f92672">and</span> z<span style="color:#f92672">==</span><span style="color:#ae81ff">0</span> <span style="color:#f92672">]</span>
+res <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
+  <span style="color:#f92672">[</span> x<span style="color:#f92672">==</span><span style="color:#ae81ff">50</span> <span style="color:#f92672">and</span> y<span style="color:#f92672">==</span><span style="color:#ae81ff">2</span> <span style="color:#f92672">and</span> z<span style="color:#f92672">==</span><span style="color:#ae81ff">0</span> <span style="color:#f92672">and</span> res<span style="color:#f92672">==</span><span style="color:#ae81ff">0</span> <span style="color:#f92672">]</span>
+<span style="color:#66d9ef">while</span>( z <span style="color:#f92672">&lt;</span> y ) <span style="color:#66d9ef">do</span>
+    <span style="color:#f92672">[</span> x<span style="color:#f92672">==</span><span style="color:#ae81ff">50</span> <span style="color:#f92672">and</span> y<span style="color:#f92672">==</span><span style="color:#ae81ff">2</span> <span style="color:#f92672">and</span> z<span style="color:#f92672">==</span><span style="color:#ae81ff">0</span> <span style="color:#f92672">and</span> res<span style="color:#f92672">==</span><span style="color:#ae81ff">0</span> <span style="color:#f92672">and</span> z<span style="color:#f92672">&lt;</span>y <span style="color:#f92672">]</span><span style="color:#75715e"># `\</span>
+  res<span style="color:#f92672">=</span>res<span style="color:#f92672">+</span>x                                       <span style="color:#75715e">#   |</span>
+    <span style="color:#f92672">[</span> x<span style="color:#f92672">==</span><span style="color:#ae81ff">50</span> <span style="color:#f92672">and</span> y<span style="color:#f92672">==</span><span style="color:#ae81ff">2</span> <span style="color:#f92672">and</span> z<span style="color:#f92672">==</span><span style="color:#ae81ff">0</span> <span style="color:#f92672">and</span> res<span style="color:#f92672">==</span><span style="color:#ae81ff">50</span> <span style="color:#f92672">]</span>       <span style="color:#75715e">#   | unroll #1</span>
+  z<span style="color:#f92672">=</span>z<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>                                           <span style="color:#75715e">#   |</span>
+    <span style="color:#f92672">[</span> x<span style="color:#f92672">==</span><span style="color:#ae81ff">50</span> <span style="color:#f92672">and</span> y<span style="color:#f92672">==</span><span style="color:#ae81ff">2</span> <span style="color:#f92672">and</span> z<span style="color:#f92672">==</span><span style="color:#ae81ff">1</span> <span style="color:#f92672">and</span> res<span style="color:#f92672">==</span><span style="color:#ae81ff">50</span> <span style="color:#f92672">]</span>       <span style="color:#75715e"># ,/</span>
+    <span style="color:#f92672">[</span> x<span style="color:#f92672">==</span><span style="color:#ae81ff">50</span> <span style="color:#f92672">and</span> y<span style="color:#f92672">==</span><span style="color:#ae81ff">2</span> <span style="color:#f92672">and</span> z<span style="color:#f92672">==</span><span style="color:#ae81ff">0</span> <span style="color:#f92672">and</span> res<span style="color:#f92672">==</span><span style="color:#ae81ff">0</span> <span style="color:#f92672">and</span> z<span style="color:#f92672">&lt;</span>y <span style="color:#f92672">]</span><span style="color:#75715e"># `\</span>
+  res<span style="color:#f92672">=</span>res<span style="color:#f92672">+</span>x                                       <span style="color:#75715e">#   |</span>
+    <span style="color:#f92672">[</span> x<span style="color:#f92672">==</span><span style="color:#ae81ff">50</span> <span style="color:#f92672">and</span> y<span style="color:#f92672">==</span><span style="color:#ae81ff">2</span> <span style="color:#f92672">and</span> z<span style="color:#f92672">==</span><span style="color:#ae81ff">0</span> <span style="color:#f92672">and</span> res<span style="color:#f92672">==</span><span style="color:#ae81ff">100</span> <span style="color:#f92672">]</span>      <span style="color:#75715e">#   | unroll #2</span>
+  z<span style="color:#f92672">=</span>z<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>                                           <span style="color:#75715e">#   |</span>
+    <span style="color:#f92672">[</span> x<span style="color:#f92672">==</span><span style="color:#ae81ff">50</span> <span style="color:#f92672">and</span> y<span style="color:#f92672">==</span><span style="color:#ae81ff">2</span> <span style="color:#f92672">and</span> z<span style="color:#f92672">==</span><span style="color:#ae81ff">2</span> <span style="color:#f92672">and</span> res<span style="color:#f92672">==</span><span style="color:#ae81ff">100</span> <span style="color:#f92672">]</span>      <span style="color:#75715e"># ,/</span>
+<span style="color:#66d9ef">end</span>
+<span style="color:#f92672">[</span> x<span style="color:#f92672">==</span><span style="color:#ae81ff">50</span> <span style="color:#f92672">and</span> y<span style="color:#f92672">==</span><span style="color:#ae81ff">2</span> <span style="color:#f92672">and</span> z<span style="color:#f92672">==</span><span style="color:#ae81ff">2</span> <span style="color:#f92672">and</span> res<span style="color:#f92672">==</span><span style="color:#ae81ff">100</span> <span style="color:#f92672">and</span> <span style="color:#f92672">!</span>(z<span style="color:#f92672">&lt;</span>y) <span style="color:#f92672">]</span>
+assert(res <span style="color:#f92672">!=</span> <span style="color:#ae81ff">20</span>)
+</code></pre></div><p>This is probably not something we are overly interested in, as we don&rsquo;t really need a logic to perform concrete execution. We can simply use the CPU to execute the program and observe the outcome. Also, using this particular trace we cannot show that the assertion fails.</p>
 <p>Another common approach is to perform a so called &ldquo;concolic&rdquo; execution, where a path is fixed, and we execute symbolically along the path of a concrete execution. If any constraint gets too complicated, we can substitute the concrete values. Note how we need to track <code>x&gt;0</code> which doesn&rsquo;t really affect the rest of the execution. In Hoare Logic we would be allowed to drop this, but in IL we need to keep it to ensure soundness. If we would drop it, we would conclude that the state <code>res==-2 and z==2 and y==2 and x==-1</code> is reachable.</p>
-
-<pre><code class="language-ruby">  [ true ]
-x = user_input_unsigned()
-  [ x&gt;0 ]
-y = user_input_unsigned() 
-  [ x&gt;0 and y==2 ] # we fix y, but not x
-z = 0
-  [ x&gt;0 and y==2 and z==0 ]
-res = 0
-  [ x&gt;0 and y==2 and z==0 and res==0 ]
-while( z &lt; y ) do
-    [ x&gt;0 and y==2 and z==0 and res==0 and z&lt;y ]          # `\
-  res=res+x                                               #   |
-    [ x&gt;0 and y==2 and z==0 and res==x ]                  #   | unroll #1
-  z=z+1                                                   #   |
-    [ x&gt;0 and y==2 and z==1 and res==x ]                  # ,/
-    [ x&gt;0 and y==2 and z==0 and res==0 and z&lt;y ]          # `\
-  res=res+x                                               #   |
-    [ x&gt;0 and y==2 and z==0 and res==x+x ]                #   | unroll #2
-  z=z+1                                                   #   |
-    [ x&gt;0 and y==2 and z==2 and res==x+x ]                # ,/
-end
-[ x&gt;0 and y==2 and z==2 and res==x+x and !(z&lt;y) ]         # POST
-assert(res != 20)
-</code></pre>
-
-<p>Using concolic execution with <code>y==2</code>, we can already prove that the final assertion fails, by demonstrating that <code>x==10 and y==2 and z==2 and res == 20</code> is a valid, reachable, state that triggers the assertion. After we obtained the final condition <code>POST</code>, we can automatically check if the assertion is violated, by using an SMT solver to find a variable assignment that satisfies <code>POST and !(res!=20)</code>.
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ruby" data-lang="ruby">  <span style="color:#f92672">[</span> <span style="color:#66d9ef">true</span> <span style="color:#f92672">]</span>
+x <span style="color:#f92672">=</span> user_input_unsigned()
+  <span style="color:#f92672">[</span> x<span style="color:#f92672">&gt;</span><span style="color:#ae81ff">0</span> <span style="color:#f92672">]</span>
+y <span style="color:#f92672">=</span> user_input_unsigned() 
+  <span style="color:#f92672">[</span> x<span style="color:#f92672">&gt;</span><span style="color:#ae81ff">0</span> <span style="color:#f92672">and</span> y<span style="color:#f92672">==</span><span style="color:#ae81ff">2</span> <span style="color:#f92672">]</span> <span style="color:#75715e"># we fix y, but not x</span>
+z <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
+  <span style="color:#f92672">[</span> x<span style="color:#f92672">&gt;</span><span style="color:#ae81ff">0</span> <span style="color:#f92672">and</span> y<span style="color:#f92672">==</span><span style="color:#ae81ff">2</span> <span style="color:#f92672">and</span> z<span style="color:#f92672">==</span><span style="color:#ae81ff">0</span> <span style="color:#f92672">]</span>
+res <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
+  <span style="color:#f92672">[</span> x<span style="color:#f92672">&gt;</span><span style="color:#ae81ff">0</span> <span style="color:#f92672">and</span> y<span style="color:#f92672">==</span><span style="color:#ae81ff">2</span> <span style="color:#f92672">and</span> z<span style="color:#f92672">==</span><span style="color:#ae81ff">0</span> <span style="color:#f92672">and</span> res<span style="color:#f92672">==</span><span style="color:#ae81ff">0</span> <span style="color:#f92672">]</span>
+<span style="color:#66d9ef">while</span>( z <span style="color:#f92672">&lt;</span> y ) <span style="color:#66d9ef">do</span>
+    <span style="color:#f92672">[</span> x<span style="color:#f92672">&gt;</span><span style="color:#ae81ff">0</span> <span style="color:#f92672">and</span> y<span style="color:#f92672">==</span><span style="color:#ae81ff">2</span> <span style="color:#f92672">and</span> z<span style="color:#f92672">==</span><span style="color:#ae81ff">0</span> <span style="color:#f92672">and</span> res<span style="color:#f92672">==</span><span style="color:#ae81ff">0</span> <span style="color:#f92672">and</span> z<span style="color:#f92672">&lt;</span>y <span style="color:#f92672">]</span>          <span style="color:#75715e"># `\</span>
+  res<span style="color:#f92672">=</span>res<span style="color:#f92672">+</span>x                                               <span style="color:#75715e">#   |</span>
+    <span style="color:#f92672">[</span> x<span style="color:#f92672">&gt;</span><span style="color:#ae81ff">0</span> <span style="color:#f92672">and</span> y<span style="color:#f92672">==</span><span style="color:#ae81ff">2</span> <span style="color:#f92672">and</span> z<span style="color:#f92672">==</span><span style="color:#ae81ff">0</span> <span style="color:#f92672">and</span> res<span style="color:#f92672">==</span>x <span style="color:#f92672">]</span>                  <span style="color:#75715e">#   | unroll #1</span>
+  z<span style="color:#f92672">=</span>z<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>                                                   <span style="color:#75715e">#   |</span>
+    <span style="color:#f92672">[</span> x<span style="color:#f92672">&gt;</span><span style="color:#ae81ff">0</span> <span style="color:#f92672">and</span> y<span style="color:#f92672">==</span><span style="color:#ae81ff">2</span> <span style="color:#f92672">and</span> z<span style="color:#f92672">==</span><span style="color:#ae81ff">1</span> <span style="color:#f92672">and</span> res<span style="color:#f92672">==</span>x <span style="color:#f92672">]</span>                  <span style="color:#75715e"># ,/</span>
+    <span style="color:#f92672">[</span> x<span style="color:#f92672">&gt;</span><span style="color:#ae81ff">0</span> <span style="color:#f92672">and</span> y<span style="color:#f92672">==</span><span style="color:#ae81ff">2</span> <span style="color:#f92672">and</span> z<span style="color:#f92672">==</span><span style="color:#ae81ff">0</span> <span style="color:#f92672">and</span> res<span style="color:#f92672">==</span><span style="color:#ae81ff">0</span> <span style="color:#f92672">and</span> z<span style="color:#f92672">&lt;</span>y <span style="color:#f92672">]</span>          <span style="color:#75715e"># `\</span>
+  res<span style="color:#f92672">=</span>res<span style="color:#f92672">+</span>x                                               <span style="color:#75715e">#   |</span>
+    <span style="color:#f92672">[</span> x<span style="color:#f92672">&gt;</span><span style="color:#ae81ff">0</span> <span style="color:#f92672">and</span> y<span style="color:#f92672">==</span><span style="color:#ae81ff">2</span> <span style="color:#f92672">and</span> z<span style="color:#f92672">==</span><span style="color:#ae81ff">0</span> <span style="color:#f92672">and</span> res<span style="color:#f92672">==</span>x<span style="color:#f92672">+</span>x <span style="color:#f92672">]</span>                <span style="color:#75715e">#   | unroll #2</span>
+  z<span style="color:#f92672">=</span>z<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>                                                   <span style="color:#75715e">#   |</span>
+    <span style="color:#f92672">[</span> x<span style="color:#f92672">&gt;</span><span style="color:#ae81ff">0</span> <span style="color:#f92672">and</span> y<span style="color:#f92672">==</span><span style="color:#ae81ff">2</span> <span style="color:#f92672">and</span> z<span style="color:#f92672">==</span><span style="color:#ae81ff">2</span> <span style="color:#f92672">and</span> res<span style="color:#f92672">==</span>x<span style="color:#f92672">+</span>x <span style="color:#f92672">]</span>                <span style="color:#75715e"># ,/</span>
+<span style="color:#66d9ef">end</span>
+<span style="color:#f92672">[</span> x<span style="color:#f92672">&gt;</span><span style="color:#ae81ff">0</span> <span style="color:#f92672">and</span> y<span style="color:#f92672">==</span><span style="color:#ae81ff">2</span> <span style="color:#f92672">and</span> z<span style="color:#f92672">==</span><span style="color:#ae81ff">2</span> <span style="color:#f92672">and</span> res<span style="color:#f92672">==</span>x<span style="color:#f92672">+</span>x <span style="color:#f92672">and</span> <span style="color:#f92672">!</span>(z<span style="color:#f92672">&lt;</span>y) <span style="color:#f92672">]</span>         <span style="color:#75715e"># POST</span>
+assert(res <span style="color:#f92672">!=</span> <span style="color:#ae81ff">20</span>)
+</code></pre></div><p>Using concolic execution with <code>y==2</code>, we can already prove that the final assertion fails, by demonstrating that <code>x==10 and y==2 and z==2 and res == 20</code> is a valid, reachable, state that triggers the assertion. After we obtained the final condition <code>POST</code>, we can automatically check if the assertion is violated, by using an SMT solver to find a variable assignment that satisfies <code>POST and !(res!=20)</code>.
 This approach has been known long before the formal description of IL. However IL puts it into a nice mental framework. Consider the case where we change the assertion to <code>assert(res != 139*31)</code>. Using this larger number, concolic execution would have a very hard time finding the exact right number of loop iterations to falsify the assertion.  If we consider concolic execution to be a special case of IL,  we can  generalize concolic execution to reason about multiple different paths at the same time. If we keep both <code>x</code> and <code>y</code> symbolic, we can prove that the assertion still fails. By applying the induction rule for loops  we obtain the following result:</p>
-
-<pre><code class="language-ruby">  [ true ]
-x = user_input_unsigned()
-  [ x&gt;0 ]
-y = user_input_unsigned() 
-  [ x&gt;0 and y&gt;0 ] # we fix neither x, nor y
-z = 0
-  [ x&gt;0 and y&gt;0 and z==0 ]
-res = 0
-  [ x&gt;0 and y&gt;0 and z==0 and res==0 ]
-  [ I(0) ]                                     # `\
-while( z &lt; y ) do                              #   |
-    [ n&gt;=0 and I(n) and z &lt; y ]                #   | need to find an I(n)
-  res=res+x                                    #   | that satiesfies    
-  z=z+1                                        #   | this conditions.
-    [ n&gt;=0 and I(n+1) ]                        #   |
-end                                            #   |
-[ 'it exist a n&gt;0 such that' I(n) and !(z&lt;y) ] # ,/
-assert(res != 139*31)
-</code></pre>
-
-<p>A natural candidate for <code>I(n)</code> is <code>I(n): res==x*n and z==n and z&lt;=y and x&gt;0 and y&gt;0</code> . Since this is rather long, we define the rest<code>R: x&gt;0 and y&gt;0 and n&gt;=0</code> to shorten <code>I(n)</code> to the relevant part <code>res==x*n and z==n and z&lt;=y and R</code>. Lets plug it in and see if it works:</p>
-
-<pre><code class="language-ruby">   # ... previous code ...
-  [ x&gt;0 and y&gt;0 and z==0 and res==0 ]                  # I(0)        &lt;-,
-  [ res==x*0 and z==0 and z &lt;= y and x&gt;0 and y&gt;0 ]     # stronger than ´
-while( z &lt; y ) do                              
-    [ res==x*n and z==n and z &lt;= y and R and z&lt;y ]     # I(n) and C  &lt;-, 
-    [ res+x=x*(n+1) and z+1=(n+1) and z+1 &lt;= y and R ] # stronger than ´
-  res=res+x                                               
-    [ res=x*(n+1) and z+1=(n+1) and z+1 &lt;= y and R ]
-  z=z+1    
-    [ res=x*(n+1) and z=(n+1) and z &lt;= y and R ]       # I(n+1)
-end                                            
-  [  'it exist a n&gt;0 such that' res==x*n and z==n and  #
-                              z &lt;= y and !(z&lt;y) and R] # I(n) and !(C)&lt;-,
-  [  'it exist a n&gt;0 such that' res==x*y and z==n and  #  stronger than ´
-                              z == y and R]            #
-assert(res != 139*31)
-</code></pre>
-
-<p>As we can see, similar to using invariants in Hoare logic,  we applied <code>I(n)</code>to the pattern for loops, and used our ability to strengthen post-conditions to show that <code>[ I(n) and C ]body[ I(n+1) ]</code> is indeed a valid IL triple.  In most cases we didn&rsquo;t even really strengthen the post-condition, but simply applied equivalence transformations. For example, we transform<code>z&lt;=y and !(z&lt;y)</code> into <code>z=y</code>. As a consequence we have shown that any state where <code>res==x*y and x&gt;0 and y&gt;0 and ...</code> is reachable. Using the SMT solver to check <code>POST and !(res!=139*31)</code> we can easily check that the assertion is still triggerable.</p>
-
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ruby" data-lang="ruby">  <span style="color:#f92672">[</span> <span style="color:#66d9ef">true</span> <span style="color:#f92672">]</span>
+x <span style="color:#f92672">=</span> user_input_unsigned()
+  <span style="color:#f92672">[</span> x<span style="color:#f92672">&gt;</span><span style="color:#ae81ff">0</span> <span style="color:#f92672">]</span>
+y <span style="color:#f92672">=</span> user_input_unsigned() 
+  <span style="color:#f92672">[</span> x<span style="color:#f92672">&gt;</span><span style="color:#ae81ff">0</span> <span style="color:#f92672">and</span> y<span style="color:#f92672">&gt;</span><span style="color:#ae81ff">0</span> <span style="color:#f92672">]</span> <span style="color:#75715e"># we fix neither x, nor y</span>
+z <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
+  <span style="color:#f92672">[</span> x<span style="color:#f92672">&gt;</span><span style="color:#ae81ff">0</span> <span style="color:#f92672">and</span> y<span style="color:#f92672">&gt;</span><span style="color:#ae81ff">0</span> <span style="color:#f92672">and</span> z<span style="color:#f92672">==</span><span style="color:#ae81ff">0</span> <span style="color:#f92672">]</span>
+res <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
+  <span style="color:#f92672">[</span> x<span style="color:#f92672">&gt;</span><span style="color:#ae81ff">0</span> <span style="color:#f92672">and</span> y<span style="color:#f92672">&gt;</span><span style="color:#ae81ff">0</span> <span style="color:#f92672">and</span> z<span style="color:#f92672">==</span><span style="color:#ae81ff">0</span> <span style="color:#f92672">and</span> res<span style="color:#f92672">==</span><span style="color:#ae81ff">0</span> <span style="color:#f92672">]</span>
+  <span style="color:#f92672">[</span> I(<span style="color:#ae81ff">0</span>) <span style="color:#f92672">]</span>                                     <span style="color:#75715e"># `\</span>
+<span style="color:#66d9ef">while</span>( z <span style="color:#f92672">&lt;</span> y ) <span style="color:#66d9ef">do</span>                              <span style="color:#75715e">#   |</span>
+    <span style="color:#f92672">[</span> n<span style="color:#f92672">&gt;=</span><span style="color:#ae81ff">0</span> <span style="color:#f92672">and</span> I(n) <span style="color:#f92672">and</span> z <span style="color:#f92672">&lt;</span> y <span style="color:#f92672">]</span>                <span style="color:#75715e">#   | need to find an I(n)</span>
+  res<span style="color:#f92672">=</span>res<span style="color:#f92672">+</span>x                                    <span style="color:#75715e">#   | that satiesfies    </span>
+  z<span style="color:#f92672">=</span>z<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>                                        <span style="color:#75715e">#   | this conditions.</span>
+    <span style="color:#f92672">[</span> n<span style="color:#f92672">&gt;=</span><span style="color:#ae81ff">0</span> <span style="color:#f92672">and</span> I(n<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>) <span style="color:#f92672">]</span>                        <span style="color:#75715e">#   |</span>
+<span style="color:#66d9ef">end</span>                                            <span style="color:#75715e">#   |</span>
+<span style="color:#f92672">[</span> <span style="color:#e6db74">&#39;it exist a n&gt;0 such that&#39;</span> I(n) <span style="color:#f92672">and</span> <span style="color:#f92672">!</span>(z<span style="color:#f92672">&lt;</span>y) <span style="color:#f92672">]</span> <span style="color:#75715e"># ,/</span>
+assert(res <span style="color:#f92672">!=</span> <span style="color:#ae81ff">139</span><span style="color:#f92672">*</span><span style="color:#ae81ff">31</span>)
+</code></pre></div><p>A natural candidate for <code>I(n)</code> is <code>I(n): res==x*n and z==n and z&lt;=y and x&gt;0 and y&gt;0</code> . Since this is rather long, we define the rest<code>R: x&gt;0 and y&gt;0 and n&gt;=0</code> to shorten <code>I(n)</code> to the relevant part <code>res==x*n and z==n and z&lt;=y and R</code>. Lets plug it in and see if it works:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ruby" data-lang="ruby">   <span style="color:#75715e"># ... previous code ...</span>
+  <span style="color:#f92672">[</span> x<span style="color:#f92672">&gt;</span><span style="color:#ae81ff">0</span> <span style="color:#f92672">and</span> y<span style="color:#f92672">&gt;</span><span style="color:#ae81ff">0</span> <span style="color:#f92672">and</span> z<span style="color:#f92672">==</span><span style="color:#ae81ff">0</span> <span style="color:#f92672">and</span> res<span style="color:#f92672">==</span><span style="color:#ae81ff">0</span> <span style="color:#f92672">]</span>                  <span style="color:#75715e"># I(0)        &lt;-,</span>
+  <span style="color:#f92672">[</span> res<span style="color:#f92672">==</span>x<span style="color:#f92672">*</span><span style="color:#ae81ff">0</span> <span style="color:#f92672">and</span> z<span style="color:#f92672">==</span><span style="color:#ae81ff">0</span> <span style="color:#f92672">and</span> z <span style="color:#f92672">&lt;=</span> y <span style="color:#f92672">and</span> x<span style="color:#f92672">&gt;</span><span style="color:#ae81ff">0</span> <span style="color:#f92672">and</span> y<span style="color:#f92672">&gt;</span><span style="color:#ae81ff">0</span> <span style="color:#f92672">]</span>     <span style="color:#75715e"># stronger than ´</span>
+<span style="color:#66d9ef">while</span>( z <span style="color:#f92672">&lt;</span> y ) <span style="color:#66d9ef">do</span>                              
+    <span style="color:#f92672">[</span> res<span style="color:#f92672">==</span>x<span style="color:#f92672">*</span>n <span style="color:#f92672">and</span> z<span style="color:#f92672">==</span>n <span style="color:#f92672">and</span> z <span style="color:#f92672">&lt;=</span> y <span style="color:#f92672">and</span> R <span style="color:#f92672">and</span> z<span style="color:#f92672">&lt;</span>y <span style="color:#f92672">]</span>     <span style="color:#75715e"># I(n) and C  &lt;-, </span>
+    <span style="color:#f92672">[</span> res<span style="color:#f92672">+</span>x<span style="color:#f92672">=</span>x<span style="color:#f92672">*</span>(n<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>) <span style="color:#f92672">and</span> z<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span><span style="color:#f92672">=</span>(n<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>) <span style="color:#f92672">and</span> z<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span> <span style="color:#f92672">&lt;=</span> y <span style="color:#f92672">and</span> R <span style="color:#f92672">]</span> <span style="color:#75715e"># stronger than ´</span>
+  res<span style="color:#f92672">=</span>res<span style="color:#f92672">+</span>x                                               
+    <span style="color:#f92672">[</span> res<span style="color:#f92672">=</span>x<span style="color:#f92672">*</span>(n<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>) <span style="color:#f92672">and</span> z<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span><span style="color:#f92672">=</span>(n<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>) <span style="color:#f92672">and</span> z<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span> <span style="color:#f92672">&lt;=</span> y <span style="color:#f92672">and</span> R <span style="color:#f92672">]</span>
+  z<span style="color:#f92672">=</span>z<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>    
+    <span style="color:#f92672">[</span> res<span style="color:#f92672">=</span>x<span style="color:#f92672">*</span>(n<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>) <span style="color:#f92672">and</span> z<span style="color:#f92672">=</span>(n<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>) <span style="color:#f92672">and</span> z <span style="color:#f92672">&lt;=</span> y <span style="color:#f92672">and</span> R <span style="color:#f92672">]</span>       <span style="color:#75715e"># I(n+1)</span>
+<span style="color:#66d9ef">end</span>                                            
+  <span style="color:#f92672">[</span>  <span style="color:#e6db74">&#39;it exist a n&gt;0 such that&#39;</span> res<span style="color:#f92672">==</span>x<span style="color:#f92672">*</span>n <span style="color:#f92672">and</span> z<span style="color:#f92672">==</span>n <span style="color:#f92672">and</span>  <span style="color:#75715e">#</span>
+                              z <span style="color:#f92672">&lt;=</span> y <span style="color:#f92672">and</span> <span style="color:#f92672">!</span>(z<span style="color:#f92672">&lt;</span>y) <span style="color:#f92672">and</span> R<span style="color:#f92672">]</span> <span style="color:#75715e"># I(n) and !(C)&lt;-,</span>
+  <span style="color:#f92672">[</span>  <span style="color:#e6db74">&#39;it exist a n&gt;0 such that&#39;</span> res<span style="color:#f92672">==</span>x<span style="color:#f92672">*</span>y <span style="color:#f92672">and</span> z<span style="color:#f92672">==</span>n <span style="color:#f92672">and</span>  <span style="color:#75715e">#  stronger than ´</span>
+                              z <span style="color:#f92672">==</span> y <span style="color:#f92672">and</span> R<span style="color:#f92672">]</span>            <span style="color:#75715e">#</span>
+assert(res <span style="color:#f92672">!=</span> <span style="color:#ae81ff">139</span><span style="color:#f92672">*</span><span style="color:#ae81ff">31</span>)
+</code></pre></div><p>As we can see, similar to using invariants in Hoare logic,  we applied <code>I(n)</code>to the pattern for loops, and used our ability to strengthen post-conditions to show that <code>[ I(n) and C ]body[ I(n+1) ]</code> is indeed a valid IL triple.  In most cases we didn&rsquo;t even really strengthen the post-condition, but simply applied equivalence transformations. For example, we transform<code>z&lt;=y and !(z&lt;y)</code> into <code>z=y</code>. As a consequence we have shown that any state where <code>res==x*y and x&gt;0 and y&gt;0 and ...</code> is reachable. Using the SMT solver to check <code>POST and !(res!=139*31)</code> we can easily check that the assertion is still triggerable.</p>
 <h2 id="example-2-1">Example 2</h2>
-
-<p>Lets pick another somewhat more elaborate example. This time we will deal with arrays. This function reads an array from the user_input, and copies the absolute value of every element to the result array. In this example, we skip the simple cases and instead try to prove that we can reach states where <code>forall j in (0..x.len): res[j] == x[j] and ...</code>` holds.  To keep this example readable, we skip dealing with the length, and assume that setting elements in an array always succeeds.</p>
-
-<pre><code class="language-ruby">x = user_input_array() 
-res = array()
-i = 0
-while( i &lt; x.len ) do
-  if x[i] &lt; 0 then
-    res[i]=-x[i]
-  else
-    res[i]=x[i]
-  end
-end
-</code></pre>
-
-<p>We will also skip the prefix and jump right into dealing with the loop body. For the first case we allow arbitrary numbers of loop iterations, while fixing that we always take the <code>else</code> case in the <code>if</code> statement. To simplify the rest of this example, we add the additional constraint that <code>x.len &gt;= 1</code> since otherwise the inductive rule doesn&rsquo;t apply and we have to use the much simpler rule for loops with zero iterations. Hence we have to find an <code>I(n)</code> such that</p>
-
-<pre><code class="language-ruby">  [  i==0 and x.len &gt;= 1  ]         #             &lt;-,
-  [ I(0) ]                          # stronger than ´
-while( i &lt; x.len ) do
-    [ n&gt;=0 and I(n) andi &lt; x.len]  
-  if x[i] &lt; 0 then
-    # don't care, fixed the else path
-  else
-      [ n&gt;=0 and I(n) and i &lt; x.len and !(x[i]&lt;0) ]
-    res[i]=x[i]
-      [ n&gt;=0 and I(n) and i &lt; x.len and !(x[i]&lt;0) and res[i]=x[i]]
-  end
-    [ n&gt;=0 and I(n) and i &lt; x.len and !(x[i]&lt;0) and res[i]=x[i]]
-  i=i+1
-    [ n&gt;=0 and I(n+1) ]
-end
-[  'it exist a n&gt;0 such that' I(n) and !(i&lt;x.len)  ] #             &lt;-,
-[ 'forall j in (0..x.len)' res[j]==x[] and ...]     # stronger than ´
-</code></pre>
-
-<p>Again, the hard part is to come up with a proper <code>I(n)</code> . We will try the following<code>I(n)= 'forall j in (0..n)' res[j]==x[j] and x[j]&gt;=0 and i&lt;=x.len and i==n and R</code> where <code>R = x.len&gt;=1 and n&gt;=0</code> is the part that we don&rsquo;t care about but still have to carry around.  Now beware, this example is the most complex one we used so far.</p>
-
-<pre><code class="language-ruby">  [  i==0 and x.len &gt;= 1  ]                           
-  [ 'forall j in (0..0)' res[j]==x[j] and x[j]&gt;=0 
-                        and i&lt;=x.len and i==n and x.len&gt;=1 ] ´
-while( i &lt; x.len ) do
-    [ 'forall j in (0..n)' res[j]==x[j] and x[j]&gt;=0 
-                           and i&lt;=x.len and i==n and i &lt; x.len and R ] 
-    # in this step we pick an equivalent post-condition 
-    # to agregate i&lt;=x.len and i&lt;x.len into the later
-    [ 'forall j in (0..n)' res[j]==x[j] and x[j]&gt;=0  
-                           and i==n and i &lt; x.len and R ]
-  if x[i] &lt; 0 then
-    # don't care
-  else
-      [ 'forall j in (0..n)' res[j]==x[j] and x[j]&gt;=0  
-                             and i==n and i &lt; x.len and R 
-                             and !(x[i]&lt;0) ]
-    res[i]=x[i]
-      [ 'forall j in (0..n)' res[j]==x[j] and x[j]&gt;=0  
-                             and i==n and i &lt; x.len and R 
-                             and !(x[i]&lt;0) and res[i]=x[i] ]
-  end
-    [ 'forall j in (0..n)' res[j]==x[j] and x[j]&gt;=0  
-                           and i==n and i &lt; x.len and R 
-                           and !(x[i]&lt;0) and res[i]=x[i] ]
-    # Here we transform the post-condition to be a valid precondition
-    # for the following assignment. Not the weird i == (i+1)-1 trick
-    # that is needed to replace i+1 with i. This condition is 
-    # equivalent to the previous condition. 
-    [ 'forall j in (0..n)' res[j]==x[j] and x[j]&gt;=0  
-                           and i+1==n+1 and i+1 &lt;= x.len and R 
-                           and !(x[i+1-1]&lt;0) and res[i+1-1]=x[i+1-1] ]
-  i=i+1
-      [ 'forall j in (0..n)' res[j]==x[j] and x[j]&gt;=0  
-                              and i==n+1 and i &lt;= x.len and R 
-                              and !(x[i-1]&lt;0) and res[i-1]=x[i-1] ]
-      # Since we know that x[i-1] &gt;= 0 and res[i-1]=x[i-1] and 
-      # i == n+1 we also now that the forall statement now holds for
-      # j in (0..n+1). This is indeed exactly [n&gt;=0 and I(n+1)]
-      [ 'forall j in (0..n+1)' res[j]==x[j] and x[j]&gt;=0  
-                               and i==n+1 and i &lt;= x.len and R ]
-end
-  [  'it exist a n&gt;0 such that' 
-        'forall j in (0..n+1)'  res[j]==x[j] and x[j]&gt;=0 
-                                and i==n+1 and i &lt;= x.len 
-                                and R and !(i&lt;x.len)  ]
-  # use !(i&lt;x.len) and i&lt;=x.len to infer i==x.len
-  [  'it exist a n&gt;0 such that' 
-        'forall j in (0..n+1)'  res[j]==x[j] and x[j]&gt;=0 
-                                and n+1==x.len and i = x.len 
-                                and R]
-  # use that n+1 == x.len, ignore the rest
-  [ 'forall j in (0..x.len)' res[j]==x[j] and x[j]&gt;=0 and ... ]     
-</code></pre>
-
-<p>As we can see, <code>I(n)</code> is indeed applicable to this loop, and after exiting the loop, we can see that <code>res[j]==x[j]</code> holds. However, we also learn that to reach these states, <code>x[j]&gt;=0</code> also has to hold.</p>
-
+<p>Lets pick another somewhat more elaborate example. This time we will deal with arrays. This function reads an array from the user_input, and copies the absolute value of every element to the result array. In this example, we skip the simple cases and instead try to prove that we can reach states where `forall j in (0..x.len): res[j] == x[j] and &hellip;`` holds.  To keep this example readable, we skip dealing with the length, and assume that setting elements in an array always succeeds.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ruby" data-lang="ruby">x <span style="color:#f92672">=</span> user_input_array() 
+res <span style="color:#f92672">=</span> array()
+i <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span>
+<span style="color:#66d9ef">while</span>( i <span style="color:#f92672">&lt;</span> x<span style="color:#f92672">.</span>len ) <span style="color:#66d9ef">do</span>
+  <span style="color:#66d9ef">if</span> x<span style="color:#f92672">[</span>i<span style="color:#f92672">]</span> <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">0</span> <span style="color:#66d9ef">then</span>
+    res<span style="color:#f92672">[</span>i<span style="color:#f92672">]=-</span>x<span style="color:#f92672">[</span>i<span style="color:#f92672">]</span>
+  <span style="color:#66d9ef">else</span>
+    res<span style="color:#f92672">[</span>i<span style="color:#f92672">]=</span>x<span style="color:#f92672">[</span>i<span style="color:#f92672">]</span>
+  <span style="color:#66d9ef">end</span>
+<span style="color:#66d9ef">end</span>
+</code></pre></div><p>We will also skip the prefix and jump right into dealing with the loop body. For the first case we allow arbitrary numbers of loop iterations, while fixing that we always take the <code>else</code> case in the <code>if</code> statement. To simplify the rest of this example, we add the additional constraint that <code>x.len &gt;= 1</code> since otherwise the inductive rule doesn&rsquo;t apply and we have to use the much simpler rule for loops with zero iterations. Hence we have to find an <code>I(n)</code> such that</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ruby" data-lang="ruby">  <span style="color:#f92672">[</span>  i<span style="color:#f92672">==</span><span style="color:#ae81ff">0</span> <span style="color:#f92672">and</span> x<span style="color:#f92672">.</span>len <span style="color:#f92672">&gt;=</span> <span style="color:#ae81ff">1</span>  <span style="color:#f92672">]</span>         <span style="color:#75715e">#             &lt;-,</span>
+  <span style="color:#f92672">[</span> I(<span style="color:#ae81ff">0</span>) <span style="color:#f92672">]</span>                          <span style="color:#75715e"># stronger than ´</span>
+<span style="color:#66d9ef">while</span>( i <span style="color:#f92672">&lt;</span> x<span style="color:#f92672">.</span>len ) <span style="color:#66d9ef">do</span>
+    <span style="color:#f92672">[</span> n<span style="color:#f92672">&gt;=</span><span style="color:#ae81ff">0</span> <span style="color:#f92672">and</span> I(n) andi <span style="color:#f92672">&lt;</span> x<span style="color:#f92672">.</span>len<span style="color:#f92672">]</span>  
+  <span style="color:#66d9ef">if</span> x<span style="color:#f92672">[</span>i<span style="color:#f92672">]</span> <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">0</span> <span style="color:#66d9ef">then</span>
+    <span style="color:#75715e"># don&#39;t care, fixed the else path</span>
+  <span style="color:#66d9ef">else</span>
+      <span style="color:#f92672">[</span> n<span style="color:#f92672">&gt;=</span><span style="color:#ae81ff">0</span> <span style="color:#f92672">and</span> I(n) <span style="color:#f92672">and</span> i <span style="color:#f92672">&lt;</span> x<span style="color:#f92672">.</span>len <span style="color:#f92672">and</span> <span style="color:#f92672">!</span>(x<span style="color:#f92672">[</span>i<span style="color:#f92672">]&lt;</span><span style="color:#ae81ff">0</span>) <span style="color:#f92672">]</span>
+    res<span style="color:#f92672">[</span>i<span style="color:#f92672">]=</span>x<span style="color:#f92672">[</span>i<span style="color:#f92672">]</span>
+      <span style="color:#f92672">[</span> n<span style="color:#f92672">&gt;=</span><span style="color:#ae81ff">0</span> <span style="color:#f92672">and</span> I(n) <span style="color:#f92672">and</span> i <span style="color:#f92672">&lt;</span> x<span style="color:#f92672">.</span>len <span style="color:#f92672">and</span> <span style="color:#f92672">!</span>(x<span style="color:#f92672">[</span>i<span style="color:#f92672">]&lt;</span><span style="color:#ae81ff">0</span>) <span style="color:#f92672">and</span> res<span style="color:#f92672">[</span>i<span style="color:#f92672">]=</span>x<span style="color:#f92672">[</span>i<span style="color:#f92672">]]</span>
+  <span style="color:#66d9ef">end</span>
+    <span style="color:#f92672">[</span> n<span style="color:#f92672">&gt;=</span><span style="color:#ae81ff">0</span> <span style="color:#f92672">and</span> I(n) <span style="color:#f92672">and</span> i <span style="color:#f92672">&lt;</span> x<span style="color:#f92672">.</span>len <span style="color:#f92672">and</span> <span style="color:#f92672">!</span>(x<span style="color:#f92672">[</span>i<span style="color:#f92672">]&lt;</span><span style="color:#ae81ff">0</span>) <span style="color:#f92672">and</span> res<span style="color:#f92672">[</span>i<span style="color:#f92672">]=</span>x<span style="color:#f92672">[</span>i<span style="color:#f92672">]]</span>
+  i<span style="color:#f92672">=</span>i<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>
+    <span style="color:#f92672">[</span> n<span style="color:#f92672">&gt;=</span><span style="color:#ae81ff">0</span> <span style="color:#f92672">and</span> I(n<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>) <span style="color:#f92672">]</span>
+<span style="color:#66d9ef">end</span>
+<span style="color:#f92672">[</span>  <span style="color:#e6db74">&#39;it exist a n&gt;0 such that&#39;</span> I(n) <span style="color:#f92672">and</span> <span style="color:#f92672">!</span>(i<span style="color:#f92672">&lt;</span>x<span style="color:#f92672">.</span>len)  <span style="color:#f92672">]</span> <span style="color:#75715e">#             &lt;-,</span>
+<span style="color:#f92672">[</span> <span style="color:#e6db74">&#39;forall j in (0..x.len)&#39;</span> res<span style="color:#f92672">[</span>j<span style="color:#f92672">]==</span>x<span style="color:#f92672">[]</span> <span style="color:#f92672">and</span> <span style="color:#f92672">...]</span>     <span style="color:#75715e"># stronger than ´</span>
+</code></pre></div><p>Again, the hard part is to come up with a proper <code>I(n)</code> . We will try the following<code>I(n)= 'forall j in (0..n)' res[j]==x[j] and x[j]&gt;=0 and i&lt;=x.len and i==n and R</code> where <code>R = x.len&gt;=1 and n&gt;=0</code> is the part that we don&rsquo;t care about but still have to carry around.  Now beware, this example is the most complex one we used so far.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ruby" data-lang="ruby">  <span style="color:#f92672">[</span>  i<span style="color:#f92672">==</span><span style="color:#ae81ff">0</span> <span style="color:#f92672">and</span> x<span style="color:#f92672">.</span>len <span style="color:#f92672">&gt;=</span> <span style="color:#ae81ff">1</span>  <span style="color:#f92672">]</span>                           
+  <span style="color:#f92672">[</span> <span style="color:#e6db74">&#39;forall j in (0..0)&#39;</span> res<span style="color:#f92672">[</span>j<span style="color:#f92672">]==</span>x<span style="color:#f92672">[</span>j<span style="color:#f92672">]</span> <span style="color:#f92672">and</span> x<span style="color:#f92672">[</span>j<span style="color:#f92672">]&gt;=</span><span style="color:#ae81ff">0</span> 
+                        <span style="color:#f92672">and</span> i<span style="color:#f92672">&lt;=</span>x<span style="color:#f92672">.</span>len <span style="color:#f92672">and</span> i<span style="color:#f92672">==</span>n <span style="color:#f92672">and</span> x<span style="color:#f92672">.</span>len<span style="color:#f92672">&gt;=</span><span style="color:#ae81ff">1</span> <span style="color:#f92672">]</span> <span style="color:#960050;background-color:#1e0010">´</span>
+<span style="color:#66d9ef">while</span>( i <span style="color:#f92672">&lt;</span> x<span style="color:#f92672">.</span>len ) <span style="color:#66d9ef">do</span>
+    <span style="color:#f92672">[</span> <span style="color:#e6db74">&#39;forall j in (0..n)&#39;</span> res<span style="color:#f92672">[</span>j<span style="color:#f92672">]==</span>x<span style="color:#f92672">[</span>j<span style="color:#f92672">]</span> <span style="color:#f92672">and</span> x<span style="color:#f92672">[</span>j<span style="color:#f92672">]&gt;=</span><span style="color:#ae81ff">0</span> 
+                           <span style="color:#f92672">and</span> i<span style="color:#f92672">&lt;=</span>x<span style="color:#f92672">.</span>len <span style="color:#f92672">and</span> i<span style="color:#f92672">==</span>n <span style="color:#f92672">and</span> i <span style="color:#f92672">&lt;</span> x<span style="color:#f92672">.</span>len <span style="color:#f92672">and</span> R <span style="color:#f92672">]</span> 
+    <span style="color:#75715e"># in this step we pick an equivalent post-condition </span>
+    <span style="color:#75715e"># to agregate i&lt;=x.len and i&lt;x.len into the later</span>
+    <span style="color:#f92672">[</span> <span style="color:#e6db74">&#39;forall j in (0..n)&#39;</span> res<span style="color:#f92672">[</span>j<span style="color:#f92672">]==</span>x<span style="color:#f92672">[</span>j<span style="color:#f92672">]</span> <span style="color:#f92672">and</span> x<span style="color:#f92672">[</span>j<span style="color:#f92672">]&gt;=</span><span style="color:#ae81ff">0</span>  
+                           <span style="color:#f92672">and</span> i<span style="color:#f92672">==</span>n <span style="color:#f92672">and</span> i <span style="color:#f92672">&lt;</span> x<span style="color:#f92672">.</span>len <span style="color:#f92672">and</span> R <span style="color:#f92672">]</span>
+  <span style="color:#66d9ef">if</span> x<span style="color:#f92672">[</span>i<span style="color:#f92672">]</span> <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">0</span> <span style="color:#66d9ef">then</span>
+    <span style="color:#75715e"># don&#39;t care</span>
+  <span style="color:#66d9ef">else</span>
+      <span style="color:#f92672">[</span> <span style="color:#e6db74">&#39;forall j in (0..n)&#39;</span> res<span style="color:#f92672">[</span>j<span style="color:#f92672">]==</span>x<span style="color:#f92672">[</span>j<span style="color:#f92672">]</span> <span style="color:#f92672">and</span> x<span style="color:#f92672">[</span>j<span style="color:#f92672">]&gt;=</span><span style="color:#ae81ff">0</span>  
+                             <span style="color:#f92672">and</span> i<span style="color:#f92672">==</span>n <span style="color:#f92672">and</span> i <span style="color:#f92672">&lt;</span> x<span style="color:#f92672">.</span>len <span style="color:#f92672">and</span> R 
+                             <span style="color:#f92672">and</span> <span style="color:#f92672">!</span>(x<span style="color:#f92672">[</span>i<span style="color:#f92672">]&lt;</span><span style="color:#ae81ff">0</span>) <span style="color:#f92672">]</span>
+    res<span style="color:#f92672">[</span>i<span style="color:#f92672">]=</span>x<span style="color:#f92672">[</span>i<span style="color:#f92672">]</span>
+      <span style="color:#f92672">[</span> <span style="color:#e6db74">&#39;forall j in (0..n)&#39;</span> res<span style="color:#f92672">[</span>j<span style="color:#f92672">]==</span>x<span style="color:#f92672">[</span>j<span style="color:#f92672">]</span> <span style="color:#f92672">and</span> x<span style="color:#f92672">[</span>j<span style="color:#f92672">]&gt;=</span><span style="color:#ae81ff">0</span>  
+                             <span style="color:#f92672">and</span> i<span style="color:#f92672">==</span>n <span style="color:#f92672">and</span> i <span style="color:#f92672">&lt;</span> x<span style="color:#f92672">.</span>len <span style="color:#f92672">and</span> R 
+                             <span style="color:#f92672">and</span> <span style="color:#f92672">!</span>(x<span style="color:#f92672">[</span>i<span style="color:#f92672">]&lt;</span><span style="color:#ae81ff">0</span>) <span style="color:#f92672">and</span> res<span style="color:#f92672">[</span>i<span style="color:#f92672">]=</span>x<span style="color:#f92672">[</span>i<span style="color:#f92672">]</span> <span style="color:#f92672">]</span>
+  <span style="color:#66d9ef">end</span>
+    <span style="color:#f92672">[</span> <span style="color:#e6db74">&#39;forall j in (0..n)&#39;</span> res<span style="color:#f92672">[</span>j<span style="color:#f92672">]==</span>x<span style="color:#f92672">[</span>j<span style="color:#f92672">]</span> <span style="color:#f92672">and</span> x<span style="color:#f92672">[</span>j<span style="color:#f92672">]&gt;=</span><span style="color:#ae81ff">0</span>  
+                           <span style="color:#f92672">and</span> i<span style="color:#f92672">==</span>n <span style="color:#f92672">and</span> i <span style="color:#f92672">&lt;</span> x<span style="color:#f92672">.</span>len <span style="color:#f92672">and</span> R 
+                           <span style="color:#f92672">and</span> <span style="color:#f92672">!</span>(x<span style="color:#f92672">[</span>i<span style="color:#f92672">]&lt;</span><span style="color:#ae81ff">0</span>) <span style="color:#f92672">and</span> res<span style="color:#f92672">[</span>i<span style="color:#f92672">]=</span>x<span style="color:#f92672">[</span>i<span style="color:#f92672">]</span> <span style="color:#f92672">]</span>
+    <span style="color:#75715e"># Here we transform the post-condition to be a valid precondition</span>
+    <span style="color:#75715e"># for the following assignment. Not the weird i == (i+1)-1 trick</span>
+    <span style="color:#75715e"># that is needed to replace i+1 with i. This condition is </span>
+    <span style="color:#75715e"># equivalent to the previous condition. </span>
+    <span style="color:#f92672">[</span> <span style="color:#e6db74">&#39;forall j in (0..n)&#39;</span> res<span style="color:#f92672">[</span>j<span style="color:#f92672">]==</span>x<span style="color:#f92672">[</span>j<span style="color:#f92672">]</span> <span style="color:#f92672">and</span> x<span style="color:#f92672">[</span>j<span style="color:#f92672">]&gt;=</span><span style="color:#ae81ff">0</span>  
+                           <span style="color:#f92672">and</span> i<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span><span style="color:#f92672">==</span>n<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span> <span style="color:#f92672">and</span> i<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span> <span style="color:#f92672">&lt;=</span> x<span style="color:#f92672">.</span>len <span style="color:#f92672">and</span> R 
+                           <span style="color:#f92672">and</span> <span style="color:#f92672">!</span>(x<span style="color:#f92672">[</span>i<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span><span style="color:#f92672">-</span><span style="color:#ae81ff">1</span><span style="color:#f92672">]&lt;</span><span style="color:#ae81ff">0</span>) <span style="color:#f92672">and</span> res<span style="color:#f92672">[</span>i<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span><span style="color:#f92672">-</span><span style="color:#ae81ff">1</span><span style="color:#f92672">]=</span>x<span style="color:#f92672">[</span>i<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span><span style="color:#f92672">-</span><span style="color:#ae81ff">1</span><span style="color:#f92672">]</span> <span style="color:#f92672">]</span>
+  i<span style="color:#f92672">=</span>i<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>
+      <span style="color:#f92672">[</span> <span style="color:#e6db74">&#39;forall j in (0..n)&#39;</span> res<span style="color:#f92672">[</span>j<span style="color:#f92672">]==</span>x<span style="color:#f92672">[</span>j<span style="color:#f92672">]</span> <span style="color:#f92672">and</span> x<span style="color:#f92672">[</span>j<span style="color:#f92672">]&gt;=</span><span style="color:#ae81ff">0</span>  
+                              <span style="color:#f92672">and</span> i<span style="color:#f92672">==</span>n<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span> <span style="color:#f92672">and</span> i <span style="color:#f92672">&lt;=</span> x<span style="color:#f92672">.</span>len <span style="color:#f92672">and</span> R 
+                              <span style="color:#f92672">and</span> <span style="color:#f92672">!</span>(x<span style="color:#f92672">[</span>i<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span><span style="color:#f92672">]&lt;</span><span style="color:#ae81ff">0</span>) <span style="color:#f92672">and</span> res<span style="color:#f92672">[</span>i<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span><span style="color:#f92672">]=</span>x<span style="color:#f92672">[</span>i<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span><span style="color:#f92672">]</span> <span style="color:#f92672">]</span>
+      <span style="color:#75715e"># Since we know that x[i-1] &gt;= 0 and res[i-1]=x[i-1] and </span>
+      <span style="color:#75715e"># i == n+1 we also now that the forall statement now holds for</span>
+      <span style="color:#75715e"># j in (0..n+1). This is indeed exactly [n&gt;=0 and I(n+1)]</span>
+      <span style="color:#f92672">[</span> <span style="color:#e6db74">&#39;forall j in (0..n+1)&#39;</span> res<span style="color:#f92672">[</span>j<span style="color:#f92672">]==</span>x<span style="color:#f92672">[</span>j<span style="color:#f92672">]</span> <span style="color:#f92672">and</span> x<span style="color:#f92672">[</span>j<span style="color:#f92672">]&gt;=</span><span style="color:#ae81ff">0</span>  
+                               <span style="color:#f92672">and</span> i<span style="color:#f92672">==</span>n<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span> <span style="color:#f92672">and</span> i <span style="color:#f92672">&lt;=</span> x<span style="color:#f92672">.</span>len <span style="color:#f92672">and</span> R <span style="color:#f92672">]</span>
+<span style="color:#66d9ef">end</span>
+  <span style="color:#f92672">[</span>  <span style="color:#e6db74">&#39;it exist a n&gt;0 such that&#39;</span> 
+        <span style="color:#e6db74">&#39;forall j in (0..n+1)&#39;</span>  res<span style="color:#f92672">[</span>j<span style="color:#f92672">]==</span>x<span style="color:#f92672">[</span>j<span style="color:#f92672">]</span> <span style="color:#f92672">and</span> x<span style="color:#f92672">[</span>j<span style="color:#f92672">]&gt;=</span><span style="color:#ae81ff">0</span> 
+                                <span style="color:#f92672">and</span> i<span style="color:#f92672">==</span>n<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span> <span style="color:#f92672">and</span> i <span style="color:#f92672">&lt;=</span> x<span style="color:#f92672">.</span>len 
+                                <span style="color:#f92672">and</span> R <span style="color:#f92672">and</span> <span style="color:#f92672">!</span>(i<span style="color:#f92672">&lt;</span>x<span style="color:#f92672">.</span>len)  <span style="color:#f92672">]</span>
+  <span style="color:#75715e"># use !(i&lt;x.len) and i&lt;=x.len to infer i==x.len</span>
+  <span style="color:#f92672">[</span>  <span style="color:#e6db74">&#39;it exist a n&gt;0 such that&#39;</span> 
+        <span style="color:#e6db74">&#39;forall j in (0..n+1)&#39;</span>  res<span style="color:#f92672">[</span>j<span style="color:#f92672">]==</span>x<span style="color:#f92672">[</span>j<span style="color:#f92672">]</span> <span style="color:#f92672">and</span> x<span style="color:#f92672">[</span>j<span style="color:#f92672">]&gt;=</span><span style="color:#ae81ff">0</span> 
+                                <span style="color:#f92672">and</span> n<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span><span style="color:#f92672">==</span>x<span style="color:#f92672">.</span>len <span style="color:#f92672">and</span> i <span style="color:#f92672">=</span> x<span style="color:#f92672">.</span>len 
+                                <span style="color:#f92672">and</span> R<span style="color:#f92672">]</span>
+  <span style="color:#75715e"># use that n+1 == x.len, ignore the rest</span>
+  <span style="color:#f92672">[</span> <span style="color:#e6db74">&#39;forall j in (0..x.len)&#39;</span> res<span style="color:#f92672">[</span>j<span style="color:#f92672">]==</span>x<span style="color:#f92672">[</span>j<span style="color:#f92672">]</span> <span style="color:#f92672">and</span> x<span style="color:#f92672">[</span>j<span style="color:#f92672">]&gt;=</span><span style="color:#ae81ff">0</span> <span style="color:#f92672">and</span> <span style="color:#f92672">...</span> <span style="color:#f92672">]</span>     
+</code></pre></div><p>As we can see, <code>I(n)</code> is indeed applicable to this loop, and after exiting the loop, we can see that <code>res[j]==x[j]</code> holds. However, we also learn that to reach these states, <code>x[j]&gt;=0</code> also has to hold.</p>
 <h2 id="exercise">Exercise:</h2>
-
 <p>I would recommend trying to apply the same approach to prove that states where <code>forall j in (0..x.len): res[j]==-x[j] and ...</code> is true are reachable.</p>
-
 <h1 id="how-can-we-use-incorrectness-logic">How can we use Incorrectness Logic?</h1>
-
 <p>After gaining an intuition for how IL works we obviously want to know how we can use it. What do we gain by thinking of concrete and concolic execution as special cases of IL?</p>
-
 <p>For starters, IL allows us to smoothly increase the amount of symbolism from zero (concrete execution) to a hundred percent  (underapproximating SE). As a consequence, techniques based on IL can sit almost anywhere on the spectrum between dynamic and static analysis. Hence, IL lends itself to integrate dynamic, testing based approaches with static reasoning based approaches.</p>
-
 <h4 id="internal-fuzzing">Internal Fuzzing</h4>
-
 <p>For example, imagine using IL to prove that some states in the middle of the target application are reachable:</p>
-
-<pre><code class="language-ruby">data = read_data()
-data2 = decode_zip(data)
-[ &quot;we prove that data2 can be any string&quot; and ...]
-stuff = parse(data2)
-</code></pre>
-
-<p>Now we could spawn a fuzzer that directly generates <code>data2</code> and targets the parsing, without having to deal with decode_zip().</p>
-
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ruby" data-lang="ruby">data <span style="color:#f92672">=</span> read_data()
+data2 <span style="color:#f92672">=</span> decode_zip(data)
+<span style="color:#f92672">[</span> <span style="color:#e6db74">&#34;we prove that data2 can be any string&#34;</span> <span style="color:#f92672">and</span> <span style="color:#f92672">...]</span>
+stuff <span style="color:#f92672">=</span> parse(data2)
+</code></pre></div><p>Now we could spawn a fuzzer that directly generates <code>data2</code> and targets the parsing, without having to deal with decode_zip().</p>
 <h4 id="fuzzing-for-target-states">Fuzzing for Target States.</h4>
-
 <p>One of the really big issues of symbolic approaches is that its very hard to model all environment effects. Consider a program that uses IPC to communicate with a Database. Building a model that allows to reason about values flowing into and out of the database is almost certainly prohibitive expensive. However fuzzers usually don&rsquo;t suffer from this approach. Symbolic reasoning on the other hand easily pinpoints bugs that are very hard to trigger randomly such as an off-by-one integer overflow. Ideally these two components would be combined to compensate each others weak points, while combining the strength. Most current approaches use symbolic reasoning and fuzzing in an orthogonal fashion. The symbolic solver and fuzzer both generate inputs almost independently. Tools such as QSYM,Driller etc. only share the inputs found between the fuzzer and the symbolic engine.</p>
-
 <p>One can imagine using IL to prove that certain sets of internal states trigger interesting behavior,  and then pass this information on to the fuzzers instrumentation so that the fuzzer can specifically target these states that are guaranteed to yield interesting behavior.  In such a tool, the symbolic reasoning would work backwards from the seemingly vulnerable positions to find interesting target states, while the fuzzer works forwards to overcome un-modeled side effects or unknown instructions or constraints that are plain to hard for a solver.</p>
-
 <h4 id="randomized-symbolic-execution">Randomized Symbolic Execution</h4>
-
 <p>While the previous two ideas aim to move fuzzing towards the strength of SE based approaches, one could also start from SE and move towards the strength of fuzzing / random testing.</p>
-
 <p>Since our goal is not to prove the absence of bugs, but to hunt for bugs, one could start from the classical SE based approach, and make it more dynamic. Instead of trying to follow all possible paths and to enumerate the whole states pace,  an IL based randomized Symbolic Executor could explore random paths, until they become to hard to solve or too boring to explore further. In such cases the randomized SE could either add  additional constraints that make solving easier (until the input becomes entirely concrete, and solving becomes trivial), or pick different paths altogether.  Note this is already similar to what tools like KLEE are doing .  However it&rsquo;s really uncommon for SE based tools that a) randomly drop paths, b) systematically add constraints to make the paths easier to solve or) combine loop invariants with bug finding login instead of aiming at correctness proofs.</p>
-
 <p>It is yet to early to tell what Incorrectness Logic adds to the world of software testing. While I am very firmly in the camp of &ldquo;dumb dynamic approaches/guided fuzzing&rdquo;, I personally think there are some interesting properties that IL can offer to software testing. And no matter whether the engineering behind IL based tools ends up becoming as influential as other approaches, a novel way to think about formal reasoning in program analysis is always very exciting!</p>
 
               
@@ -828,7 +701,7 @@ stuff = parse(data2)
           
             <li class="post-action">
               
-                <a class="post-action-btn btn btn--disabled">
+                <a class="post-action-btn btn btn--default tooltip--top" href="https://hexgolems.com/2020/07/ijon/" data-tooltip="Ijon">
               
                   
                   &lt;
@@ -881,7 +754,7 @@ stuff = parse(data2)
           
             <li class="post-action">
               
-                <a class="post-action-btn btn btn--disabled">
+                <a class="post-action-btn btn btn--default tooltip--top" href="https://hexgolems.com/2020/07/ijon/" data-tooltip="Ijon">
               
                   
                   &lt;

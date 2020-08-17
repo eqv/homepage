@@ -1,9 +1,9 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Compiler on Hexgolems</title>
+    <title>compiler on Hexgolems</title>
     <link>https://hexgolems.com/tags/compiler/</link>
-    <description>Recent content in Compiler on Hexgolems</description>
+    <description>Recent content in compiler on Hexgolems</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Tue, 01 Jul 2014 00:00:00 +0000</lastBuildDate>
@@ -17,11 +17,7 @@
       <pubDate>Tue, 01 Jul 2014 00:00:00 +0000</pubDate>
       
       <guid>https://hexgolems.com/2014/07/brainfuck-jit/</guid>
-      <description>View On Github
-A Compiler and JITer for brainfuck based on LLVM - build in literate ruby. It should be noted that this implementation produces horribly insecure binaries, and easily allows to overflow the programs memory, as it was used during a CTF exercise.
-
-   &amp;#182;  Disclaimer
-This is the commented version of my little Brainfuck compiler, The code is meant for educational purpose. Please note that this compiler is NOT save.</description>
+      <description>A compiler, interpreter and JITer for brainfuck. Build in literate ruby.</description>
     </item>
     
   </channel>

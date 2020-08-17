@@ -1,9 +1,9 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Rust on Hexgolems</title>
+    <title>rust on Hexgolems</title>
     <link>https://hexgolems.com/tags/rust/</link>
-    <description>Recent content in Rust on Hexgolems</description>
+    <description>Recent content in rust on Hexgolems</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Wed, 01 Apr 2020 00:00:00 +0000</lastBuildDate>
@@ -17,9 +17,7 @@
       <pubDate>Wed, 01 Apr 2020 00:00:00 +0000</pubDate>
       
       <guid>https://hexgolems.com/2020/04/nautilus-2.0/</guid>
-      <description>View On Github
-Nautilus 2.0 We are glad to announce the released of v2.0 of our fuzzer Nautilus!
-Nautilus is a coverage guided, grammar based fuzzer. You can use it to improve your test coverage and find more bugs. By specifying the grammar of semi valid inputs, Nautilus is able to perform complex mutation and to uncover more interesting test cases. Many of the ideas behind this fuzzer are documented in a Paper published at NDSS 2019.</description>
+      <description>Release of Nautilus 2.0 with many new features</description>
     </item>
     
     <item>
@@ -28,9 +26,7 @@ Nautilus is a coverage guided, grammar based fuzzer. You can use it to improve y
       <pubDate>Fri, 01 Feb 2019 00:00:00 +0000</pubDate>
       
       <guid>https://hexgolems.com/2019/02/gdb_probe.rs/</guid>
-      <description>View On Github
-You love ipdb.set_trace() in python or binding.pry in ruby? You are sad that rust doesn&amp;rsquo;t offer the same comfort? gdb_probe.rs is here to safe the day! With a simple call, it suspends the current process, spawns a new terminal and attaches gdb. This has many advantages:
- Comfortable debugging. If you program in an IDE with limited debugger support, you get a much simpler debugging story than manually using gdb.</description>
+      <description>Spawn a dynamic debugger from your application like ipdb.set_trace() / binding.pry, but in Rust.</description>
     </item>
     
     <item>
@@ -39,19 +35,16 @@ You love ipdb.set_trace() in python or binding.pry in ruby? You are sad that rus
       <pubDate>Tue, 01 Jan 2019 00:00:00 +0000</pubDate>
       
       <guid>https://hexgolems.com/2019/01/hextd/</guid>
-      <description>View On Github
-HexTD is a Tower Defense game that features deck building mechanics similar to the board game Dominion. It was written in Rust together with a friend as a learning project. It allready features the complete set of deck building mechanics, a shop to aquire new cards, enemies, towers and buff cards as well as a set of cards that allow to interact with the gameplay itself. It is based on the ggez library.</description>
+      <description>A deck building tower defense game written in Rust.</description>
     </item>
     
     <item>
       <title>Nautilus - Fuzzing with Grammars</title>
-      <link>https://hexgolems.com/2018/12/nautilus---fuzzing-with-grammars/</link>
+      <link>https://hexgolems.com/2018/12/nautilus-fuzzing-with-grammars/</link>
       <pubDate>Mon, 17 Dec 2018 00:00:00 +0000</pubDate>
       
-      <guid>https://hexgolems.com/2018/12/nautilus---fuzzing-with-grammars/</guid>
-      <description>View On Github
-Nautilus   Authors: Cornelius Aschermann, Tommaso Frassetto, Thorsten Holz, Patrick Jauernig, Ahmad-Reza Sadeghi, Daniel Teuchert
-Nautilus is a feedback fuzzer inspired by AFL. However it allows to specify a grammar. Using this grammar, the fuzzer generates and internally uses the abstract syntax tree of the input. This also allows for very complex mutations. Then it converts the tree to the actual input. Knowing the exact tree shape greatly improves the performance for highly structured input formats, such as many text formats and programming languages.</description>
+      <guid>https://hexgolems.com/2018/12/nautilus-fuzzing-with-grammars/</guid>
+      <description>An AFL style feedback fuzzer, that uses grammars to find more bugs. Written in Rust and published at NDSS 2019</description>
     </item>
     
     <item>
@@ -60,8 +53,7 @@ Nautilus is a feedback fuzzer inspired by AFL. However it allows to specify a gr
       <pubDate>Mon, 01 May 2017 00:00:00 +0000</pubDate>
       
       <guid>https://hexgolems.com/2017/05/interval-tree/</guid>
-      <description>View On Github
-When implementing analysis software for memory dumps one often needs to store information on ranges of memory. For example, one might want to store ranges that represent basic blocks or functions, in code or memory allocations and type information in memory dumps. Afterwards one might want to answer queries such as &amp;ldquo;give me all allocations intersecting some range (x,y)&amp;rdquo;. In particular, this crate can be used to create better hex editor views, incorporating additional information.</description>
+      <description>A very efficient data structure to query ranges for Rust. Useful to implement analysis passes on memory/code/firmware dumps.</description>
     </item>
     
     <item>
@@ -70,9 +62,7 @@ When implementing analysis software for memory dumps one often needs to store in
       <pubDate>Wed, 01 Feb 2017 00:00:00 +0000</pubDate>
       
       <guid>https://hexgolems.com/2017/02/loaded-dice/</guid>
-      <description>View On Github
-Sometimes you need to sample from a set of options. This crate allows you to sample from discrete probability distributions efficiently (O(1) per sample).
-It implements a random sampler implementing based on the alias method (https://en.wikipedia.org/wiki/Alias_method). One uses it by passing a vector of probabilites to the constructor. The constructor builds a data structure in O(n*n*log(n)) (Note: It would be quite possible to implement this in O(n*log(n)), however for reasonable sized number of values this method is faster than using the more effictient data strucutres.</description>
+      <description>Sample from discrete distributions in O(1). Very useful when building randomized generators and fuzzer in Rust.</description>
     </item>
     
   </channel>

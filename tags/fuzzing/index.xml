@@ -1,15 +1,51 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Fuzzing on Hexgolems</title>
+    <title>fuzzing on Hexgolems</title>
     <link>https://hexgolems.com/tags/fuzzing/</link>
-    <description>Recent content in Fuzzing on Hexgolems</description>
+    <description>Recent content in fuzzing on Hexgolems</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sat, 04 Apr 2020 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Wed, 12 Aug 2020 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="https://hexgolems.com/tags/fuzzing/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>On Measuring and Visualizing Fuzzer Performance</title>
+      <link>https://hexgolems.com/2020/08/on-measuring-and-visualizing-fuzzer-performance/</link>
+      <pubDate>Wed, 12 Aug 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://hexgolems.com/2020/08/on-measuring-and-visualizing-fuzzer-performance/</guid>
+      <description>A critique on how we evaluate fuzzer and a proposal for a better metric.</description>
+    </item>
+    
+    <item>
+      <title>Aurora</title>
+      <link>https://hexgolems.com/2020/07/aurora/</link>
+      <pubDate>Tue, 14 Jul 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://hexgolems.com/2020/07/aurora/</guid>
+      <description>Aurora automatically identifies the root cause of bugs found via fuzzing. Published at USENIX Security 2020</description>
+    </item>
+    
+    <item>
+      <title>EthBMC</title>
+      <link>https://hexgolems.com/2020/07/ethbmc/</link>
+      <pubDate>Tue, 14 Jul 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://hexgolems.com/2020/07/ethbmc/</guid>
+      <description>A bounded model checker for smart contracts, that can steal money. Published at USENIX Security 2020</description>
+    </item>
+    
+    <item>
+      <title>Ijon</title>
+      <link>https://hexgolems.com/2020/07/ijon/</link>
+      <pubDate>Tue, 14 Jul 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://hexgolems.com/2020/07/ijon/</guid>
+      <description>Allows the user to guide the fuzzer through the state space of the target program. Published at Oakland S&amp;amp;P 2020</description>
+    </item>
     
     <item>
       <title>Incorrectness Logic by Example</title>
@@ -17,7 +53,7 @@
       <pubDate>Sat, 04 Apr 2020 00:00:00 +0000</pubDate>
       
       <guid>https://hexgolems.com/2020/04/incorrectness-logic-by-example/</guid>
-      <description>Incorrectness Logic by Example Incorrectness Logic is a formal method to reason about program behavior. Similar formal reasoning techniques have been used for a multitude of different tasks in program verification, bug hunting and exploitation. To give some examples, Symbolic Execution (SE) has been used to generate hundreds of working exploits against a (at that time) current version of Debian [1]. While possible, it is often difficult to scale SE with all its precision to large targets.</description>
+      <description>Understanding Incorrectness Logic for program analysis with lots of examples.</description>
     </item>
     
     <item>
@@ -26,9 +62,7 @@
       <pubDate>Wed, 01 Apr 2020 00:00:00 +0000</pubDate>
       
       <guid>https://hexgolems.com/2020/04/nautilus-2.0/</guid>
-      <description>View On Github
-Nautilus 2.0 We are glad to announce the released of v2.0 of our fuzzer Nautilus!
-Nautilus is a coverage guided, grammar based fuzzer. You can use it to improve your test coverage and find more bugs. By specifying the grammar of semi valid inputs, Nautilus is able to perform complex mutation and to uncover more interesting test cases. Many of the ideas behind this fuzzer are documented in a Paper published at NDSS 2019.</description>
+      <description>Release of Nautilus 2.0 with many new features</description>
     </item>
     
     <item>
@@ -37,8 +71,7 @@ Nautilus is a coverage guided, grammar based fuzzer. You can use it to improve y
       <pubDate>Thu, 05 Dec 2019 00:00:00 +0000</pubDate>
       
       <guid>https://hexgolems.com/2019/12/hotfuzz/</guid>
-      <description>In this Presentation at Blackhat London 2019, Sergej and I present the results of the last 3 years of our fuzzing research. Besides presenting details on super fast vm reloads and a whole bunch of other proejects, we also try to predict research topics will be interesting to explore further in the next few years.
-   Talk Slides     Video will be linked when published     Authors: Cornelius Aschermann, Sergej Schumilo</description>
+      <description>Talking about our research on fuzzing and future research areas.</description>
     </item>
     
     <item>
@@ -47,8 +80,7 @@ Nautilus is a coverage guided, grammar based fuzzer. You can use it to improve y
       <pubDate>Wed, 17 Jul 2019 00:00:00 +0000</pubDate>
       
       <guid>https://hexgolems.com/2019/07/antifuzz/</guid>
-      <description>Antifuzz   Authors: Emre Güler, Cornelius Aschermann, Ali Abbasi, Thorsten Holz
-In this work, we analysed various state of the art fuzzers and show that common obfuscation techniques do not help against attackers using fuzzer. Then we systematically attack the underlying assumptions of modern fuzzers and show how they can be attacked by relatively simple obfuscations mechanisms.</description>
+      <description>Investigate weak points in current fuzzers to protect software from fully automatic fuzzing. Published at USENIX Security 2019</description>
     </item>
     
     <item>
@@ -57,20 +89,16 @@ In this work, we analysed various state of the art fuzzers and show that common 
       <pubDate>Wed, 17 Jul 2019 00:00:00 +0000</pubDate>
       
       <guid>https://hexgolems.com/2019/07/grimoire/</guid>
-      <description>View On Github
-Grimoire   Authors: Tim Blazytko, Cornelius Aschermann, Ali Abbasi, Sergej Schumilo, Simon Wörner, Thorsten Holz
-Grimoire is a fast binary only fuzzer, that infers structural information during the fuzzing process itself. To produce better test coverage, it it observes how chunks from the learned inputs can be recombined in a weak form of grammar. This process piggybacks on the usual fuzzing process. It only uses the information obtained from a AFL-style feedback bitmap.</description>
+      <description>Automatically infer grammar like fragments during normal feedback fuzzing to improve test coverage. Published at USENIX Security 2019.</description>
     </item>
     
     <item>
       <title>Nautilus - Fuzzing with Grammars</title>
-      <link>https://hexgolems.com/2018/12/nautilus---fuzzing-with-grammars/</link>
+      <link>https://hexgolems.com/2018/12/nautilus-fuzzing-with-grammars/</link>
       <pubDate>Mon, 17 Dec 2018 00:00:00 +0000</pubDate>
       
-      <guid>https://hexgolems.com/2018/12/nautilus---fuzzing-with-grammars/</guid>
-      <description>View On Github
-Nautilus   Authors: Cornelius Aschermann, Tommaso Frassetto, Thorsten Holz, Patrick Jauernig, Ahmad-Reza Sadeghi, Daniel Teuchert
-Nautilus is a feedback fuzzer inspired by AFL. However it allows to specify a grammar. Using this grammar, the fuzzer generates and internally uses the abstract syntax tree of the input. This also allows for very complex mutations. Then it converts the tree to the actual input. Knowing the exact tree shape greatly improves the performance for highly structured input formats, such as many text formats and programming languages.</description>
+      <guid>https://hexgolems.com/2018/12/nautilus-fuzzing-with-grammars/</guid>
+      <description>An AFL style feedback fuzzer, that uses grammars to find more bugs. Written in Rust and published at NDSS 2019</description>
     </item>
     
     <item>
@@ -79,9 +107,7 @@ Nautilus is a feedback fuzzer inspired by AFL. However it allows to specify a gr
       <pubDate>Mon, 17 Dec 2018 00:00:00 +0000</pubDate>
       
       <guid>https://hexgolems.com/2018/12/redqueen/</guid>
-      <description>View On Github
-Redqueen   Authors: Cornelius Aschermann, Sergej Schumilo, Tim Blazytko, Robert Gawlik, Thorsten Holz
-Redqueen is a fast general purpose fuzzer for x86 binary applications. It can automatically overcome checksums and magic bytes without falling back to complex and fragile program analysis techniques, such as symbolic execution. It works by observing the arguments to function calls and compare instructions via virtual machine introspection. Observed values are used to provide inputs specific mutations.</description>
+      <description>A binary fuzzer that automatically solves magic Bytes and checksums during fuzzing. Published at NDSS 2019.</description>
     </item>
     
     <item>
@@ -90,9 +116,7 @@ Redqueen is a fast general purpose fuzzer for x86 binary applications. It can au
       <pubDate>Thu, 17 Aug 2017 00:00:00 +0000</pubDate>
       
       <guid>https://hexgolems.com/2017/08/kafl/</guid>
-      <description>View On Github
-kAFL   Authors: Sergej Schumilo, Cornelius Aschermann, Robert Gawlik, Sebastian Schinzel, Thorsten Holz
-kAFL is a blazing fast x86-64 VM kernel fuzzing framework with performant VM reloads for Linux, MacOS and Windows. It works by running the target operating system inside a hardware accelerated VM, giving it full controll over the environment. This very helpfull to properly recover from crashes. Intels Processor Trace (Intel PT) feature is used to obtain coverage information from the code running inside of the VM.</description>
+      <description>An AFL style feedback fuzzer, that uses Intel-PT to trace operating systems without access to sourcecode. Published at USENIX Security 2017</description>
     </item>
     
   </channel>

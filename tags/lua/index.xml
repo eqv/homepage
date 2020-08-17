@@ -1,9 +1,9 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Lua on Hexgolems</title>
+    <title>lua on Hexgolems</title>
     <link>https://hexgolems.com/tags/lua/</link>
-    <description>Recent content in Lua on Hexgolems</description>
+    <description>Recent content in lua on Hexgolems</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Wed, 01 Oct 2014 00:00:00 +0000</lastBuildDate>
@@ -17,9 +17,7 @@
       <pubDate>Wed, 01 Oct 2014 00:00:00 +0000</pubDate>
       
       <guid>https://hexgolems.com/2014/10/pint/</guid>
-      <description>View On Github
-Pint is a PIN tool that exposes the PIN API to lua scripts. Pint runs on 64 bit Ubuntu and 32 bit Windows XP, it should run on 32 bit Ubuntu and 64 bit XP as well but this is yet untested.
-PIN is a dynamic instrumentation engine developed by Intel. Basically, it is a JIT compiler for binaries. It will disassemble the binary, one basic block at a time, and recompile it with additional instructions inserted at arbitrary positions.</description>
+      <description>Use LUA scripting for dynamic binary instrumentation and analysis using PIN.</description>
     </item>
     
   </channel>

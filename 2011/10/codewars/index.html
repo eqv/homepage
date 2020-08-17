@@ -7,26 +7,18 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="author" content="Cornelius Aschermann">
 <meta name="keywords" content="">
-<meta name="description" content="View On Github
-A custom CPU, a ring shaped memory and instruction pointer relative addressing. Two programs enter, one program leaves. A deadly low level programming competition to overwrite your opponents memory.
-In contrast to the original Corewars our custom CPU has some modern features, such as registers. We provide a debugger that allows to singlestep and inspect your fighters execution in the core. If you need to test your bot against another bot, there is a profiler that allows you to perform many battles in short amount of time.">
+<meta name="description" content="A competitive programming challenge similar to Corewars, used in 2011 RWTH-CTF">
 
 
-<meta property="og:description" content="View On Github
-A custom CPU, a ring shaped memory and instruction pointer relative addressing. Two programs enter, one program leaves. A deadly low level programming competition to overwrite your opponents memory.
-In contrast to the original Corewars our custom CPU has some modern features, such as registers. We provide a debugger that allows to singlestep and inspect your fighters execution in the core. If you need to test your bot against another bot, there is a profiler that allows you to perform many battles in short amount of time.">
+<meta property="og:description" content="A competitive programming challenge similar to Corewars, used in 2011 RWTH-CTF">
 <meta property="og:type" content="article">
 <meta property="og:title" content="CodeWars">
 <meta name="twitter:title" content="CodeWars">
 <meta property="og:url" content="https://hexgolems.com/2011/10/codewars/">
 <meta property="twitter:url" content="https://hexgolems.com/2011/10/codewars/">
 <meta property="og:site_name" content="Hexgolems">
-<meta property="og:description" content="View On Github
-A custom CPU, a ring shaped memory and instruction pointer relative addressing. Two programs enter, one program leaves. A deadly low level programming competition to overwrite your opponents memory.
-In contrast to the original Corewars our custom CPU has some modern features, such as registers. We provide a debugger that allows to singlestep and inspect your fighters execution in the core. If you need to test your bot against another bot, there is a profiler that allows you to perform many battles in short amount of time.">
-<meta name="twitter:description" content="View On Github
-A custom CPU, a ring shaped memory and instruction pointer relative addressing. Two programs enter, one program leaves. A deadly low level programming competition to overwrite your opponents memory.
-In contrast to the original Corewars our custom CPU has some modern features, such as registers. We provide a debugger that allows to singlestep and inspect your fighters execution in the core. If you need to test your bot against another bot, there is a profiler that allows you to perform many battles in short amount of time.">
+<meta property="og:description" content="A competitive programming challenge similar to Corewars, used in 2011 RWTH-CTF">
+<meta name="twitter:description" content="A competitive programming challenge similar to Corewars, used in 2011 RWTH-CTF">
 <meta property="og:locale" content="en">
 
   
@@ -238,34 +230,24 @@ In contrast to the original Corewars our custom CPU has some modern features, su
           
           <div class="post-content markdown" itemprop="articleBody">
             <div class="main-content-wrap">
-              
-
-<p align=center><a href="https://github.com/hexgolems/codewar" class="btn btn--primary" text-align="center"><i class="fa fa-github" aria-hidden="true"></i> View On Github</a></p>
-
+              <p align=center><a href="https://github.com/hexgolems/codewar" class="btn btn--primary" text-align="center"><i class="fa fa-github" aria-hidden="true"></i> View On Github</a></p>
 <p>A custom CPU, a ring shaped memory and instruction pointer relative addressing. Two programs enter, one program leaves. A deadly low level programming competition to overwrite your opponents memory.</p>
-
 <p>In contrast to the original <a href="https://de.wikipedia.org/wiki/Core_War">Corewars</a> our custom CPU has some modern features, such as registers. We provide
 a debugger that allows to singlestep and inspect your fighters execution in the core. If you need to test your bot
 against another bot, there is a profiler that allows you to perform many battles in short amount of time. Additionally, the package contains
 an assembler / disassembler and a competition server as well as a web interface that displays the results of all
 battles. Lastly, for all the vim users out there, we included a custom vim color syntax definition.</p>
-
 <h1 id="cpu-documentation">CPU Documentation</h1>
-
 <p>Welcome to a new generation of CPUs!
 We run on 48 bits, using 4 registers, relative addressing, cyclic memory,
 and last but not least a customized instruction set.</p>
-
 <p>The Gentoo handbook told me once:</p>
-
 <ol>
 <li>READ EVERYTHING, don&rsquo;t skip around. don&rsquo;t skim the text, but do read the whole thing once to get an idea whats going on.</li>
 <li>Use your brain! Stop and think about what its saying.</li>
 <li>If you have a problem, try to solve it yourself.</li>
 </ol>
-
 <p>The same goes for you.</p>
-
 <p>The memory, (which will be called: board through this manual) will be
 initialized with 0s. Then the CPU will load the programs, and start them in
 an arbitrary order. The CPU uses cyclic relative addressing. Therefore all addresses are relativ to the Instruction pointer.
@@ -273,7 +255,6 @@ mov *1 *0 will move the cell at IP+0 to the cell at IP+1 (thus effectivly copy t
 Furthermore the memory is cyclic (addresses that are bigger than the biggest valide address are wrapped).
 Assuming a Coresize of 400 cells, trying to read from address 403 will result in reading address 3.
 A program never knows its &ldquo;real&rdquo; address, as the current instruction will always have the address 0.</p>
-
 <p>The general layout of the supported instructions is:
 <code>name_of_instruction destination source</code>
 if you feel like it you can also write:
@@ -287,61 +268,45 @@ after a semicolon will be ignored:
 same goes for //
 <code>//I am a comment, too!</code>
 You can use the special comments:</p>
-
 <p><code>;name: $heregoesthenameofyourbot</code></p>
-
 <p><code>;desc: here goes some description of your bot, to provide your bot with meta information</code></p>
-
 <h1 id="binary-layout">Binary Layout</h1>
-
 <p>Every memory cell (read: &ldquo;every memory word&rdquo;) consists of 3 parts:</p>
-
 <pre><code>[op1] [op2] [cmd]
   20    20      6  Bits
-</code></pre>
-
-<p>While it is possible to use operands that are not needed by the instruction, it is
+</code></pre><p>While it is possible to use operands that are not needed by the instruction, it is
 considered bad style and will most probably result in unexpected crashes. Do not use
 additional operands for modifying additional values by means of post decrement/increment,
 because this would result in ugly code.</p>
-
 <h1 id="registers">Registers</h1>
-
 <p>There are four general purpose registers.
 ptr - the pointer register
 acc - the accumulator register
 r1  - nameless register one
 r2  - nameless register two</p>
-
 <h1 id="cpu-flags">CPU flags</h1>
-
-<p>There are three flags that will be set by the CPU:
-* equal - will be set if the result of the last instruction was zero
-* above - will be set if the result of the last instruction was &gt;zero
-* smaller - will be set if the result of the last instruction was &lt; zero</p>
-
+<p>There are three flags that will be set by the CPU:</p>
+<ul>
+<li>equal - will be set if the result of the last instruction was zero</li>
+<li>above - will be set if the result of the last instruction was &gt;zero</li>
+<li>smaller - will be set if the result of the last instruction was &lt; zero</li>
+</ul>
 <p>The flag will be set for every instruction where it makes sense ;) For example
 cmp, all arithmetic and logic operations</p>
-
 <h1 id="mov-instructions">Mov instructions</h1>
-
 <ul>
 <li>mov dest src - move stuff from the source to the destination</li>
 <li>mvp val unused - move stuff to the *ptr register</li>
 <li>mva val unused - move stuff to the acc register</li>
 </ul>
-
 <h1 id="logic-operations">Logic operations</h1>
-
 <ul>
 <li>xor dest src - dest xor src, the result will be saved to dest</li>
 <li>and dest src - dest and src, the result will be saved to dest</li>
 <li>or  dest src - dest or src, the result will be saved to dest</li>
 <li>not dest unused - binary not on destination, the result will be saved to dest</li>
 </ul>
-
 <h1 id="arithmetic-operation">Arithmetic operation</h1>
-
 <ul>
 <li>dec dest unused - decrement destination, save the result to dest</li>
 <li>inc dest unused - increment destination, save the result to dest</li>
@@ -356,9 +321,7 @@ cmp, all arithmetic and logic operations</p>
 <li>ada val unused - same as add acc val</li>
 <li>sba val unused - same as sub acc val</li>
 </ul>
-
 <h1 id="jmp-instructions">Jmp instructions</h1>
-
 <ul>
 <li>jmp dest unused - continue execution at dest</li>
 <li>jie dest unused - jmp if equal</li>
@@ -368,71 +331,52 @@ cmp, all arithmetic and logic operations</p>
 <li>jna dest unused - jmp if not above</li>
 <li>jns dest unused - jmp if not smaller</li>
 </ul>
-
 <h1 id="important-and-useful-other-stuff">Important and useful other stuff</h1>
-
 <ul>
 <li>cmp src dest -compare the src and the destination, flags will be set</li>
 <li>splt dest unused - create a new thread at dest</li>
 <li>die unused unused - stop execution of this thread</li>
 </ul>
-
 <h1 id="interrupts">Interrupts</h1>
-
 <p>The CPU has an interrupt vector containing three interrupts. The cpu has a hidden register containing the interrupt flags. If any of this flags is set, the cpu will jump to offset stored in the interrupt vector. If two or more interrupts are set, one instruction is executed in the first interrupt handler, than the next interrupt handler is called (you can use this instruction to disable the interrupt_enable flag). The interrupts are prioritised as following: First call Imem, then cza and finally cza.</p>
-
 <ul>
 <li>sti unused unused - enable interrupts</li>
 <li>cli unused unused - disable interrupts</li>
 <li>rti unused unused - return from interrupt (does not work recursively)</li>
 </ul>
-
 <p>The next instructions are used to set the interrupt vectors.
 If the dest is 0 this interrupt is disabled</p>
-
 <ul>
 <li>clk cycles dest - jumps to dest every #cycles, the #cycles must be &gt;=4</li>
 <li>mem addr dest - jumps dest whenever addr is changed</li>
 <li>cza val dest -  jumps to dest if acc is equal to val</li>
 </ul>
-
 <h1 id="labels">Labels</h1>
-
 <p>You can use labels to increase readability of your code.
 :label - everything after a &ldquo;:&rdquo; will be a label (only [a-z] are allowed for labeling!
 jmp @label - will jump to label
 it is also possible to use @label in other context, just know that @label
 holds the relative addr of :label</p>
-
 <h1 id="constants">Constants</h1>
-
 <p>$constant=42 - defines a constant, with name constant and value 42, you can
 now use it whenever needed (e.g. add ptr, $stepsize+2)</p>
-
 <h1 id="parameters">Parameters</h1>
-
 <p>a parameter looks like: <code>/(*|**)?(number|register)[+\-]?/</code>
 example: <code>mov r1   **3-</code></p>
-
 <p>The binary layout of the parameters:</p>
-
 <pre><code>[type][value_type][value][op]
     2  1            16    2 Bit
 type: 01=&gt; direct (*ptr)  10=&gt;indirect(**ptr)  11=&gt; immediate (ptr)  00=&gt; invalid
 value_type: 1=&gt;reg / 0=&gt;constant value
 op: 01=&gt;inc  10=&gt;dec  11=&gt;noop  00=&gt; invalid
-</code></pre>
-
-<h1 id="debugging">Debugging</h1>
-
+</code></pre><h1 id="debugging">Debugging</h1>
 <p>While writing your code you can use two different tools:</p>
-
 <ul>
-<li><p>Debugger
+<li>
+<p>Debugger
 First of all, use <code>ruby debugger.rb $yourbot $otherbot</code> to visualise the behaviour of the bots.
 This program is a graphical cpu emulator.
 Commands:</p>
-
 <ul>
 <li>Space     - pauses/restarts emulation</li>
 <li>Arrows / hjkl - move the cursor (the value under the cursor is shown in the lower part of the screen)</li>
@@ -442,28 +386,24 @@ Commands:</p>
 <li>s       - single step through emulation</li>
 <li>m       - moves the cursor to the next running thread</li>
 <li>t       - cycles which threads registers are displayed in the lower line</li>
-</ul></li>
-
-<li><p>Profiler
-Then evaluate the efficiency of your bot with <code>ruby profiler.rb $yourbot $otherbot</code>.
-This program will perform a huge number of games and tells you about the outcome.</p></li>
 </ul>
-
+</li>
+<li>
+<p>Profiler
+Then evaluate the efficiency of your bot with <code>ruby profiler.rb $yourbot $otherbot</code>.
+This program will perform a huge number of games and tells you about the outcome.</p>
+</li>
+</ul>
 <h1 id="deploying">Deploying</h1>
-
 <p>So you have written your Code, what now?</p>
-
 <p>You will have to send the code the the server. To do that you have to use the bot_add script.
 The server will have a scoreboard running on <code>http://server:8080/scores.html</code> you will also find the parameters of the game on top of the scoreboard (e.G. max number of threads per player, coresize etc.)
 <code>ruby bot_add.rb $yourbot $server $username $password</code>
 The server the tests the performance of your bot. The results will be shown on <code>http://$server/scores.html</code>.</p>
-
 <p>For the challenge version you have to use bot_add.rb $yourbot 10.11.200.3 $password.
 The password is obtained by completing either of the two challenge branches. Each challenge branch will give you two passwords.
 either send $pass1$pass2 or $pass2$pass1 as password for your bot.</p>
-
 <h1 id="setup">Setup</h1>
-
 <pre><code>install Ruby (1.8 and 1.9 work) &amp; ruby-dev
 install ruby gems
 install ruby1.9.1-dev (fixes mkmf error)
@@ -472,7 +412,6 @@ install the ncurses, json(only needed for 1.8) and the parallel gem
 (maybe you have to install the packge ruby1.8-ncurses or something like this)
 =&gt; everything should work now (note, ncurses seems to be buggy - even the samples don't work on some machines -_-)
 </code></pre>
-
               
             </div>
           </div>

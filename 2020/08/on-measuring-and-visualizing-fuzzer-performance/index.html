@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    
+    <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="author" content="Cornelius Aschermann">
+<meta name="keywords" content="">
+<meta name="description" content="A critique on how we evaluate fuzzer and a proposal for a better metric.">
+
+
+<meta property="og:description" content="A critique on how we evaluate fuzzer and a proposal for a better metric.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="On Measuring and Visualizing Fuzzer Performance">
+<meta name="twitter:title" content="On Measuring and Visualizing Fuzzer Performance">
+<meta property="og:url" content="https://hexgolems.com/2020/08/on-measuring-and-visualizing-fuzzer-performance/">
+<meta property="twitter:url" content="https://hexgolems.com/2020/08/on-measuring-and-visualizing-fuzzer-performance/">
+<meta property="og:site_name" content="Hexgolems">
+<meta property="og:description" content="A critique on how we evaluate fuzzer and a proposal for a better metric.">
+<meta name="twitter:description" content="A critique on how we evaluate fuzzer and a proposal for a better metric.">
+<meta property="og:locale" content="en">
+
+  
+    <meta property="article:published_time" content="2020-08-12T00:00:00">
+  
+  
+    <meta property="article:modified_time" content="2020-08-12T00:00:00">
+  
+  
+  
+  
+    
+      <meta property="article:tag" content="fuzzing">
+    
+  
+
+
+<meta name="twitter:card" content="summary">
+
+  <meta name="twitter:site" content="@is_eqv">
+
+
+  <meta name="twitter:creator" content="@is_eqv">
+
+
+
+
+
+
+
+  <meta property="og:image" content="https://hexgolems.com/imgs/avatar.png">
+  <meta property="twitter:image" content="https://hexgolems.com/imgs/avatar.png">
+
+
+
+  <meta property="og:image" content="https://hexgolems.com/imgs/fuzzeval0.png">
+  <meta property="twitter:image" content="https://hexgolems.com/imgs/fuzzeval0.png">
+
+
+  <meta property="og:image" content="https://hexgolems.com/imgs/fuzzeval0.png">
+  <meta property="twitter:image" content="https://hexgolems.com/imgs/fuzzeval0.png">
+
+
+
+    <title>On Measuring and Visualizing Fuzzer Performance</title>
+
+    <link rel="icon" href="https://hexgolems.com/favicon.png">
+    
+
+    
+
+    <link rel="canonical" href="https://hexgolems.com/2020/08/on-measuring-and-visualizing-fuzzer-performance/">
+
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha256-eZrrJcwDc/3uDhsdt61sL2oOBY362qM3lon1gyExkL0=" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.4/jquery.fancybox.min.css" integrity="sha256-vuXZ9LGmmwtjqFX1F+EKin1ThZMub58gKULUyf0qECk=" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.4/helpers/jquery.fancybox-thumbs.min.css" integrity="sha256-SEa4XYAHihTcEP1f5gARTB2K26Uk8PsndQYHQC1f4jU=" crossorigin="anonymous" />
+    
+    
+    <link rel="stylesheet" href="https://hexgolems.com/css/style-twzjdbqhmnnacqs0pwwdzcdbt8yhv8giawvjqjmyfoqnvazl0dalmnhdkvp7.min.css" />
+    
+    
+
+    
+      
+    
+    
+  </head>
+
+  <body>
+    <div id="blog">
+      <header id="header" data-behavior="5">
+  <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
+  <div class="header-title">
+    <a class="header-title-link" href="https://hexgolems.com/">Hexgolems</a>
+  </div>
+  
+    
+      <a class="header-right-icon "
+         href="https://hexgolems.com/#about">
+    
+    
+      <i class="fa fa-2x fa-user"></i>
+    
+    
+    </a>
+  
+</header>
+
+      <nav id="sidebar" data-behavior="5">
+  <div class="sidebar-container">
+    
+      <div class="sidebar-profile">
+        <a href="https://hexgolems.com/#about">
+          <img class="sidebar-profile-picture" src="https://hexgolems.com/imgs/avatar.png" alt="" />
+        </a>
+        <h4 class="sidebar-profile-name">Cornelius Aschermann</h4>
+        
+          <h5 class="sidebar-profile-bio">Fuzzing, Reverse Engineering, Binary Analysis</h5>
+        
+      </div>
+    
+    <ul class="sidebar-buttons">
+      
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://hexgolems.com/">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-home"></i>
+      
+      <span class="sidebar-button-desc">Home</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://hexgolems.com/#about">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-question"></i>
+      
+      <span class="sidebar-button-desc">About</span>
+    </a>
+  </li>
+
+
+    </ul>
+    <ul class="sidebar-buttons">
+      
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://hexgolems.com/tags/github">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-github"></i>
+      
+      <span class="sidebar-button-desc">GitHub</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://twitter.com/is_eqv" target="_blank" rel="noopener">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-twitter"></i>
+      
+      <span class="sidebar-button-desc">Twitter</span>
+    </a>
+  </li>
+
+
+    </ul>
+    <ul class="sidebar-buttons">
+      
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://hexgolems.com/index.xml">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-rss"></i>
+      
+      <span class="sidebar-button-desc">RSS</span>
+    </a>
+  </li>
+
+
+    </ul>
+  </div>
+</nav>
+
+      
+  <div class="post-header-cover
+              text-center
+              post-header-cover--partial"
+       style="background-image:url('/imgs/fuzzeval0.png')"
+       data-behavior="5">
+    
+  </div>
+
+
+      <div id="main" data-behavior="5"
+        class="hasCover
+               hasCoverMetaOut
+               ">
+        <article class="post" itemscope itemType="http://schema.org/BlogPosting">
+          
+          
+            <div class="post-header main-content-wrap text-center">
+  
+    <h1 class="post-title" itemprop="headline">
+      On Measuring and Visualizing Fuzzer Performance
+    </h1>
+  
+  
+  <div class="postShorten-meta post-meta">
+    
+      <time itemprop="datePublished" datetime="2020-08-12T00:00:00Z">
+        August, 2020
+
+      </time>
+    
+    
+  </div>
+
+</div>
+          
+          <div class="post-content markdown" itemprop="articleBody">
+            <div class="main-content-wrap">
+              <h1 id="on-measuring-and-visualizing-fuzzer-performance">On Measuring and Visualizing Fuzzer Performance</h1>
+<p>Measuring the effectiveness of fuzzers is inherently challenging. Yet its extremely usefully in distinct use-cases: It is needed to test ones own fuzzers during development or during a software audit and to prove the usefulness of new techniques introduced by bot private and academic researchers.</p>
+<p>After recent discussions on some of the pros/cons of current practices, we would like to propose to measure coverage based on a small random sample of all inputs generated  by the fuzzer instead of  the final queue. Using a random sample of inputs, we can get a much more detailed picture on what parts of the program a fuzzer is exploring properly and which not. We hope this will be helpful for debugging new fuzzers,  and ideally lead to better evaluation of fuzzing in the future.</p>
+<h2 id="existing-metrics">Existing Metrics</h2>
+<p>Unsurprisingly there is no lack of different opinions on evaluating fuzzers, so we will be giving a quick recap of their advantages and disadvantages. The most prominent (non-idiotic<sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup>) metrics currently used are:</p>
+<ul>
+<li>
+<p>Measure number of new manually triaged bugs</p>
+</li>
+<li>
+<p>Measure time to trigger known bugs</p>
+</li>
+<li>
+<p>Measure new code coverage</p>
+</li>
+</ul>
+<p>Needless to say, all of these approaches have significant downsides:</p>
+<p>Of course, finding new bugs is great, but It&rsquo;s not a very fine grained metric to judge progress by. If I&rsquo;m debugging my own fuzzer and It&rsquo;s not (yet) finding bugs, it&rsquo;s not helpful to look at the number of new bugs found. If it found bugs, the job is done and it is no longer that helpful. To make the matter worse, many fuzzers will find hundreds and thousands of &ldquo;unique crashes&rdquo; that only represent a single real bug.  Hence, to obtain a useful metric, a significant manual triaging effort is needed.  For academic papers, it&rsquo;s almost useless, as it is more of an indicator of &ldquo;We spend some students time on fuzzing a large number of shitty targets&rdquo; than an indicator of &ldquo;the fuzzer is actually any good&rdquo;. If we were to use a stronger version such as &ldquo;find new bugs in WELL FUZZED targets&rdquo; to avoid this issue, a significant number of useful techniques will not be able to demonstrate usefulness. For example, if you are increasing the execution throughput by a factor of 10x, it&rsquo;s still unlikely that your project is able to outperform: Googles  has many thousand cores  fuzzing 24/7 for years and a lot of security researcher out there spend days and weeks to get proper seeds dictionaries and grammars for most well fuzzed targets. As such it is typically necessary to build a new fuzzer with a significant different distribution of inputs to find really interesting new crashes.</p>
+<p>Evaluating on known bugs is useful if you are working to build a new fuzzer for a target that you already understand reasonably well. If you have previously manually inspected other bugs, and want to make sure that you fuzzer works as expected, its an excellent sanity check. However, I think it&rsquo;s almost useless for academics, as the number of data-sets with known bugs is very limited, and there have been significant cases of over-fitting for the given data sets (LAVA-M, I&rsquo;m looking at you).</p>
+<p>Over the last years, we strongly advocated for code coverage as a primary evaluation metric for a variety of reasons. There is strong evidence that coverage guided fuzzers are VERY effective at finding bugs, and such fuzzers do not find bugs in code that wasn&rsquo;t covered. If no seed files are presented, the ability to find new code coverage is also an excellent predictor for the fuzzers ability to solve difficult constraints in the program to reach more and more code. The same ability will help the fuzzer to explore distinct areas of the state space. This remains true even when good seeds are available, but the effect becomes less visible in our current metrics.
+Code coverage is also rather fine granular and can be easily measured, inspected and understood. However, there are many approaches where code coverage is hard to obtain (blind fuzzing, symbolic approaches)  and there are common cases where it might be misleading. For example, with grammar fuzzers, the grammar might only test a very limited subset of the target. Consequettly, it will usually be vastly more thorough at testing this area, than an AFL-style fuzzer that explores more of the target. Additionally, at least in the large scale FuzzBench Benchmark, nearly all fuzzers show almost identical code coverage. This becomes even more of an issue if proper seeds are used that already produce significant coverage.</p>
+<h2 id="goals-for-a-better-metrics">Goals for a Better Metrics</h2>
+<p>After talking about some of the shortcomings of current approaches, lets talk about some of the criteria we can use to judge whether a given metric/approach is useful to evaluate fuzzers.</p>
+<ul>
+<li>
+<p>It needs to be fine grained enough to provide reasonable indicators of progress. Ideally, it should able to show how well individual parts of the code base have been explored beyond the simple yes/no that code coverage provides.</p>
+</li>
+<li>
+<p>It needs to work across a very large set of complex real world targets to avoid over-fitting. Ideally, it should be trivial to use it on new targets without additional work.</p>
+</li>
+<li>
+<p>Ideally It should be able to compare results across different types of fuzzers (coverage guided/blind fuzzers and symbolic based tools).</p>
+</li>
+<li>
+<p>And last but not least, the big elephant in the room: It has to strongly correlate with the ability to find bugs.</p>
+</li>
+</ul>
+<p>In the following I would like to introduce some ideas that I believe could guide the development process of future evaluation metrics.</p>
+<h2 id="designing-better-metrics">Designing better Metrics</h2>
+<p>To address the shortcomings of current metrics and to satisfy the goals stated earlier, we now propose an initial design for evaluation experiments.</p>
+<p>In particular  we would like to stop using the queue to evaluate fuzzers and propose to use a sampling based approach to collect data for measurements. Than we propose some refinements to simple code coverage that will give a much more detailed picture of the fuzzers performance.</p>
+<h3 id="methods-to-collect-data">Methods to Collect Data</h3>
+<p>Right now, it&rsquo;s very common to inspect the inputs stored in the queue to measure the coverage gained by the fuzzer. This approach has some significant disadvantages: Most obviously, it&rsquo;s very hard to compare against fuzzers that don&rsquo;t have a queue or periodically remove entries from the queue. In the past we sometimes got around this by adding (unused) coverage feedback and a queue to a blind fuzzers for evaluation purposes. However, this is obviously suboptimal - the blind fuzzer pays the performance penalty of coverage measurement without any of the gains.  Furthermore, this approach doesn&rsquo;t even allow us to measure how often (even approximately) a given line was exercised by the fuzzer.  We strongly believe that lines which are  tested only once or twice are almost as untested as lines that were never tested. At the same time, we observed that many lines only appear in a single input in the corpus, even if they have been tested many thousand times.</p>
+<p>Even worse, it&rsquo;s entirely impossible to gain deeper insight from this data (e.g. what kinds of values were explored at given points in the target).</p>
+<h4 id="sampling-profilers-and-fuzzing-measurements">Sampling Profilers and Fuzzing Measurements</h4>
+<p>To avoid these problems, we propose to draw a random sample of the testcases generated during the fuzzing. Storing one randomly picked input a few times per second will not greatly affect the overall fuzzing performance, while giving us a much more precise picture of what the fuzzer is doing. Like a sampling profiler, this approach will very quickly point out which areas are explored thoroughly and which are not. Unfortunately, this introduces some additional random noise, that we will have to mitigate by running multiple experiments in parallel. However, we will need to do this anyway as fuzzer performance can depend significantly on the seed used. However, sampling from all inputs generated has some very nice properties: It produces comparable results no matter how the the fuzzer uses coverage, its queue, what scheduling algorithms are used, nor how much attention is payed to each individual entry. If we investigate how much of the state space a fuzzer explored, this approach produces unbiased results. Inspecting the queue heavily biases such metrics towards the first input that reaches a given line of code, and will thus strongly underestimate the diversity in the inputs generated. In fact, sampling even produces comparable results when measuring blind fuzzers.</p>
+<h3 id="a-better-code-coverage">A Better Code Coverage</h3>
+<p>The big issues with measuring code coverage is that it doesn&rsquo;t always corresponds to  the fuzzers ability to cover interesting  states. Consider a fuzzer that only reaches a given point once vs a fuzzer that reaches the same basic block over and over again. While both would yield the same test coverage, we would expect the second one to be much more likely to trigger a bug in the target. Consider the (fake but in our experience quite realistic) result from running a structured blind fuzzer and a structured coverage guided fuzzer in Figure 1.</p>
+<p><img src="https://hexgolems.com/imgs/fuzzeval1.png" alt=""></p>
+<p>While the blind fuzzer initially performs better due to the reduced overhead, it will take a lot longer to reach the same overall coverage. If we have a look at the basic blocks that are covered only after some minutes to hours, we would expect that the fuzzer continues to exercise the same block sparsely (every few minutes). A coverage guided fuzzer will reliably trigger the same coverage many thousands of times after first finding it. However, in current measurements similar to Figure 1, (such as the ones we did in our Nautilus paper), this would be considered an equal outcome.</p>
+<p>We propose to enrich the result by comparing the number of times any basic block was executed during the whole campaign.</p>
+<p><img src="https://hexgolems.com/imgs/fuzzeval2.png" alt=""></p>
+<p>Using a sampling based measurement, we can count how often individual basic blocks were hit by any input. This would give a much more precise view at the real test coverage of a fuzzer.  To compare two fuzzers, one can simply create a plot of the differences in counts  per basic block as seen in Figure. 2. For interpretability,  we added a proportional shaded area that displays how often each basic block was executed overall. Again, the plot is obviously fake. Non the less, we could tell that the feedback fuzzer is much better at exploring uncommon basic blocks. Even if Figure 1. showed that they reach the same overall coverage eventually.</p>
+<h3 id="measuring-state-coverage">Measuring State Coverage</h3>
+<p>Inspecting differences in effective coverage already helps to identify how different fuzzers explore the code  However, the same approach can be extended to get a much more detailed look into the behavior of fuzzers.  For example. Instead of looking at the number of test cases that hit each basic block, we can look at the number of distinct paths that the application took to reach this basic block. Again, we would expect to see that structure aware fuzzers will be much better at triggering the same coverage in vastly different ways. Bitflipper-style fuzzers will have more difficulties to find completely distinct paths reaching the same basic block deep in the application. Additionally, this approach will still distinguish the fuzzers ability to uncover distinct paths - even in the presence of excellent seed files.</p>
+<p>We can easily increase the precision further: We could inspect the number of distinct values that variables take during the fuzzing process (If the number grows too large, HyperLogLog will probably come handy).</p>
+<p>All of this information can be easily aggregated and even displayed on top of the source code of the target to give a much better feeling for how well each fuzzer does in each individual part of the target program.</p>
+<h3 id="call-for-action">Call for Action</h3>
+<p>We believe this approach will serve to increases the ability to compare the performance of different fuzzers. Specifically, it meets three of our four goals: Sampling based evaluation is fine grained, works for real world software and can be used to compare very different fuzzers, including fuzzers using concolic execution to uncover new coverage. However it will not be able to properly represent the strength of fuzzers that use advanced analytics such as symbolic execution to directly trigger bugs without random exploration of the state space. And of course, while we strongly believe that a fuzzer that explores different program states more thoroughly will actually find more bugs, we did not actually prove this yet.</p>
+<p>If you have any feedback or ideas for better evaluation metrics, please join the discussion at
+the <a href="https://discord.gg/psf5Wt5">Awesome Fuzzing Discord</a> or contact the authors directly via email or on twitter
+(<a href="http://twitter.com/is_eqv">@is_eqv</a> and <a href="https://twitter.com/ms_s3c">@ms_s3c</a>).</p>
+<section class="footnotes" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn:1" role="doc-endnote">
+<p>We will not go into details of why measurements such as number of paths found, number of unique crashes, bugs in LAVA-M etc. are misleading at best. We realize they are widely used,  but they really shouldn&rsquo;t be. Please don&rsquo;t use them, and watch any of Brandon Falk&rsquo;s fun rants if you don&rsquo;t see what&rsquo;s wrong with those. <a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+</ol>
+</section>
+
+              
+            </div>
+          </div>
+          <div id="post-footer" class="post-footer main-content-wrap">
+            
+              
+                
+                
+                  <div class="post-footer-tags">
+                    <span class="text-color-light text-small"></span><br/>
+                    
+  <a class="tag tag--primary tag--small" href="https://hexgolems.com/tags/fuzzing/">fuzzing</a>
+
+                  </div>
+                
+              
+            
+            <div class="post-actions-wrap">
+  
+      <nav >
+        <ul class="post-actions post-action-nav">
+          
+            <li class="post-action">
+              
+                <a class="post-action-btn btn btn--disabled">
+              
+                  
+                  &lt;
+                  
+                </a>
+            </li>
+            <li class="post-action">
+              
+                <a class="post-action-btn btn btn--default tooltip--top" href="https://hexgolems.com/2020/07/aurora/" data-tooltip="Aurora">
+              
+              
+                  &gt;
+                  
+                </a>
+            </li>
+          
+        </ul>
+      </nav>
+    <ul class="post-actions post-action-share" >
+      
+      
+      <li class="post-action">
+        
+          <a class="post-action-btn btn btn--default" href="#">
+        
+          <i class="fa fa-list"></i>
+        </a>
+      </li>
+    </ul>
+  
+</div>
+
+            
+              
+            
+          </div>
+        </article>
+        <footer id="footer" class="main-content-wrap">
+  <span class="copyrights">
+    &copy; 2020 Cornelius Aschermann. 
+  </span>
+</footer>
+
+      </div>
+      <div id="bottom-bar" class="post-bottom-bar" data-behavior="5">
+        <div class="post-actions-wrap">
+  
+      <nav >
+        <ul class="post-actions post-action-nav">
+          
+            <li class="post-action">
+              
+                <a class="post-action-btn btn btn--disabled">
+              
+                  
+                  &lt;
+                  
+                </a>
+            </li>
+            <li class="post-action">
+              
+                <a class="post-action-btn btn btn--default tooltip--top" href="https://hexgolems.com/2020/07/aurora/" data-tooltip="Aurora">
+              
+              
+                  &gt;
+                  
+                </a>
+            </li>
+          
+        </ul>
+      </nav>
+    <ul class="post-actions post-action-share" >
+      
+      
+      <li class="post-action">
+        
+          <a class="post-action-btn btn btn--default" href="#">
+        
+          <i class="fa fa-list"></i>
+        </a>
+      </li>
+    </ul>
+  
+</div>
+
+      </div>
+      <div id="share-options-bar" class="share-options-bar" data-behavior="5">
+  <i id="btn-close-shareoptions" class="fa fa-close"></i>
+  <ul class="share-options">
+    
+      <li class="share-option">
+        <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fhexgolems.com%2F2020%2F08%2Fon-measuring-and-visualizing-fuzzer-performance%2F">
+          <i class="fa fa-facebook-official"></i><span>%!(EXTRA string=Facebook)</span>
+        </a>
+      </li>
+    
+      <li class="share-option">
+        <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=https%3A%2F%2Fhexgolems.com%2F2020%2F08%2Fon-measuring-and-visualizing-fuzzer-performance%2F">
+          <i class="fa fa-twitter"></i><span>%!(EXTRA string=Twitter)</span>
+        </a>
+      </li>
+    
+      <li class="share-option">
+        <a class="share-option-btn" target="new" href="https://plus.google.com/share?url=https%3A%2F%2Fhexgolems.com%2F2020%2F08%2Fon-measuring-and-visualizing-fuzzer-performance%2F">
+          <i class="fa fa-google-plus"></i><span>%!(EXTRA string=Google&#43;)</span>
+        </a>
+      </li>
+    
+  </ul>
+</div>
+<div id="share-options-mask" class="share-options-mask"></div>
+    </div>
+    
+    <div id="about">
+  <div id="about-card">
+    <div id="about-btn-close">
+      <i class="fa fa-remove"></i>
+    </div>
+    
+      <img id="about-card-picture" src="https://hexgolems.com/imgs/avatar.png" alt="" />
+    
+    <h4 id="about-card-name">Cornelius Aschermann</h4>
+    
+      <div id="about-card-bio">Fuzzing, Reverse Engineering, Binary Analysis</div>
+    
+    
+      <div id="about-card-job">
+        <i class="fa fa-briefcase"></i>
+        <br/>
+        Security Researcher
+      </div>
+    
+    
+      <div id="about-card-location">
+        <i class="fa fa-map-marker"></i>
+        <br/>
+        Germany
+      </div>
+    
+  </div>
+</div>
+
+    
+
+    
+  
+    
+      <div id="cover" style="background-image:url('https://hexgolems.com/imgs/dark_bg.jpg');"></div>
+    
+  
+
+
+    
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.4/jquery.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js" integrity="sha256-/BfiIkHlHoVihZdc6TFuj7MmJ0TWcWsMXkeDFwhi0zw=" crossorigin="anonymous"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.7/js/jquery.fancybox.min.js" integrity="sha256-GEAnjcTqVP+vBp3SSc8bEDQqvWAZMiHyUSIorrWwH50=" crossorigin="anonymous"></script>
+
+
+<script src="https://hexgolems.com/js/script-pcw6v3xilnxydl1vddzazdverrnn9ctynvnxgwho987mfyqkuylcb1nlt.min.js"></script>
+
+
+<script lang="javascript">
+window.onload = updateMinWidth;
+window.onresize = updateMinWidth;
+document.getElementById("sidebar").addEventListener("transitionend", updateMinWidth);
+function updateMinWidth() {
+  var sidebar = document.getElementById("sidebar");
+  var main = document.getElementById("main");
+  main.style.minWidth = "";
+  var w1 = getComputedStyle(main).getPropertyValue("min-width");
+  var w2 = getComputedStyle(sidebar).getPropertyValue("width");
+  var w3 = getComputedStyle(sidebar).getPropertyValue("left");
+  main.style.minWidth = `calc(${w1} - ${w2} - ${w3})`;
+}
+</script>
+
+<script>
+$(document).ready(function() {
+  hljs.configure({ classPrefix: '', useBR: false });
+  $('pre.code-highlight > code, pre > code').each(function(i, block) {
+    if (!$(this).hasClass('codeblock')) {
+      $(this).addClass('codeblock');
+    }
+    hljs.highlightBlock(block);
+  });
+});
+</script>
+
+
+  
+    
+  
+
+
+
+
+    
+  </body>
+</html>
+

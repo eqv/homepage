@@ -1,9 +1,9 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Article on Hexgolems</title>
+    <title>article on Hexgolems</title>
     <link>https://hexgolems.com/tags/article/</link>
-    <description>Recent content in Article on Hexgolems</description>
+    <description>Recent content in article on Hexgolems</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Sat, 04 Apr 2020 00:00:00 +0000</lastBuildDate>
@@ -17,7 +17,7 @@
       <pubDate>Sat, 04 Apr 2020 00:00:00 +0000</pubDate>
       
       <guid>https://hexgolems.com/2020/04/incorrectness-logic-by-example/</guid>
-      <description>Incorrectness Logic by Example Incorrectness Logic is a formal method to reason about program behavior. Similar formal reasoning techniques have been used for a multitude of different tasks in program verification, bug hunting and exploitation. To give some examples, Symbolic Execution (SE) has been used to generate hundreds of working exploits against a (at that time) current version of Debian [1]. While possible, it is often difficult to scale SE with all its precision to large targets.</description>
+      <description>Understanding Incorrectness Logic for program analysis with lots of examples.</description>
     </item>
     
   </channel>

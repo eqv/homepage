@@ -7,26 +7,18 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="author" content="Cornelius Aschermann">
 <meta name="keywords" content="">
-<meta name="description" content="View On Github
-Hexslides allows you to create presentations with highly expressive animations in your favorite vector graphic drawing tool (such as Inkscape). Then you combine svg graphics and masters/templates in beautiful presentations.
-Create highly visual presentations, that support what you are talking about instead of distracting from it! Easily create animations to better present your ideas!         Use textex for your math typesetting needs, and combine them with easy, manual layouting for complex situations and animations!">
+<meta name="description" content="An opinionated tool to create beautiful presentations containing complex animations.">
 
 
-<meta property="og:description" content="View On Github
-Hexslides allows you to create presentations with highly expressive animations in your favorite vector graphic drawing tool (such as Inkscape). Then you combine svg graphics and masters/templates in beautiful presentations.
-Create highly visual presentations, that support what you are talking about instead of distracting from it! Easily create animations to better present your ideas!         Use textex for your math typesetting needs, and combine them with easy, manual layouting for complex situations and animations!">
+<meta property="og:description" content="An opinionated tool to create beautiful presentations containing complex animations.">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Hexslides: Death to Death by Powerpoint!">
 <meta name="twitter:title" content="Hexslides: Death to Death by Powerpoint!">
 <meta property="og:url" content="https://hexgolems.com/2019/08/hexslides-death-to-death-by-powerpoint/">
 <meta property="twitter:url" content="https://hexgolems.com/2019/08/hexslides-death-to-death-by-powerpoint/">
 <meta property="og:site_name" content="Hexgolems">
-<meta property="og:description" content="View On Github
-Hexslides allows you to create presentations with highly expressive animations in your favorite vector graphic drawing tool (such as Inkscape). Then you combine svg graphics and masters/templates in beautiful presentations.
-Create highly visual presentations, that support what you are talking about instead of distracting from it! Easily create animations to better present your ideas!         Use textex for your math typesetting needs, and combine them with easy, manual layouting for complex situations and animations!">
-<meta name="twitter:description" content="View On Github
-Hexslides allows you to create presentations with highly expressive animations in your favorite vector graphic drawing tool (such as Inkscape). Then you combine svg graphics and masters/templates in beautiful presentations.
-Create highly visual presentations, that support what you are talking about instead of distracting from it! Easily create animations to better present your ideas!         Use textex for your math typesetting needs, and combine them with easy, manual layouting for complex situations and animations!">
+<meta property="og:description" content="An opinionated tool to create beautiful presentations containing complex animations.">
+<meta name="twitter:description" content="An opinionated tool to create beautiful presentations containing complex animations.">
 <meta property="og:locale" content="en">
 
   
@@ -240,19 +232,12 @@ Create highly visual presentations, that support what you are talking about inst
           
           <div class="post-content markdown" itemprop="articleBody">
             <div class="main-content-wrap">
-              
-
-<p align=center><a href="https://github.com/eqv/hexslides" class="btn btn--primary" text-align="center"><i class="fa fa-github" aria-hidden="true"></i> View On Github</a></p>
-
+              <p align=center><a href="https://github.com/eqv/hexslides" class="btn btn--primary" text-align="center"><i class="fa fa-github" aria-hidden="true"></i> View On Github</a></p>
 <p>Hexslides allows you to create presentations with highly expressive animations in your favorite vector graphic drawing tool (such as Inkscape).
 Then you combine svg graphics and masters/templates in beautiful presentations.</p>
-
 <h4 id="create-highly-visual-presentations-that-support-what-you-are-talking-about-instead-of-distracting-from-it">Create highly visual presentations, that support what you are talking about instead of distracting from it!</h4>
-
-<p><img src="https://raw.githubusercontent.com/eqv/hexslides/master/examples/imgs/visual.png" alt="example slides" /></p>
-
+<p><img src="https://raw.githubusercontent.com/eqv/hexslides/master/examples/imgs/visual.png" alt="example slides"></p>
 <h4 id="easily-create-animations-to-better-present-your-ideas">Easily create animations to better present your ideas!</h4>
-
 <p>
 
  
@@ -345,47 +330,32 @@ Then you combine svg graphics and masters/templates in beautiful presentations.<
 
   <div style="clear:both;"></div>
 </p>
-
 <h4 id="use-textex-for-your-math-typesetting-needs-and-combine-them-with-easy-manual-layouting-for-complex-situations-and-animations">Use textex for your math typesetting needs, and combine them with easy, manual layouting for complex situations and animations!</h4>
-
 <p align="center">
 <img src="https://raw.githubusercontent.com/eqv/hexslides/master/examples/imgs/math.gif" width="40%"/>
 </p>
-
-<h4 id="use-custom-color-replacement-rules-to-convert-your-graphics-from-one-template-style-to-another">Use custom color replacement rules to convert your graphics from one template/style to another!</h4>
-
-<p><img src="https://raw.githubusercontent.com/eqv/hexslides/master/examples/imgs/colors.png" alt="example themes" /></p>
-
+<h4 id="use-custom-color-replacement-rules-to-convert-your-graphics-from-one-templatestyle-to-another">Use custom color replacement rules to convert your graphics from one template/style to another!</h4>
+<p><img src="https://raw.githubusercontent.com/eqv/hexslides/master/examples/imgs/colors.png" alt="example themes"></p>
 <h2 id="how-does-it-work">How Does it Work?</h2>
-
 <p>In short: create <code>svg</code> files in <code>imgs/</code>. Specify which layers are part of which slide by modifying <code>slides.tex</code>. Run <code>make</code> and enjoy your freshly crafted <code>slides.pdf</code>. To get started, you can copy <code>imgs/example.svg</code> and modify it!</p>
-
 <p>A bit longer: for each animation (or slide), you create a simple <code>.svg</code> file, that contains all moving objects as layers. The script <code>gen.rb</code> (which is called by the makefile) converts each
 individual layer into one individual <code>.pdf</code> file stored in <code>imgs/generated/$filename_$layername.pdf</code>. Then we use Latex
 to compile all images into a full presentations.</p>
-
 <p>For example, the following code is used to show <code>layer1</code> in all frames, <code>layer2</code> only in frame 2 to 4 while <code>layer3</code> is shown in frames 3 and 5. You can
 specify visibility using the typical (for Latex-Beamer) notations such as <code>3-4,5,7</code>.</p>
-
 <pre><code>\slide{
   \asvg{1-}{example_layer1}
   \asvg{2-4}{example_layer2}
   \asvg{3,5}{example_layer3}
 }
-</code></pre>
-
-<p>The <code>\slide</code> command is a thin wrapper around the <code>\slidecustom</code> command, that can also specify a background and
+</code></pre><p>The <code>\slide</code> command is a thin wrapper around the <code>\slidecustom</code> command, that can also specify a background and
 foreground image. By default <code>\slide</code> uses the background from <code>imgs/template.svg</code> but you can simply create different
 layouts/masters.</p>
-
 <pre><code>
 \slidecustom{template_clear_bg}{template_foreground}{
   \asvg{1}{example_layer1}
 }
-</code></pre>
-
-<h2 id="tricks">Tricks</h2>
-
+</code></pre><h2 id="tricks">Tricks</h2>
 <ul>
 <li>You can edit <code>theme/gen.rb</code> to replace colors in the svg files. This allows to easily transfer content across themes.</li>
 <li>Edit <code>theme/commands.tex</code> if you need multiple different slide masters to avoid using the longer <code>\slidecustom</code>
@@ -400,7 +370,6 @@ commands. This is helpful to maintain easy editing (changing frame numbers can b
 <li>Layers starting with <code>__</code> are not exported. You can use this to create a backdrop that contains the theme. That way you know exactly what your slide will look like in the final version.</li>
 <li>You can edit pdfs in Inkscape. This is very useful to reuse figures or plots from other sources.</li>
 <li>A list of Inkscape tutorials that you might find helpful:
-
 <ul>
 <li><a href="https://www.youtube.com/watch?v=XP-Cyn0leP8">getting started</a></li>
 <li><a href="https://www.youtube.com/watch?v=i12Oth28iZM">getting started 2</a></li>
@@ -408,22 +377,18 @@ commands. This is helpful to maintain easy editing (changing frame numbers can b
 <li><a href="https://www.youtube.com/watch?v=wQHC38-6phs">text ribbons</a></li>
 <li><a href="https://www.youtube.com/watch?v=G5LI695MiLY">flow charts</a></li>
 <li><a href="https://www.youtube.com/watch?v=hLyox9Kj8o8">edit pdf figures</a></li>
-</ul></li>
 </ul>
-
+</li>
+</ul>
 <h2 id="install">Install</h2>
-
-<pre><code class="language-bash">apt-get install inkscape gimp texlive-full texlive-lang-german texlive-doc-de texlive-latex-extra latex-mk
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">apt-get install inkscape gimp texlive-full texlive-lang-german texlive-doc-de texlive-latex-extra latex-mk
 cp theme/hexgolems_theme.gpl ~/.config/inkscape/palettes/
 mkdir /tmp/textext
 cd /tmp/textext
-wget 'https://bitbucket.org/pv/textext/get/9260a2461344.zip'
+wget <span style="color:#e6db74">&#39;https://bitbucket.org/pv/textext/get/9260a2461344.zip&#39;</span>
 unzip 9260a2461344.zip
 cp -r pv-textext-9260a2461344 ~/.config/inkscape/extensions 
-</code></pre>
-
-<p>Import the <code>theme/hexgolems_theme.gpl</code> as custom color palete in Inkscape.</p>
-
+</code></pre></div><p>Import the <code>theme/hexgolems_theme.gpl</code> as custom color palete in Inkscape.</p>
 <p>Use the textex plugin to render Latex in your svgs, and the provided macros to display the generated pdfs.</p>
 
               

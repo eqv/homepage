@@ -7,22 +7,18 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="author" content="Cornelius Aschermann">
 <meta name="keywords" content="">
-<meta name="description" content="View On Github
-In reverse engineering, one often tries to identify well known functions in a stripped and statically linked binary. It is often possible to generate fingerprints for functions and match them against a debug build of the same libraries. Current approaches such as FLIRT signatures typically require a debug build with very similar compiler options. Additionally most current approaches require a one to one comparision between all pairs of functions.">
+<meta name="description" content="Robust semantic hashes for arbitrary x86 functions. Identify functions in very large database, even when compiled with different options.">
 
 
-<meta property="og:description" content="View On Github
-In reverse engineering, one often tries to identify well known functions in a stripped and statically linked binary. It is often possible to generate fingerprints for functions and match them against a debug build of the same libraries. Current approaches such as FLIRT signatures typically require a debug build with very similar compiler options. Additionally most current approaches require a one to one comparision between all pairs of functions.">
+<meta property="og:description" content="Robust semantic hashes for arbitrary x86 functions. Identify functions in very large database, even when compiled with different options.">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Indika">
 <meta name="twitter:title" content="Indika">
 <meta property="og:url" content="https://hexgolems.com/2016/01/indika/">
 <meta property="twitter:url" content="https://hexgolems.com/2016/01/indika/">
 <meta property="og:site_name" content="Hexgolems">
-<meta property="og:description" content="View On Github
-In reverse engineering, one often tries to identify well known functions in a stripped and statically linked binary. It is often possible to generate fingerprints for functions and match them against a debug build of the same libraries. Current approaches such as FLIRT signatures typically require a debug build with very similar compiler options. Additionally most current approaches require a one to one comparision between all pairs of functions.">
-<meta name="twitter:description" content="View On Github
-In reverse engineering, one often tries to identify well known functions in a stripped and statically linked binary. It is often possible to generate fingerprints for functions and match them against a debug build of the same libraries. Current approaches such as FLIRT signatures typically require a debug build with very similar compiler options. Additionally most current approaches require a one to one comparision between all pairs of functions.">
+<meta property="og:description" content="Robust semantic hashes for arbitrary x86 functions. Identify functions in very large database, even when compiled with different options.">
+<meta name="twitter:description" content="Robust semantic hashes for arbitrary x86 functions. Identify functions in very large database, even when compiled with different options.">
 <meta property="og:locale" content="en">
 
   
@@ -234,19 +230,14 @@ In reverse engineering, one often tries to identify well known functions in a st
           
           <div class="post-content markdown" itemprop="articleBody">
             <div class="main-content-wrap">
-              
-
-<p align=center><a href="https://github.com/eqv/indika" class="btn btn--primary" text-align="center"><i class="fa fa-github" aria-hidden="true"></i> View On Github</a></p>
-
+              <p align=center><a href="https://github.com/eqv/indika" class="btn btn--primary" text-align="center"><i class="fa fa-github" aria-hidden="true"></i> View On Github</a></p>
 <p>In reverse engineering, one often tries to identify well known functions in a stripped and statically linked binary. It
 is often possible to generate fingerprints for functions and match them against a debug build of the same libraries.
 Current approaches such as FLIRT signatures typically require a debug build with very similar compiler options.
 Additionally most current approaches require a one to one comparision between all pairs of functions. This prevents
 large databases of known libraries to be used to easily identify known functions.</p>
-
 <p>To overcome this problem Indika generates robust hashes based on the semnatic of a function, that allow O(1) lookups in
 very large databases of known functions.</p>
-
 <p>Even if a function is compiled with completely different compilers, for different platforms, using different optimization levels, the
 function fundamentally still needs to perform the same task. Using a <a href="https://seclab.bu.edu/papers/blex-usenix2014.pdf" title="Blanket Execution: Dynamic Similarity Testing  for Program Binaries and Components)">Blanket Execution</a> engine build on top
 of <a href="https://www.unicorn-engine.org/">Unicorn</a>, Indika gathers a set of traces covering all branches in the function. It observes all globally
@@ -254,27 +245,20 @@ visible side effects. This set of side effects are a pretty good fingerprint for
 actual compiler implementation. To map this set of features to a unique hash, we use min hashing. Assigning a unique
 hash has one very large advantage over current pairwise function similarity approaches. It becomes trivial to store the
 hashes of a very large number of applications in a database, and lookup unknown functions very fast.</p>
-
 <p>A presentation on Indika can be found <a href="https://github.com/eqv/hexslides/raw/master/examples/fuzzy_hashes.pdf">here</a>.</p>
-
 <h1 id="side-effect-filtering">Side Effect Filtering</h1>
-
 <p>Unfortunately, compiler optimizations often do change globally visible behavior such as memory accesses. Particularly,
 stack accesses are often optimized out. To achieve robust results, we need to filter events, if they are not stable
 across different compilers, versions, platforms or optimization levels. We manually identified a set of heuristics used
 to exclude events.</p>
-
 <p>To name a few of the problems:</p>
-
 <ul>
 <li>Stack access</li>
 <li>Redundant reads/writes</li>
 <li>Inlined functions</li>
 <li>Leaf functions</li>
 </ul>
-
 <h1 id="update">Update</h1>
-
 <p>A student (and now colleague) of mine improved upon this project in his (unpublished) master thesis, using machine learning to predict which effects are stable
 across targets and which are not, significantly raising the number of perfect matches.
 After hashing and inserting functions from roughly 2000 libraries present on a common linux system (compiled using GCC, 64 bit, no optimization), the database contains more than one million hashes.
