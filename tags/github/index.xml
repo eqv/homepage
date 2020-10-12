@@ -6,10 +6,19 @@
     <description>Recent content in github on Hexgolems</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Tue, 14 Jul 2020 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sun, 11 Oct 2020 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="https://hexgolems.com/tags/github/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Getting Started with DDlog</title>
+      <link>https://hexgolems.com/2020/10/getting-started-with-ddlog/</link>
+      <pubDate>Sun, 11 Oct 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://hexgolems.com/2020/10/getting-started-with-ddlog/</guid>
+      <description>Getting started with program analysis in Datalog by building a simple backwards symbolic execution engine in DDlog &amp;amp; Rust.</description>
+    </item>
     
     <item>
       <title>Aurora</title>

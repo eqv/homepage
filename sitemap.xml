@@ -3,27 +3,47 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
+    <loc>https://hexgolems.com/tags/article/</loc>
+    <lastmod>2020-10-11T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://hexgolems.com/2020/10/getting-started-with-ddlog/</loc>
+    <lastmod>2020-10-11T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://hexgolems.com/tags/github/</loc>
+    <lastmod>2020-10-11T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://hexgolems.com/</loc>
+    <lastmod>2020-10-11T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://hexgolems.com/post/</loc>
+    <lastmod>2020-10-11T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://hexgolems.com/tags/</loc>
+    <lastmod>2020-10-11T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://hexgolems.com/tags/verification/</loc>
+    <lastmod>2020-10-11T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
     <loc>https://hexgolems.com/tags/fuzzing/</loc>
     <lastmod>2020-08-12T00:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>https://hexgolems.com/</loc>
-    <lastmod>2020-08-12T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
     <loc>https://hexgolems.com/2020/08/on-measuring-and-visualizing-fuzzer-performance/</loc>
-    <lastmod>2020-08-12T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://hexgolems.com/post/</loc>
-    <lastmod>2020-08-12T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://hexgolems.com/tags/</loc>
     <lastmod>2020-08-12T00:00:00+00:00</lastmod>
   </url>
   
@@ -48,11 +68,6 @@
   </url>
   
   <url>
-    <loc>https://hexgolems.com/tags/github/</loc>
-    <lastmod>2020-07-14T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
     <loc>https://hexgolems.com/2020/07/ijon/</loc>
     <lastmod>2020-07-14T00:00:00+00:00</lastmod>
   </url>
@@ -68,17 +83,7 @@
   </url>
   
   <url>
-    <loc>https://hexgolems.com/tags/article/</loc>
-    <lastmod>2020-04-04T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
     <loc>https://hexgolems.com/2020/04/incorrectness-logic-by-example/</loc>
-    <lastmod>2020-04-04T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://hexgolems.com/tags/verification/</loc>
     <lastmod>2020-04-04T00:00:00+00:00</lastmod>
   </url>
   

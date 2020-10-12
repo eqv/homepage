@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    
+    <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="author" content="Cornelius Aschermann">
+<meta name="keywords" content="">
+<meta name="description" content="Getting started with program analysis in Datalog by building a simple backwards symbolic execution engine in DDlog &amp; Rust.">
+
+
+<meta property="og:description" content="Getting started with program analysis in Datalog by building a simple backwards symbolic execution engine in DDlog &amp; Rust.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Getting Started with DDlog">
+<meta name="twitter:title" content="Getting Started with DDlog">
+<meta property="og:url" content="https://hexgolems.com/2020/10/getting-started-with-ddlog/">
+<meta property="twitter:url" content="https://hexgolems.com/2020/10/getting-started-with-ddlog/">
+<meta property="og:site_name" content="Hexgolems">
+<meta property="og:description" content="Getting started with program analysis in Datalog by building a simple backwards symbolic execution engine in DDlog &amp; Rust.">
+<meta name="twitter:description" content="Getting started with program analysis in Datalog by building a simple backwards symbolic execution engine in DDlog &amp; Rust.">
+<meta property="og:locale" content="en">
+
+  
+    <meta property="article:published_time" content="2020-10-11T00:00:00">
+  
+  
+    <meta property="article:modified_time" content="2020-10-11T00:00:00">
+  
+  
+  
+  
+    
+      <meta property="article:tag" content="github">
+    
+      <meta property="article:tag" content="verification">
+    
+      <meta property="article:tag" content="article">
+    
+  
+
+
+<meta name="twitter:card" content="summary">
+
+  <meta name="twitter:site" content="@is_eqv">
+
+
+  <meta name="twitter:creator" content="@is_eqv">
+
+
+
+
+
+
+
+  <meta property="og:image" content="https://hexgolems.com/imgs/avatar.png">
+  <meta property="twitter:image" content="https://hexgolems.com/imgs/avatar.png">
+
+
+
+  <meta property="og:image" content="https://hexgolems.com/imgs/ddlog_img.png">
+  <meta property="twitter:image" content="https://hexgolems.com/imgs/ddlog_img.png">
+
+
+  <meta property="og:image" content="https://hexgolems.com/imgs/ddlog_img.png">
+  <meta property="twitter:image" content="https://hexgolems.com/imgs/ddlog_img.png">
+
+
+
+    <title>Getting Started with DDlog</title>
+
+    <link rel="icon" href="https://hexgolems.com/favicon.png">
+    
+
+    
+
+    <link rel="canonical" href="https://hexgolems.com/2020/10/getting-started-with-ddlog/">
+
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha256-eZrrJcwDc/3uDhsdt61sL2oOBY362qM3lon1gyExkL0=" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.4/jquery.fancybox.min.css" integrity="sha256-vuXZ9LGmmwtjqFX1F+EKin1ThZMub58gKULUyf0qECk=" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.4/helpers/jquery.fancybox-thumbs.min.css" integrity="sha256-SEa4XYAHihTcEP1f5gARTB2K26Uk8PsndQYHQC1f4jU=" crossorigin="anonymous" />
+    
+    
+    <link rel="stylesheet" href="https://hexgolems.com/css/style-twzjdbqhmnnacqs0pwwdzcdbt8yhv8giawvjqjmyfoqnvazl0dalmnhdkvp7.min.css" />
+    
+    
+
+    
+      
+    
+    
+  </head>
+
+  <body>
+    <div id="blog">
+      <header id="header" data-behavior="5">
+  <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
+  <div class="header-title">
+    <a class="header-title-link" href="https://hexgolems.com/">Hexgolems</a>
+  </div>
+  
+    
+      <a class="header-right-icon "
+         href="https://hexgolems.com/#about">
+    
+    
+      <i class="fa fa-2x fa-user"></i>
+    
+    
+    </a>
+  
+</header>
+
+      <nav id="sidebar" data-behavior="5">
+  <div class="sidebar-container">
+    
+      <div class="sidebar-profile">
+        <a href="https://hexgolems.com/#about">
+          <img class="sidebar-profile-picture" src="https://hexgolems.com/imgs/avatar.png" alt="" />
+        </a>
+        <h4 class="sidebar-profile-name">Cornelius Aschermann</h4>
+        
+          <h5 class="sidebar-profile-bio">Fuzzing, Reverse Engineering, Binary Analysis</h5>
+        
+      </div>
+    
+    <ul class="sidebar-buttons">
+      
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://hexgolems.com/">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-home"></i>
+      
+      <span class="sidebar-button-desc">Home</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://hexgolems.com/#about">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-question"></i>
+      
+      <span class="sidebar-button-desc">About</span>
+    </a>
+  </li>
+
+
+    </ul>
+    <ul class="sidebar-buttons">
+      
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://hexgolems.com/tags/github">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-github"></i>
+      
+      <span class="sidebar-button-desc">GitHub</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://twitter.com/is_eqv" target="_blank" rel="noopener">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-twitter"></i>
+      
+      <span class="sidebar-button-desc">Twitter</span>
+    </a>
+  </li>
+
+
+    </ul>
+    <ul class="sidebar-buttons">
+      
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://hexgolems.com/index.xml">
+    
+      <i class="sidebar-button-icon fa fa-lg fa-rss"></i>
+      
+      <span class="sidebar-button-desc">RSS</span>
+    </a>
+  </li>
+
+
+    </ul>
+  </div>
+</nav>
+
+      
+  <div class="post-header-cover
+              text-center
+              post-header-cover--partial"
+       style="background-image:url('/imgs/ddlog_img.png')"
+       data-behavior="5">
+    
+  </div>
+
+
+      <div id="main" data-behavior="5"
+        class="hasCover
+               hasCoverMetaOut
+               ">
+        <article class="post" itemscope itemType="http://schema.org/BlogPosting">
+          
+          
+            <div class="post-header main-content-wrap text-center">
+  
+    <h1 class="post-title" itemprop="headline">
+      Getting Started with DDlog
+    </h1>
+  
+  
+  <div class="postShorten-meta post-meta">
+    
+      <time itemprop="datePublished" datetime="2020-10-11T00:00:00Z">
+        October, 2020
+
+      </time>
+    
+    
+  </div>
+
+</div>
+          
+          <div class="post-content markdown" itemprop="articleBody">
+            <div class="main-content-wrap">
+              <h1 id="getting-started-with-datalog--rust-for-program-analysis">Getting started with Datalog &amp; Rust for program analysis</h1>
+<p>Prolog, Datalog and somewhat related <a href="https://securitylab.github.com/tools/codeql">CodeQL</a> aka Semmle have been gaining attention in the program analysis / bug hunting / variant detection community.  While those &ldquo;logical&rdquo; languages are really weird if one has never used them before, they are excellent at implementing various program analysis tasks.</p>
+<p>This tutorial will give you an introduction to Datalog and get you started with a setup to experiment with <a href="https://github.com/vmware/differential-datalog">Differentiable Datalog (DDlog)</a> &amp; Rust. While this post only discusses some snippets of the code we use, the whole code is available at <a href="https://github.com/eqv/ddlog_bse">github</a>, and can be used for experiments.</p>
+<p>As an example, we define our own little Intermediate Language (IL) and implement a simple backward symbolic execution engine on top of it.</p>
+<h2 id="introduction-to-datalog">Introduction to Datalog</h2>
+<p>Datalog is a very high-level programming language. However, Datalog is more like SQL than Python. Similar to SQL, Datalog operates on a database. However, in contrast to SQL, Datalog&rsquo;s database stores and infers &ldquo;facts&rdquo;. The main use case for Datalog is to take a database of such &ldquo;facts&rdquo; and infer additional interesting facts via given rules. Datalog and related programming languages are  commonly called &ldquo;logic programming&rdquo;. Their main idea is to iteratively prove new facts from the current knowledge base. To this end, Datalog features a powerful query language to obtain information on the current state of the database. Datalog programs consist of rules that state &ldquo;The new fact A is true if B, C and D are already known to be true&rdquo;, notated as <code>A :- B,C,D</code> . The <code>:-</code> reads as &ldquo;holds if&rdquo;. We can use arbitrary queries in place of A,B and C. The Datalog engine will then iteratively apply all rules to obtain a full set of facts.</p>
+<p>While somewhat unintuitive at first, this approach maps very nicely to many problems encountered during program analysis. It offers two big advantages over other approaches: First of all, we have a powerful query language. Secondly, fixed point iterations are built into the language itself.</p>
+<p>For example, we could imagine a database containing information on dataflow between various variables in the program and a rule:
+<code>Warning(&quot;dangerous use of malloc&quot;, path) :- FunctionCall(&quot;input&quot;,[], input), FunctionCall(&quot;malloc&quot;,[size],_), DataFlow(input, size, path).</code></p>
+<p>This rule reads: Add a Warning with text &ldquo;dangerous use of malloc&rdquo; and the set of lines <code>path</code> <em>IF</em> there is a call to the function &ldquo;input&rdquo; without arguments that returns a variable <code>input</code> AND there is a call to the function &ldquo;malloc&rdquo; that has some first argument <code>size</code> and an irrelevant return value AND  there is a dataflow between the return value <code>input</code> and the argument <code>size</code> along the lines <code>path</code>.</p>
+<p>Here we assume that each function call in the program is stored in a fact <code>FunctionCall(name, arguments, return_value)</code>, and that there is a fact<code>DataFlow(src, dst, path)</code> for each possible data flow in the program. Using this rule we would obtain a list of all paths that connect the return value of calls to the function &ldquo;input&rdquo; to the first argument of &ldquo;malloc&rdquo;.</p>
+<p>While this example has many problems (in particular around scalability), it serves to illustrate how easily we can represent, query and recombine  analysis results in Datalog.</p>
+<p>To illustrate the advantage of easily expressing fixed point iterations, lets consider the problem of <a href="https://arxiv.org/pdf/1906.03969.pdf">disassembly</a>: To properly disassemble a binary, we need to resolve indirect branches. To resolve indirect branches, we need to know about possible values. To know about possible values, we need to know what pointers point to and which pointers are aliasing and of course the disassembly itself.  Consequently, we have multiple algorithms all requiring the results of the other algorithms. This can be very neatly expressed as a fixed point iteration: &ldquo;rerun each algorithm on all results, until no algorithm produces new information&rdquo;. And each individual algorithm is also easily expressed as a fixed point iteration. For example recursive disassembly can be neatly expressed as: For a given set of entry points, disassemble to the next branch instruction, resolve the targets and add them to the set of entry points until no new entry points are added.</p>
+<p>Datalog will repeatedly apply all available rules until no new facts are derived. This allows us to express such fixed point iterations as naturally as we would express a simple for loop in C. It should be noted that storing all facts can sometimes cause a significant amount memory consumption, and pure Datalog has limited abilities to discard intermediate values.</p>
+<h2 id="getting-started-with-ddlog">Getting started with DDlog</h2>
+<p><a href="https://github.com/vmware/differential-datalog">DDlog</a> is a pragmatic, high performance Datalog implementation that compiles Datalog programs to a Rust crate that one can use to perform inference on a set of facts provided by other Rust code. Similarly, we can easily call into Rust code to use functions that are not readily expressed in Datalog  or would have unwanted performance implications. Lastly, as the name implies, DDlog allows to update the database incrementally at runtime. We can add new facts, and DDlog only recomputes the updates based on the changes. If we need to add apply small changes (e.g. add user provided information), this drastically increases the performance.</p>
+<p>To get  started with DDlog, we first download release v0.28.0 from their <a href="https://github.com/vmware/differential-datalog/releases">GitHub</a> and unpack it somewhere. Then, we create a project folder and set the following environment variables to point to the installation folder:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">export PATH<span style="color:#f92672">=</span>$PATH:../../source/ddlog/bin
+export DDLOG_HOME<span style="color:#f92672">=</span>../../source/ddlog
+</code></pre></div><p>Next we create a simple DDlog file. You can use VSCode with the souffle extension for syntax highlighting. If the highlighting doesn&rsquo;t show up, make sure the file is interpreted as Datalog file.</p>
+<p>Now it&rsquo;s time to build a simple Datalog program (<code>bse.dl</code>). For starters, we will compute the set of all reachable nodes in a graph.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#75715e">// In this program we implement transitive closure on a graph
+</span><span style="color:#75715e">// As input, we provide an edge relation that connects nodes.
+</span><span style="color:#75715e">// Each edge is represented as a fact Edge(src,dst), where 
+</span><span style="color:#75715e">// src is the ID of the source node, and dst is the ID of the 
+</span><span style="color:#75715e">// target node.
+</span><span style="color:#75715e"></span>input relation Edge(i: u32, j: u32)
+
+<span style="color:#75715e">// The program computes the whole set of pairs of nodes where
+</span><span style="color:#75715e">// there is a path going from i to j
+</span><span style="color:#75715e"></span>output relation Reaches(i: u32, j: u32)
+
+<span style="color:#75715e">// Any node is able to reach its successors
+</span><span style="color:#75715e"></span>Reaches(i,j) <span style="color:#f92672">:-</span> Edge(i,j).
+<span style="color:#75715e">// i Reaches j if there is an Edge from i to some other node that
+</span><span style="color:#75715e">// already reaches j
+</span><span style="color:#75715e"></span>Reaches(i,j) <span style="color:#f92672">:-</span> Edge(i, p), Reaches(p, j).
+</code></pre></div><p>First, we define the input and output relations (think: Tables in SQL). Input relations are supplied by the environment, output relations can be queried after the inference has finished. Note how in contrast to other Datalog engines, DDlog uses strong types, including fixed bit width integers. Then we define rules that describe how to compute reachability from the known facts about edges. While this is a common and very intuitive example, you probably wouldn&rsquo;t want to use this for a real program, as the resulting set of facts grows with <code>O(n²)</code>.</p>
+<p>Lastly, we create a test input <code>bse.dat</code>:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">start;
+<span style="color:#75715e"># 1 -&gt; 2 -&gt; 3 --&gt; 4</span>
+<span style="color:#75715e">#            \</span>
+<span style="color:#75715e">#             `-&gt; 5</span>
+insert Edge<span style="color:#f92672">(</span>1,2<span style="color:#f92672">)</span>,
+insert Edge<span style="color:#f92672">(</span>2,3<span style="color:#f92672">)</span>,
+insert Edge<span style="color:#f92672">(</span>3,4<span style="color:#f92672">)</span>,
+insert Edge<span style="color:#f92672">(</span>3,5<span style="color:#f92672">)</span>;
+
+commit;
+dump Reaches;
+</code></pre></div><p>First, we start a transaction, than we insert facts for four edges. Then we commit the transaction which starts the execution, and lastly we dump all facts that we inferred on reachability.</p>
+<p>To compile the Datalog program into a Rust crate and run the test cli, we execute:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">ddlog -i bse.dl <span style="color:#f92672">&amp;&amp;</span>
+<span style="color:#f92672">(</span>cd bse_ddlog <span style="color:#f92672">&amp;&amp;</span> cargo build --release<span style="color:#f92672">)</span> <span style="color:#f92672">&amp;&amp;</span>
+./bse_ddlog/target/release/bse_cli &lt; bse.dat
+
+<span style="color:#75715e"># Prints:</span>
+<span style="color:#75715e"># Reaches{.i = 1, .j = 2}</span>
+<span style="color:#75715e"># Reaches{.i = 1, .j = 3}</span>
+<span style="color:#75715e"># ....</span>
+<span style="color:#75715e"># Reaches{.i = 3, .j = 4}</span>
+<span style="color:#75715e"># Reaches{.i = 3, .j = 5}</span>
+</code></pre></div><p>The first step compiles the Datalog file into a Rust library, the second step compiles the library and the last step runs the test cli with the test input.</p>
+<p>Unfortunately, there is almost no material out there to learn the basics of DDlog. However, you can find an excellent tutorial on learning the basics of Datalog at <a href="http://www.learndatalogtoday.org/">learndatalogtoday.org</a>. We will now continue exploring some of the more advanced topics required to perform program analysis by integrating DDLog with Rust.</p>
+<h2 id="data-structures-in-ddlog">Data Structures in DDLog</h2>
+<p>Pure Datalog requires you to store all data in the rules itself. On the other hand, in most modern Datalogs various types of &ldquo;atomic&rdquo; data are available. DDlog has a particular powerful set of data types. We already saw <code>u32</code> (numeric types are available in most Datalogs), but there is also <code>Vec&lt;T&gt;</code>, <code>Set&lt;T&gt;</code> and <code>Map&lt;T&gt;</code>. Additionally, we can design our own data types, including Rust style enums (aka Algebraic Data Types). This is extremely useful to express  more complex ideas. For example, we can express a set of registers as such an enum similar to C enums:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#66d9ef">typedef</span> Reg64T <span style="color:#f92672">=</span> Rax <span style="color:#f92672">|</span> Rbx <span style="color:#f92672">|</span> Rcx 
+</code></pre></div><p>However, we are also able to express more complex structs, such as instructions in an intermediate Language:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#66d9ef">typedef</span> InstrT <span style="color:#f92672">=</span> Malloc{arg: Expr64T}
+                 <span style="color:#f92672">|</span> Cmp{cop1: Expr64T, cop2: Expr64T}
+                 <span style="color:#f92672">|</span> Jump{target: u32, cond: Expr1T}
+                 <span style="color:#f92672">|</span> Set{dst: Reg64T, src: Expr64T}
+                 <span style="color:#f92672">|</span> Store{ptr: Expr64T, a2: Expr64T}
+</code></pre></div><p>This structure represents a (very simple) intermediate representation that we will use to build a little backwards symbolic execution engine. It contains a conditional branch (<code>Jump</code>), a compare instruction, a <code>Store</code> instruction (No load, as it won&rsquo;t be needed in this example) and a general purpose <code>Set</code> instruction that evaluates an expression and stores it in a register.</p>
+<p>To represent expressions, many Datalog based analysis use individual facts with IDs as references to their subexpressions.  While in most Datalog implementations this is the only way to store expressions, DDLog allows us to create a datatype for expressions as well:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#66d9ef">typedef</span> Expr64T <span style="color:#f92672">=</span> Reg64{r: Reg64T} 
+    <span style="color:#f92672">|</span> Const64{v: u32} 
+    <span style="color:#f92672">|</span> BinOp64{ op: Op64T, a1: Ref<span style="color:#f92672">&lt;</span>Expr64T<span style="color:#f92672">&gt;</span>, a2: Ref<span style="color:#f92672">&lt;</span>Expr64T<span style="color:#f92672">&gt;</span>} 
+    <span style="color:#f92672">|</span> Alloc{a1: Ref<span style="color:#f92672">&lt;</span>Expr64T<span style="color:#f92672">&gt;</span>} 
+</code></pre></div><p>We need to use <code>Ref&lt;Expr64T&gt;</code> to embed a nested sub-expression. As all these data types compile directly to Rust types, recursive structfields without a layer of indirection are forbidden. Otherwise, recursive structures would have an infinite size.</p>
+<p>To make the output of DDlog more readable, we can define pretty print functions for our custom types.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c">function <span style="color:#a6e22e">to_string</span>(a: Ref<span style="color:#f92672">&lt;</span>Expr64T<span style="color:#f92672">&gt;</span>) <span style="color:#f92672">:</span> string{
+    deref(a).to_string()
+}
+function <span style="color:#a6e22e">to_string</span>(a: Expr64T) <span style="color:#f92672">:</span> string{
+    match(a) {
+        Reg64{r} <span style="color:#f92672">-&gt;</span> r.to_string(),
+        Const64{v} <span style="color:#f92672">-&gt;</span> v.to_string(),
+        BinOp64{op, a1, a2} <span style="color:#f92672">-&gt;</span> <span style="color:#e6db74">&#34;(${a1.to_string()}${op.to_string()}${a2.to_string()})&#34;</span>,
+        Alloc{a1} <span style="color:#f92672">-&gt;</span>  <span style="color:#e6db74">&#34;Alloc(${a1.to_string()})&#34;</span>
+    }
+}
+</code></pre></div><p>Once we have defined most of the basic types that we are going to use, we can start building the actual analysis: First of all, we need to define our input facts. In our case we will have each intermediate representation instruction and it&rsquo;s bytecode address stored in one fact.  We define two additional inferred relations <code>Fallthrough</code> and <code>JumpsTo</code> that represent edges in the control flow of the program. Lastly,  we add the relation that we actually care about: <code>EventOn</code>. It represents: &ldquo;if all formulas in <code>state_t</code> hold, we also know something interesting is going to happen later on&rdquo;. From an initial set of  candidate positions (such as memory accesses), we will later trace backwards to find preconditions that guarantee that the memory access will fail.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c">    input relation Instr(i: u32, op: InstrT)
+
+    output relation Fallthrough(i: u32, op: InstrT, j: u32)
+    output relation JumpsTo(i: u32, op: InstrT, j: u32)
+    output relation EventOn(i: u32, s: state_t)
+</code></pre></div><p>Constructing the control flow graph from our IL is rather simple:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c">    Fallthrough(i, op, j) <span style="color:#f92672">:-</span> Instr(i, op), var j<span style="color:#f92672">=</span>i<span style="color:#f92672">+</span><span style="color:#ae81ff">1</span>, Instr(j,_).
+    JumpsTo(i, Jump{j,c}, j) <span style="color:#f92672">:-</span> Instr(i,Jump{j,c}), Instr(j, _).
+</code></pre></div><p>Here we can nicely see how powerful Datalog can be to transform data in interesting ways. The relation <code>Fallthrough</code> generally holds if there are instructions both at offset <code>i</code> and <code>i+1</code>. The relation <code>JumpsTo</code> holds if the instruction at position <code>i</code> is a jump to position <code>j</code>. We also store the instruction at the given position in the CFG relation to ease look-ups later on.</p>
+<h2 id="programming-in-ddlog">Programming in DDlog</h2>
+<p>Now for the most interesting part: We will build a simple backward symbolic execution engine. It can be used to start from a candidate point of failure, and go backwards to find statements earlier in the program that already guarantee that the failure will be triggered eventually. Like normal forward symbolic execution, this approach is used to generate testcases, and can &mdash; in certain cases &mdash; avoid creating very large state formulas, as we don&rsquo;t have to track everything, but only changes affecting the outcome we care about.</p>
+<p>We start with a simple rule that states: If we access a pointer at instruction <code>i</code>, it has to be in bounds, otherwise and interesting event (aka bug) occurs .</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c">    EventOn(i, State{[ref_new(Boundcheck{ref_new(dst)})]} ) <span style="color:#f92672">:-</span> 
+        Instr(i, MovPtr{dst,_}).
+</code></pre></div><p>Next we propagate any events upwards through <code>Set</code> instructions:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c">    EventOn(i, new) <span style="color:#f92672">:-</span> 
+    Fallthrough(i, Set{dst, expr}, j ),   
+        EventOn(j,old), 
+        var new <span style="color:#f92672">=</span> old.repl(Subst64{ref_new(Reg64{dst}), ref_new(expr)}).
+</code></pre></div><p>Here we state that we can prove that at instruction <code>i</code> an event will occur if <code>new</code> is satisfied if:</p>
+<ul>
+<li>
+<p>The instruction at address <code>i</code> is a <code>Set</code> instruction where <code>j</code> is the next instruction.</p>
+</li>
+<li>
+<p>We know that after instruction <code>j</code>, we will observe an interesting event if the constraint <code>old</code> is satisfied,</p>
+</li>
+<li>
+<p>and <code>new</code> is obtained from <code>old</code> by replacing all occurrences of the target register <code>dst</code> by the right hand side of the <code>Set</code> instruction (<code>expr</code>).</p>
+</li>
+</ul>
+<p>For example, lets assume, we know that something interesting will happen if <code>rax==1337</code> at instruction <code>j</code>, and instruction <code>i</code> is <code>Set{rax, rbx+1336}</code> then we obtain the new constraints <code> rbx+1336==1337</code>. This constraint guarantees that, after executing the <code>Set</code> instruction we will eventually reach the event we care about.</p>
+<p>Note that we use a function <code>old.repl</code> that performs the replacement in the expressions that we use. This function is implemented in Rust for performance reasons.</p>
+<h2 id="calling-rust-code-from-ddlog">Calling Rust Code from DDlog</h2>
+<p>Now the astute reader may have noticed how we use <code>old.repl()</code> in various places to substitute a register by a given value. So far, we ignored how to implement this function. With common Datalog implementations, substituting sub expressions would be somewhat annoying to implement, as we do not want to store all intermediate steps in the database. However, DDlog is a rather pragmatic implementation and allows us to freely call Rust functions.  The types declared in our Datalog program directly map to  Rust types, making this process butter smooth. First we create a file <code>bse.rs</code> and implement our functions. As you can see in this example, <code>Expr64T</code> directly maps to a Rust enum with the same layout. Similarly, <code>Vec&lt;T&gt;</code>, <code>Set&lt;T&gt;</code> and <code>Map&lt;K,V&gt;</code> map to DDlogs types. The function <code>maybe_substitute_expr_64</code> is a bit more convoluted than one might expect at first. This is not due to using DDlog data structures. Instead, it is returning <code>None</code> if no modification was performed, so that  we can reuse the old expressions instead of creating new ones, reducing the memory required to store our symbolic states significantly.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#66d9ef">use</span> <span style="color:#66d9ef">crate</span>::ddlog_std::Vec;
+<span style="color:#66d9ef">use</span> <span style="color:#66d9ef">crate</span>::ddlog_std::Ref;
+
+<span style="color:#66d9ef">pub</span> <span style="color:#66d9ef">fn</span> <span style="color:#a6e22e">sub_state</span>(val: <span style="color:#66d9ef">&amp;</span> Vec<span style="color:#f92672">&lt;</span>Ref<span style="color:#f92672">&lt;</span>Expr1T<span style="color:#f92672">&gt;&gt;</span>, 
+                 subst: <span style="color:#66d9ef">&amp;</span><span style="color:#a6e22e">ExprSubst</span>) 
+                 -&gt; Vec<span style="color:#f92672">&lt;</span>Ref<span style="color:#f92672">&lt;</span>Expr1T<span style="color:#f92672">&gt;&gt;</span>  {
+    <span style="color:#66d9ef">let</span> res <span style="color:#f92672">=</span> val.iter()
+                .map(<span style="color:#f92672">|</span>v<span style="color:#f92672">|</span> maybe_substitute_expr_1(v, subst)
+                .unwrap_or(v.clone()) ).collect::<span style="color:#f92672">&lt;</span>std::vec::Vec<span style="color:#f92672">&lt;</span>_<span style="color:#f92672">&gt;&gt;</span>();
+    <span style="color:#66d9ef">return</span> Vec{x: <span style="color:#a6e22e">res</span>}
+}
+
+<span style="color:#66d9ef">pub</span> <span style="color:#66d9ef">fn</span> <span style="color:#a6e22e">maybe_substitute_expr_64</span>(
+                                val: <span style="color:#66d9ef">&amp;</span> <span style="color:#a6e22e">Ref</span><span style="color:#f92672">&lt;</span>Expr64T<span style="color:#f92672">&gt;</span>, 
+                                subst: <span style="color:#66d9ef">&amp;</span><span style="color:#a6e22e">ExprSubst</span>) 
+                                -&gt; Option<span style="color:#f92672">&lt;</span>Ref<span style="color:#f92672">&lt;</span>Expr64T<span style="color:#f92672">&gt;&gt;</span>  {
+    <span style="color:#66d9ef">if</span> <span style="color:#66d9ef">let</span> ExprSubst::Subst64{pat64, repl64} <span style="color:#f92672">=</span> subst {
+        <span style="color:#66d9ef">if</span> pat64 <span style="color:#f92672">==</span> val {
+            <span style="color:#66d9ef">return</span> Some(repl64.clone())
+        }
+    }
+    <span style="color:#66d9ef">match</span> <span style="color:#f92672">&amp;**</span>val {
+        Expr64T::Reg64{..} <span style="color:#f92672">=&gt;</span> None,
+        Expr64T::Const64{..} <span style="color:#f92672">=&gt;</span> None,
+        Expr64T::Alloc{a1} <span style="color:#f92672">=&gt;</span> maybe_substitute_expr_64(<span style="color:#f92672">&amp;</span>a1, subst)
+                                    .map(<span style="color:#f92672">|</span>a1<span style="color:#f92672">|</span> Ref::from( Expr64T::Alloc{a1} ) ),
+        Expr64T::BinOp64{op, a1, a2} <span style="color:#f92672">=&gt;</span> {
+            <span style="color:#66d9ef">let</span> na1 <span style="color:#f92672">=</span> maybe_substitute_expr_64(<span style="color:#f92672">&amp;</span>a1, subst);
+            <span style="color:#66d9ef">let</span> na2 <span style="color:#f92672">=</span> maybe_substitute_expr_64(<span style="color:#f92672">&amp;</span>a2, subst);
+            <span style="color:#66d9ef">if</span> na1.is_none() <span style="color:#f92672">&amp;&amp;</span> na2.is_none() {
+                None
+            } <span style="color:#66d9ef">else</span> {
+                <span style="color:#66d9ef">let</span> op <span style="color:#f92672">=</span> Expr64T::BinOp64{
+                    op: <span style="color:#a6e22e">op</span>.clone(), 
+                    a1: <span style="color:#a6e22e">na1</span>.unwrap_or(a1.clone()), 
+                    a2: <span style="color:#a6e22e">na2</span>.unwrap_or(a2.clone())
+                };
+                Some(std_Ref::from(op))
+            }
+        },
+    }
+}
+</code></pre></div><p>We can than declare our Rust functions in the Datalog program (<code>bse.dl</code>) by using the <code>extern</code> keyword and use it in our Datalog program.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#66d9ef">extern</span> function sub_state(val: Vec<span style="color:#f92672">&lt;</span>Ref<span style="color:#f92672">&lt;</span>Expr1T<span style="color:#f92672">&gt;&gt;</span>, sub: <span style="color:#a6e22e">ExprSubst</span>) : Vec<span style="color:#f92672">&lt;</span>Ref<span style="color:#f92672">&lt;</span>Expr1T<span style="color:#f92672">&gt;&gt;</span>
+</code></pre></div><h2 id="calling-ddlog-from-rust">Calling DDlog from Rust</h2>
+<p>Now that we have a working example of a simple DDlog program analysis pass, we would like to embed our DDLog program into an existing rust project. For this purpose, we create a new library crate:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">cargo init --lib bse_ddlog_lib
+</code></pre></div><p>Then we add the following dependencies to the crates <code>Cargo.toml</code></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-toml" data-lang="toml">[<span style="color:#a6e22e">dependencies</span>]
+<span style="color:#a6e22e">differential_datalog</span> = <span style="color:#960050;background-color:#1e0010">{</span><span style="color:#a6e22e">path</span> = <span style="color:#e6db74">&#34;../bse_ddlog/bse_ddlog/differential_datalog&#34;</span><span style="color:#960050;background-color:#1e0010">}</span>
+<span style="color:#a6e22e">bse</span> = <span style="color:#960050;background-color:#1e0010">{</span><span style="color:#a6e22e">path</span> = <span style="color:#e6db74">&#34;../bse_ddlog/bse_ddlog/&#34;</span><span style="color:#960050;background-color:#1e0010">}</span>
+<span style="color:#a6e22e">types</span> = <span style="color:#960050;background-color:#1e0010">{</span><span style="color:#a6e22e">path</span> = <span style="color:#e6db74">&#34;../bse_ddlog/bse_ddlog/types&#34;</span><span style="color:#960050;background-color:#1e0010">}</span>
+<span style="color:#a6e22e">value</span> = <span style="color:#960050;background-color:#1e0010">{</span><span style="color:#a6e22e">path</span> = <span style="color:#e6db74">&#34;../bse_ddlog/bse_ddlog/value&#34;</span><span style="color:#960050;background-color:#1e0010">}</span>
+</code></pre></div><p>In <code>lib.rs</code>, we need to import various types that were auto-generated by DDlog. Most of these types are defined by the engine itself. The second chunk of imports includes the types that are specific to our DDLog program.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#75715e">// import types for the engine
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">use</span> bse_ddlog::api::HDDlog; <span style="color:#75715e">//The DDLog Database engine itself
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">use</span> differential_datalog::DDlog; <span style="color:#75715e">// A helper trait
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">use</span> differential_datalog::DeltaMap; <span style="color:#75715e">// A trait representing the changes resulting from a given update.
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">use</span> differential_datalog::ddval::DDValue; <span style="color:#75715e">// A generic DLog value type
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">use</span> differential_datalog::ddval::DDValConvert; <span style="color:#75715e">//Another helper trair
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">use</span> differential_datalog::program::RelId; <span style="color:#75715e">// Numeric relations id
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">use</span> differential_datalog::program::Update; <span style="color:#75715e">// A type representing updates to the database
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">use</span> differential_datalog::record::Record; <span style="color:#75715e">// A type representing individual facts
+</span><span style="color:#75715e"></span>
+<span style="color:#75715e">// import all types defined by the datalog program itself
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">use</span> types::<span style="color:#f92672">*</span>;
+<span style="color:#66d9ef">use</span> types::ddlog_std::Ref;
+
+<span style="color:#75715e">// import some helpers to access the database
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">use</span> value::relid2name; <span style="color:#75715e">//maps the relation id to a string 
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">use</span> value::Relations; <span style="color:#75715e">//Enum of available relations 
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">use</span> value::Value; <span style="color:#75715e">// wrapper type for the input/output relations
+</span></code></pre></div><p>Using these types, we can create a struct in <code>lib.rs</code> that allows us to create and interact with the DDlog database engine. Note that the API is still under heavy development and contains some vestigial features such as the unused callback <code>cb</code> that will be removed soon.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#66d9ef">pub</span> <span style="color:#66d9ef">struct</span> <span style="color:#a6e22e">DDLogBSE</span>{
+    hddlog: <span style="color:#a6e22e">HDDlog</span>,
+}
+
+<span style="color:#66d9ef">impl</span> DDLogBSE{
+    <span style="color:#66d9ef">pub</span> <span style="color:#66d9ef">fn</span> <span style="color:#a6e22e">new</span>()  -&gt; Result<span style="color:#f92672">&lt;</span>DDLogBSE, String<span style="color:#f92672">&gt;</span> {
+        <span style="color:#75715e">// callback is useless  
+</span><span style="color:#75715e"></span>        <span style="color:#66d9ef">fn</span> <span style="color:#a6e22e">cb</span>(_rel: <span style="color:#66d9ef">usize</span>, _rec: <span style="color:#66d9ef">&amp;</span><span style="color:#a6e22e">Record</span>, _w: <span style="color:#66d9ef">isize</span>) {}
+        <span style="color:#66d9ef">let</span> number_threads <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>;
+        <span style="color:#66d9ef">let</span> track_complet_snapshot <span style="color:#f92672">=</span> <span style="color:#66d9ef">false</span>;
+        <span style="color:#66d9ef">let</span> (hddlog, _init_state) <span style="color:#f92672">=</span> HDDlog::run(number_threads, track_complet_snapshot, cb)<span style="color:#f92672">?</span>;
+
+        <span style="color:#66d9ef">return</span> Ok(Self{hddlog});
+    }
+}
+</code></pre></div><p>After creating such an object we need to insert instructions into the database. In the test case we create a vector of instructions, and add it to the database:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust"><span style="color:#75715e">#[cfg(test)]</span>
+<span style="color:#66d9ef">mod</span> tests {
+    <span style="color:#66d9ef">use</span> <span style="color:#66d9ef">super</span>::<span style="color:#f92672">*</span>;
+    <span style="color:#75715e">#[test]</span>
+    <span style="color:#66d9ef">fn</span> <span style="color:#a6e22e">it_works</span>() {
+
+        <span style="color:#66d9ef">let</span> malloc <span style="color:#f92672">=</span> InstrT::Malloc{arg: <span style="color:#a6e22e">Expr64T</span>::Const64{v: <span style="color:#ae81ff">10</span>} };
+        <span style="color:#75715e">// Some more instructions ...
+</span><span style="color:#75715e"></span>        <span style="color:#66d9ef">let</span> store <span style="color:#f92672">=</span> InstrT::MovPtr{ptr: <span style="color:#a6e22e">Expr64T</span>::Reg64{r: <span style="color:#a6e22e">Reg64T</span>::Rax},a2: <span style="color:#a6e22e">Expr64T</span>::Const64{v: <span style="color:#ae81ff">0</span>}};
+
+        <span style="color:#66d9ef">let</span> <span style="color:#66d9ef">mut</span> bse <span style="color:#f92672">=</span> DDLogBSE::new().unwrap();
+        <span style="color:#66d9ef">let</span> <span style="color:#66d9ef">mut</span> delta <span style="color:#f92672">=</span> bse.add_code(vec<span style="color:#f92672">!</span>(malloc, cmp, jmp, set, store)).unwrap();
+        <span style="color:#75715e">//DDLogBSE::dump_delta(&amp;delta);
+</span><span style="color:#75715e"></span>        DDLogBSE::enum_events(<span style="color:#f92672">&amp;</span><span style="color:#66d9ef">mut</span> delta);
+        assert<span style="color:#f92672">!</span>(<span style="color:#66d9ef">false</span>);
+    }
+}
+</code></pre></div><p>Lastly, we need to create a function that inserts the instructions into the database itself. To do this, we need to convert our vector of instructions into a vector of <code>Update::Insert</code> Objects that contain the whole fact that should be inserted. In our case, we want to add <code>Instr</code> facts, so we need to get the relation id of that type and  turn our instructions in DDValues. Lastly, we apply the update, and return the delta for further inspection.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-rust" data-lang="rust">    <span style="color:#66d9ef">pub</span> <span style="color:#66d9ef">fn</span> <span style="color:#a6e22e">add_code</span>(<span style="color:#f92672">&amp;</span><span style="color:#66d9ef">mut</span> self, code: Vec<span style="color:#f92672">&lt;</span>InstrT<span style="color:#f92672">&gt;</span>) 
+                    -&gt; Result<span style="color:#f92672">&lt;</span>DeltaMap<span style="color:#f92672">&lt;</span>DDValue<span style="color:#f92672">&gt;</span>, String<span style="color:#f92672">&gt;</span> {
+        self.hddlog.transaction_start()<span style="color:#f92672">?</span>;
+        <span style="color:#66d9ef">let</span> updates <span style="color:#f92672">=</span> code.into_iter().enumerate().map(<span style="color:#f92672">|</span>(i,inst)<span style="color:#f92672">|</span> 
+            Update::Insert {
+                relid: <span style="color:#a6e22e">Relations</span>::Instr <span style="color:#66d9ef">as</span> RelId,
+                v: <span style="color:#a6e22e">Value</span>::Instr(types::Instr{i: <span style="color:#a6e22e">i</span> <span style="color:#66d9ef">as</span> <span style="color:#66d9ef">u32</span>, op: <span style="color:#a6e22e">inst</span>}).into_ddvalue(),
+            }
+        ).collect::<span style="color:#f92672">&lt;</span>Vec<span style="color:#f92672">&lt;</span>_<span style="color:#f92672">&gt;&gt;</span>();
+        self.hddlog.apply_valupdates(updates.into_iter())<span style="color:#f92672">?</span>;   
+        <span style="color:#66d9ef">let</span> delta <span style="color:#f92672">=</span> self.hddlog.transaction_commit_dump_changes()<span style="color:#f92672">?</span>;
+        <span style="color:#66d9ef">return</span> Ok(delta); 
+    }
+</code></pre></div><h2 id="wrapping-up">Wrapping up</h2>
+<p>While this is still far from building your own CodeQL, it gives you a solid base to get started. What remains to be done is to actually load your target program into the database in some form, and to build a reasonable analysis on top of it (aka: Everything). However, implementing this kind of analysis can be very straight forward, as soon as we have the basics in place. After considering generic code for creating the bytecode and substitution of expressions, building a simple backwards symbolic execution engine only took only around 10 lines of code. If we wanted to build some taint static tracking engine, we would only have to add a few more lines.</p>
+<p>Recently, it became apparent that having the ability to experiment and customize static analysis passes easily is a gigantic advantage. The success of recent publications such as <a href="https://cseweb.ucsd.edu/~dstefan/pubs/brown:2020:sys.pdf">Sys: a Static/Symbolic Tool for Finding Good Bugs in Good (Browser) Code</a> and tools like Semmle demonstrate how adding domain knowledge makes static analysis significantly more powerful. Using Datalog, adding a special cases for complex metaprogramming specific to your codebase can be as simple as adding two lines. Datalog is a programming language that allows you to implement program analysis at a much higher level than other languages. In combination with a few libraries to parse programs or bytecode and a bunch of helper functions such as expression substitution, I believe this will be an incredible powerful tool in the toolbox of everyone working on analyzing code. And I hope this example will help you to get started exploring the options that DDlog provides to program analysts.</p>
+
+              
+            </div>
+          </div>
+          <div id="post-footer" class="post-footer main-content-wrap">
+            
+              
+                
+                
+                  <div class="post-footer-tags">
+                    <span class="text-color-light text-small"></span><br/>
+                    
+  <a class="tag tag--primary tag--small" href="https://hexgolems.com/tags/github/">github</a>
+
+  <a class="tag tag--primary tag--small" href="https://hexgolems.com/tags/verification/">verification</a>
+
+  <a class="tag tag--primary tag--small" href="https://hexgolems.com/tags/article/">article</a>
+
+                  </div>
+                
+              
+            
+            <div class="post-actions-wrap">
+  
+      <nav >
+        <ul class="post-actions post-action-nav">
+          
+            <li class="post-action">
+              
+                <a class="post-action-btn btn btn--disabled">
+              
+                  
+                  &lt;
+                  
+                </a>
+            </li>
+            <li class="post-action">
+              
+                <a class="post-action-btn btn btn--default tooltip--top" href="https://hexgolems.com/2020/08/on-measuring-and-visualizing-fuzzer-performance/" data-tooltip="On Measuring and Visualizing Fuzzer Performance">
+              
+              
+                  &gt;
+                  
+                </a>
+            </li>
+          
+        </ul>
+      </nav>
+    <ul class="post-actions post-action-share" >
+      
+      
+      <li class="post-action">
+        
+          <a class="post-action-btn btn btn--default" href="#">
+        
+          <i class="fa fa-list"></i>
+        </a>
+      </li>
+    </ul>
+  
+</div>
+
+            
+              
+            
+          </div>
+        </article>
+        <footer id="footer" class="main-content-wrap">
+  <span class="copyrights">
+    &copy; 2020 Cornelius Aschermann. 
+  </span>
+</footer>
+
+      </div>
+      <div id="bottom-bar" class="post-bottom-bar" data-behavior="5">
+        <div class="post-actions-wrap">
+  
+      <nav >
+        <ul class="post-actions post-action-nav">
+          
+            <li class="post-action">
+              
+                <a class="post-action-btn btn btn--disabled">
+              
+                  
+                  &lt;
+                  
+                </a>
+            </li>
+            <li class="post-action">
+              
+                <a class="post-action-btn btn btn--default tooltip--top" href="https://hexgolems.com/2020/08/on-measuring-and-visualizing-fuzzer-performance/" data-tooltip="On Measuring and Visualizing Fuzzer Performance">
+              
+              
+                  &gt;
+                  
+                </a>
+            </li>
+          
+        </ul>
+      </nav>
+    <ul class="post-actions post-action-share" >
+      
+      
+      <li class="post-action">
+        
+          <a class="post-action-btn btn btn--default" href="#">
+        
+          <i class="fa fa-list"></i>
+        </a>
+      </li>
+    </ul>
+  
+</div>
+
+      </div>
+      <div id="share-options-bar" class="share-options-bar" data-behavior="5">
+  <i id="btn-close-shareoptions" class="fa fa-close"></i>
+  <ul class="share-options">
+    
+      <li class="share-option">
+        <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fhexgolems.com%2F2020%2F10%2Fgetting-started-with-ddlog%2F">
+          <i class="fa fa-facebook-official"></i><span>%!(EXTRA string=Facebook)</span>
+        </a>
+      </li>
+    
+      <li class="share-option">
+        <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=https%3A%2F%2Fhexgolems.com%2F2020%2F10%2Fgetting-started-with-ddlog%2F">
+          <i class="fa fa-twitter"></i><span>%!(EXTRA string=Twitter)</span>
+        </a>
+      </li>
+    
+      <li class="share-option">
+        <a class="share-option-btn" target="new" href="https://plus.google.com/share?url=https%3A%2F%2Fhexgolems.com%2F2020%2F10%2Fgetting-started-with-ddlog%2F">
+          <i class="fa fa-google-plus"></i><span>%!(EXTRA string=Google&#43;)</span>
+        </a>
+      </li>
+    
+  </ul>
+</div>
+<div id="share-options-mask" class="share-options-mask"></div>
+    </div>
+    
+    <div id="about">
+  <div id="about-card">
+    <div id="about-btn-close">
+      <i class="fa fa-remove"></i>
+    </div>
+    
+      <img id="about-card-picture" src="https://hexgolems.com/imgs/avatar.png" alt="" />
+    
+    <h4 id="about-card-name">Cornelius Aschermann</h4>
+    
+      <div id="about-card-bio">Fuzzing, Reverse Engineering, Binary Analysis</div>
+    
+    
+      <div id="about-card-job">
+        <i class="fa fa-briefcase"></i>
+        <br/>
+        Security Researcher
+      </div>
+    
+    
+      <div id="about-card-location">
+        <i class="fa fa-map-marker"></i>
+        <br/>
+        Germany
+      </div>
+    
+  </div>
+</div>
+
+    
+
+    
+  
+    
+      <div id="cover" style="background-image:url('https://hexgolems.com/imgs/dark_bg.jpg');"></div>
+    
+  
+
+
+    
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.4/jquery.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js" integrity="sha256-/BfiIkHlHoVihZdc6TFuj7MmJ0TWcWsMXkeDFwhi0zw=" crossorigin="anonymous"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.7/js/jquery.fancybox.min.js" integrity="sha256-GEAnjcTqVP+vBp3SSc8bEDQqvWAZMiHyUSIorrWwH50=" crossorigin="anonymous"></script>
+
+
+<script src="https://hexgolems.com/js/script-pcw6v3xilnxydl1vddzazdverrnn9ctynvnxgwho987mfyqkuylcb1nlt.min.js"></script>
+
+
+<script lang="javascript">
+window.onload = updateMinWidth;
+window.onresize = updateMinWidth;
+document.getElementById("sidebar").addEventListener("transitionend", updateMinWidth);
+function updateMinWidth() {
+  var sidebar = document.getElementById("sidebar");
+  var main = document.getElementById("main");
+  main.style.minWidth = "";
+  var w1 = getComputedStyle(main).getPropertyValue("min-width");
+  var w2 = getComputedStyle(sidebar).getPropertyValue("width");
+  var w3 = getComputedStyle(sidebar).getPropertyValue("left");
+  main.style.minWidth = `calc(${w1} - ${w2} - ${w3})`;
+}
+</script>
+
+<script>
+$(document).ready(function() {
+  hljs.configure({ classPrefix: '', useBR: false });
+  $('pre.code-highlight > code, pre > code').each(function(i, block) {
+    if (!$(this).hasClass('codeblock')) {
+      $(this).addClass('codeblock');
+    }
+    hljs.highlightBlock(block);
+  });
+});
+</script>
+
+
+  
+    
+  
+
+
+
+
+    
+  </body>
+</html>
+
